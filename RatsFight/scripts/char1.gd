@@ -3,17 +3,21 @@ extends KinematicBody2D
 # class member variables go here, for example:
 # var a = 2
 # var b = "textvar"
-var SPEED = 3
+var SPEED = 2
 var current_anim = null
 var current_right = null
 
 func _fixed_process(delta):
+	var action_hit = Input.is_action_pressed("ui_accept")
 	var walk_left = Input.is_action_pressed("ui_left")
 	var walk_right = Input.is_action_pressed("ui_right")
 	var new_anim = ""
 	var new_right = null
 	var dir = 0
-	if (walk_right):
+	
+	if (action_hit):
+		new_anim = "hit"
+	elif (walk_right):
 		new_right = true
 		new_anim = "walk"
 		dir = 1
