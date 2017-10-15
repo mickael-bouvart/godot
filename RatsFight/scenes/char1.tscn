@@ -7,8 +7,8 @@
 [sub_resource type="Animation" id=1]
 
 resource/name = "being_hit"
-length = 1.0
-loop = true
+length = 0.5
+loop = false
 step = 0.1
 tracks/0/type = "value"
 tracks/0/path = NodePath("sprite:frame")
@@ -19,6 +19,18 @@ tracks/0/keys = {
 "transitions": FloatArray( 1 ),
 "update": 1,
 "values": [ 9 ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/imported = false
+tracks/1/keys = {
+"times": FloatArray( 0.5 ),
+"transitions": FloatArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "recovered_hit"
+} ]
 }
 
 [sub_resource type="Animation" id=2]
@@ -81,7 +93,7 @@ tracks/2/keys = {
 
 resource/name = "ko"
 length = 1.0
-loop = true
+loop = false
 step = 0.1
 tracks/0/type = "value"
 tracks/0/path = NodePath("sprite:frame")
@@ -92,6 +104,16 @@ tracks/0/keys = {
 "transitions": FloatArray( 1, 1, 1 ),
 "update": 1,
 "values": [ 9, 10, 11 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("defensive_hitbox_area:monitorable")
+tracks/1/interp = 1
+tracks/1/imported = false
+tracks/1/keys = {
+"times": FloatArray( 0 ),
+"transitions": FloatArray( 1 ),
+"update": 1,
+"values": [ false ]
 }
 
 [sub_resource type="Animation" id=5]
@@ -158,7 +180,7 @@ script/script = ExtResource( 1 )
 texture = ExtResource( 2 )
 vframes = 4
 hframes = 3
-frame = 7
+frame = 6
 
 [node name="anim" type="AnimationPlayer" parent="."]
 

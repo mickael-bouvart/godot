@@ -1,20 +1,21 @@
 extends KinematicBody2D
 
-# class member variables go here, for example:
-# var a = 2
-# var b = "textvar"
 var SPEED = 4
+var MAX_LIFE = 10
+var life = null
 var current_anim = null
 var current_left = null
 var state = null
 var dir = 0
+var hit_released = true
 
 enum STATE {
 	HIT,
 	WALK_LEFT,
 	WALK_RIGHT,
 	BEING_HIT,
-	IDLE
+	IDLE,
+	KO
 }
 
 func _fixed_process(delta):
@@ -24,10 +25,14 @@ func _fixed_process(delta):
 	var new_anim = null
 	var new_left = null
 	
-	#if (!action_hit && get_node("offensive_hitbox_area").is_monitoring_enabled()):
-	#	get_node("offensive_hitbox_area").set_enable_monitoring(false)
+	# disable offensive hitbox area in case animation got interrupted
+	if (state != STATE.HIT && get_node("offensive_hitbox_area").is_monitoring_enabled()):
+		get_node("offensive_hitbox_area").set_enable_monitoring(false)
 	
-	if (action_hit):
+	if (!action_hit):
+		hit_released = true
+	if (hit_released && action_hit):
+		hit_released = false
 		if (state == STATE.IDLE || state == STATE.WALK_LEFT || state == STATE.WALK_RIGHT):
 			new_anim = "hit"
 			state = STATE.HIT
@@ -65,6 +70,8 @@ func _fixed_process(delta):
 	pass
 
 func _ready():
+	life = MAX_LIFE
+	hit_released = true
 	current_anim = "stand"
 	current_left = -1
 	state = STATE.IDLE
@@ -96,4 +103,19 @@ func _on_offensive_hitbox_area_area_exit( area ):
 	pass # replace with function body
 
 func end_hit():
+	state = STATE.IDLE
+	get_node("anim").play("stand")
+	
+func get_hit():
+	dir = 0
+	life -= 1
+	if (life == 0):
+		get_node("anim").play("ko")
+		state = STATE.KO
+	else:
+		get_node("anim").play("being_hit")
+		state = STATE.BEING_HIT
+
+func recovered_hit():
+	get_node("anim").play("stand")
 	state = STATE.IDLE
