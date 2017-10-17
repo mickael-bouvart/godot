@@ -170,7 +170,7 @@ samples/punch_01 = {
 [node name="char1" type="KinematicBody2D"]
 
 input/pickable = false
-collision/layers = 1
+collision/layers = 2
 collision/mask = 1
 collision/margin = 0.08
 script/script = ExtResource( 1 )

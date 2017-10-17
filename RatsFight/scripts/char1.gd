@@ -1,5 +1,7 @@
 extends KinematicBody2D
 
+signal state_changed
+
 var SPEED = 4
 var MAX_LIFE = 10
 var life = null
@@ -90,16 +92,15 @@ func _on_offensive_hitbox_area_area_enter( area ):
 
 
 func _on_defensive_hitbox_area_area_exit( area ):
-	print("_on_defensive_hitbox_area_area_exit")
-	print(area)
+	#print("_on_defensive_hitbox_area_area_exit")
 	pass # replace with function body
 
 func _on_defensive_hitbox_area_area_enter( area ):
-	print("_on_defensive_hitbox_area_area_enter")
+	#print("_on_defensive_hitbox_area_area_enter")
 	pass # replace with function body
 
 func _on_offensive_hitbox_area_area_exit( area ):
-	print("_on_offensive_hitbox_area_area_exit")
+	#print("_on_offensive_hitbox_area_area_exit")
 	pass # replace with function body
 
 func end_hit():
@@ -115,7 +116,11 @@ func get_hit():
 	else:
 		get_node("anim").play("being_hit")
 		state = STATE.BEING_HIT
+	emit_signal("state_changed", self)
 
 func recovered_hit():
 	get_node("anim").play("stand")
 	state = STATE.IDLE
+	
+func get_life():
+	return life
