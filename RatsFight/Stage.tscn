@@ -34,7 +34,7 @@ transform/pos = Vector2( 120, 345 )
 
 [node name="char2" parent="." instance=ExtResource( 4 )]
 
-transform/pos = Vector2( 510, 274 )
+transform/pos = Vector2( 670, 254 )
 
 [node name="StreamPlayer" type="StreamPlayer" parent="."]
 
