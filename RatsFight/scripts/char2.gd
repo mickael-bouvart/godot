@@ -127,7 +127,7 @@ func _ready():
 	life = MAX_LIFE
 	state = STATE.HIT
 	get_node("anim").play("hit_01")
-	current_left = -1
+	current_left = null
 	set_fixed_process(true)
 	pass
 

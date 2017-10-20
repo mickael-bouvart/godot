@@ -53,13 +53,13 @@ func _fixed_process(delta):
 			_state = STATE.HIT
 			_velocity.x = 0
 	elif (walk_right):
-		if (_state == STATE.IDLE):
+		if (_state == STATE.IDLE || _current_left == 1):
 			new_left = -1
 			_node_anim.play("walk")
 			_velocity.x = WALK_SPEED
 			_state = STATE.WALK
 	elif walk_left:
-		if (_state == STATE.IDLE):
+		if (_state == STATE.IDLE || _current_left == -1):
 			new_left = 1
 			_node_anim.play("walk")
 			_velocity.x = -WALK_SPEED
