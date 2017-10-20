@@ -2,125 +2,130 @@ extends KinematicBody2D
 
 signal state_changed
 
-var SPEED = 4
-var MAX_LIFE = 10
-var life = null
-var current_anim = null
-var current_left = null
-var state = null
-var dir = 0
-var hit_released = true
+const MAX_LIFE = 10
+const GRAVITY = 500.0
+const WALK_SPEED = 200
 
 enum STATE {
 	HIT,
-	WALK_LEFT,
-	WALK_RIGHT,
+	WALK,
 	BEING_HIT,
 	IDLE,
 	KO
 }
 
+var _life
+var _current_left
+var _state
+var _hit_released
+var _velocity
+
+onready var _node_anim = get_node("anim")
+onready var _node_offensive_hitbox_area = get_node("offensive_hitbox_area")
+onready var _node_sound = get_node("sound")
+
+func _ready():
+	set_fixed_process(true)
+	_life = MAX_LIFE
+	_hit_released = true
+	_node_anim.play("stand")
+	_current_left = -1
+	_state = STATE.IDLE
+	_velocity = Vector2(0, 0)
+	set_scale(Vector2(_current_left, 1))
+
 func _fixed_process(delta):
 	var action_hit = Input.is_action_pressed("ui_accept")
 	var walk_left = Input.is_action_pressed("ui_left")
 	var walk_right = Input.is_action_pressed("ui_right")
-	var new_anim = null
 	var new_left = null
 	
 	# disable offensive hitbox area in case animation got interrupted
-	if (state != STATE.HIT && get_node("offensive_hitbox_area").is_monitoring_enabled()):
-		get_node("offensive_hitbox_area").set_enable_monitoring(false)
+	if (_state != STATE.HIT && _node_offensive_hitbox_area.is_monitoring_enabled()):
+		_node_offensive_hitbox_area.set_enable_monitoring(false)
 	
 	if (!action_hit):
-		hit_released = true
-	if (hit_released && action_hit):
-		hit_released = false
-		if (state == STATE.IDLE || state == STATE.WALK_LEFT || state == STATE.WALK_RIGHT):
-			new_anim = "hit"
-			state = STATE.HIT
-			dir = 0
+		_hit_released = true
+	if (_hit_released && action_hit):
+		_hit_released = false
+		if (_state == STATE.IDLE || _state == STATE.WALK):
+			_node_anim.play("hit")
+			_state = STATE.HIT
+			_velocity.x = 0
 	elif (walk_right):
-		if (state == STATE.IDLE || state == STATE.WALK_LEFT):
+		if (_state == STATE.IDLE):
 			new_left = -1
-			new_anim = "walk"
-			dir = 1
-			state = STATE.WALK_RIGHT
+			_node_anim.play("walk")
+			_velocity.x = WALK_SPEED
+			_state = STATE.WALK
 	elif walk_left:
-		if (state == STATE.IDLE || state == STATE.WALK_RIGHT):
+		if (_state == STATE.IDLE):
 			new_left = 1
-			new_anim = "walk"
-			dir = -1
-			state = STATE.WALK_LEFT
+			_node_anim.play("walk")
+			_velocity.x = -WALK_SPEED
+			_state = STATE.WALK
 	else:
-		if (state == STATE.WALK_LEFT || state == STATE.WALK_RIGHT):
-			new_anim = "stand"
-			state = STATE.IDLE
-			dir = 0
+		if (_state == STATE.WALK):
+			_node_anim.play("stand")
+			_state = STATE.IDLE
+			_velocity.x = 0
 	
-	if (new_left != null && new_left != current_left):
+	if (new_left != null && new_left != _current_left):
 		set_scale(Vector2(new_left, 1))
-		current_left = new_left
-		
-	if (new_anim != null):
-		get_node("anim").play(new_anim)
-		current_anim = new_anim
+		_current_left = new_left
 	
-	if (dir != 0):
-		#set_pos(get_pos() + Vector2(dir * SPEED, 0))
-		move(Vector2(dir * SPEED, 0))
-		
-	pass
+	move_body(delta)
 
-func _ready():
-	life = MAX_LIFE
-	hit_released = true
-	current_anim = "stand"
-	current_left = -1
-	state = STATE.IDLE
-	set_scale(Vector2(current_left, 1))
-	get_node("anim").play(current_anim)
-	set_fixed_process(true)
-	pass
-
+func move_body(delta):
+	print("move!!")
+	var force = Vector2(0, GRAVITY)
+	
+	# Integrate forces to velocity
+	_velocity += force * delta
+	# Integrate velocity into motion and move
+	var motion = _velocity * delta
+	motion = move(motion)
+	
+	# Not be blocked on border (slide instead)
+	if is_colliding():
+		var n = get_collision_normal()
+		motion = n.slide(motion)
+		_velocity = n.slide(_velocity)
+		motion = move(motion)
 
 func _on_offensive_hitbox_area_area_enter( area ):
 	print("_on_offensive_hitbox_area_area_enter")
 	var enemy = area.get_node("../")
 	enemy.get_hit()
-	get_node("sound").play("punch_01")
-	pass # replace with function body
-
+	_node_sound.play("punch_01")
 
 func _on_defensive_hitbox_area_area_exit( area ):
-	#print("_on_defensive_hitbox_area_area_exit")
-	pass # replace with function body
+	pass
 
 func _on_defensive_hitbox_area_area_enter( area ):
-	#print("_on_defensive_hitbox_area_area_enter")
-	pass # replace with function body
+	pass
 
 func _on_offensive_hitbox_area_area_exit( area ):
-	#print("_on_offensive_hitbox_area_area_exit")
-	pass # replace with function body
+	pass
 
 func end_hit():
-	state = STATE.IDLE
-	get_node("anim").play("stand")
+	_state = STATE.IDLE
+	_node_anim.play("stand")
 	
 func get_hit():
-	dir = 0
-	life -= 1
-	if (life == 0):
-		get_node("anim").play("ko")
-		state = STATE.KO
+	_velocity.x = 0
+	_life -= 1
+	if (_life == 0):
+		_node_anim.play("ko")
+		_state = STATE.KO
 	else:
-		get_node("anim").play("being_hit")
-		state = STATE.BEING_HIT
+		_node_anim.play("being_hit")
+		_state = STATE.BEING_HIT
 	emit_signal("state_changed", self)
 
 func recovered_hit():
-	get_node("anim").play("stand")
-	state = STATE.IDLE
+	_node_anim.play("stand")
+	_state = STATE.IDLE
 	
 func get_life():
-	return life
+	return _life

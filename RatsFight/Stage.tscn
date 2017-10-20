@@ -30,7 +30,7 @@ centered = false
 
 [node name="char1" parent="." instance=ExtResource( 3 )]
 
-transform/pos = Vector2( 120, 345 )
+transform/pos = Vector2( 207.146, 239.936 )
 
 [node name="char2" parent="." instance=ExtResource( 4 )]
 
