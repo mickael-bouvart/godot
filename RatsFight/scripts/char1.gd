@@ -121,6 +121,10 @@ func _ready():
 	state = STATE.IDLE
 	get_node("anim").play("stand")
 	current_left = null
+	var r = (randi() % 200 + 55) / 255.0
+	var g = (randi() % 200 + 55) / 255.0
+	var b = (randi() % 200 + 55) / 255.0
+	get_node("sprite").set_modulate(Color(r, g, b, 1.0))
 	set_fixed_process(true)
 	pass
 
