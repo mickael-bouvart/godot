@@ -2,7 +2,7 @@ extends KinematicBody2D
 
 signal state_changed
 
-const MAX_LIFE = 10
+const MAX_LIFE = 20
 const GRAVITY = 500.0
 const WALK_SPEED = 200
 
@@ -128,3 +128,6 @@ func recovered_hit():
 	
 func get_life():
 	return _life
+
+func get_max_life():
+	return MAX_LIFE

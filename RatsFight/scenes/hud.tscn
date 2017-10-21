@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=1]
+[gd_scene load_steps=4 format=1]
 
 [ext_resource path="res://scripts/hud.gd" type="Script" id=1]
+[ext_resource path="res://assets/sprites/life_bar02.png" type="Texture" id=2]
+[ext_resource path="res://assets/sprites/life_bar01.png" type="Texture" id=3]
 
 [node name="hud" type="Node"]
 
@@ -13,33 +15,55 @@ offset = Vector2( 0, 0 )
 rotation = 0.0
 scale = Vector2( 1, 1 )
 
-[node name="label_lives_title" type="Label" parent="CanvasLayer"]
+[node name="Panel" type="Panel" parent="CanvasLayer"]
 
+focus/ignore_mouse = true
+focus/stop_mouse = false
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 0.0
+margin/top = 0.0
+margin/right = 1024.0
+margin/bottom = 40.0
+
+[node name="background" type="ColorFrame" parent="CanvasLayer/Panel"]
+
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 0.0
+margin/top = 0.0
+margin/right = 1024.0
+margin/bottom = 40.0
+color = Color( 0, 0, 0, 1 )
+
+[node name="hp_bar" type="TextureFrame" parent="CanvasLayer/Panel"]
+
+rect/scale = Vector2( 0.4, 0.1 )
 focus/ignore_mouse = true
 focus/stop_mouse = true
 size_flags/horizontal = 2
-size_flags/vertical = 0
-margin/left = 19.0
-margin/top = 580.0
-margin/right = 89.0
-margin/bottom = 594.0
-text = "Lives"
-percent_visible = 1.0
-lines_skipped = 0
-max_lines_visible = -1
+size_flags/vertical = 2
+margin/left = 0.0
+margin/top = -20.0
+margin/right = 878.0
+margin/bottom = 674.0
+texture = ExtResource( 2 )
+stretch_mode = 0
 
-[node name="label_lives" type="Label" parent="CanvasLayer"]
+[node name="current_hp_bar" type="TextureFrame" parent="CanvasLayer/Panel"]
 
+rect/scale = Vector2( 0.03, 0.1 )
 focus/ignore_mouse = true
 focus/stop_mouse = true
 size_flags/horizontal = 2
-size_flags/vertical = 0
-margin/left = 70.0
-margin/top = 580.0
-margin/right = 110.0
-margin/bottom = 594.0
-percent_visible = 1.0
-lines_skipped = 0
-max_lines_visible = -1
+size_flags/vertical = 2
+margin/left = 0.0
+margin/top = -20.0
+margin/right = 11545.0
+margin/bottom = 674.0
+texture = ExtResource( 3 )
+expand = true
 
 
