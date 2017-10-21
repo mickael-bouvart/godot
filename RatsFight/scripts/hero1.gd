@@ -2,7 +2,8 @@ extends KinematicBody2D
 
 signal state_changed
 
-const MAX_LIFE = 20
+const MAX_LIFE = 3
+const MAX_HP = 20
 const GRAVITY = 500.0
 const WALK_SPEED = 200
 
@@ -14,6 +15,7 @@ enum STATE {
 	KO
 }
 
+var _hp
 var _life
 var _current_left
 var _state
@@ -26,6 +28,7 @@ onready var _node_sound = get_node("sound")
 
 func _ready():
 	set_fixed_process(true)
+	_hp = MAX_HP
 	_life = MAX_LIFE
 	_hit_released = true
 	_node_anim.play("stand")
@@ -98,23 +101,14 @@ func _on_offensive_hitbox_area_area_enter( area ):
 	enemy.get_hit()
 	_node_sound.play("punch_01")
 
-func _on_defensive_hitbox_area_area_exit( area ):
-	pass
-
-func _on_defensive_hitbox_area_area_enter( area ):
-	pass
-
-func _on_offensive_hitbox_area_area_exit( area ):
-	pass
-
 func end_hit():
 	_state = STATE.IDLE
 	_node_anim.play("stand")
 	
 func get_hit():
 	_velocity.x = 0
-	_life -= 1
-	if (_life == 0):
+	_hp -= 1
+	if (_hp == 0):
 		_node_anim.play("ko")
 		_state = STATE.KO
 	else:
@@ -129,5 +123,30 @@ func recovered_hit():
 func get_life():
 	return _life
 
+func get_hp():
+	return _hp
+
 func get_max_life():
 	return MAX_LIFE
+
+func get_max_hp():
+	return MAX_HP
+	
+func dead():
+	_life -= 1
+	if _life == 0:
+		#TODO: Game Over
+		emit_signal("state_changed", self)
+		get_node("../bgm").stop()
+		get_node("../bgm_gameover").play()
+		pass
+	else:
+		respawn()
+
+func respawn():
+	_hp = MAX_HP
+	_state = STATE.IDLE
+	_node_anim.play("stand")
+	get_node("defensive_hitbox_area").set_monitorable(true)
+	set_pos(Vector2(get_pos().x, 0))
+	emit_signal("state_changed", self)

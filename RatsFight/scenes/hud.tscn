@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=1]
+[gd_scene load_steps=5 format=1]
 
 [ext_resource path="res://scripts/hud.gd" type="Script" id=1]
 [ext_resource path="res://assets/sprites/life_bar02.png" type="Texture" id=2]
 [ext_resource path="res://assets/sprites/life_bar01.png" type="Texture" id=3]
+[ext_resource path="res://assets/fonts/comic.fnt" type="BitmapFont" id=4]
 
 [node name="hud" type="Node"]
 
@@ -40,30 +41,79 @@ color = Color( 0, 0, 0, 1 )
 
 [node name="hp_bar" type="TextureFrame" parent="CanvasLayer/Panel"]
 
-rect/scale = Vector2( 0.4, 0.1 )
+rect/scale = Vector2( 0.01, 0.2 )
 focus/ignore_mouse = true
 focus/stop_mouse = true
 size_flags/horizontal = 2
 size_flags/vertical = 2
-margin/left = 0.0
-margin/top = -20.0
-margin/right = 878.0
-margin/bottom = 674.0
+margin/left = 30.0
+margin/top = 9.0
+margin/right = 30030.0
+margin/bottom = 56.0
 texture = ExtResource( 2 )
+expand = true
 stretch_mode = 0
 
 [node name="current_hp_bar" type="TextureFrame" parent="CanvasLayer/Panel"]
 
-rect/scale = Vector2( 0.03, 0.1 )
+rect/scale = Vector2( 0.01, 0.2 )
 focus/ignore_mouse = true
 focus/stop_mouse = true
 size_flags/horizontal = 2
 size_flags/vertical = 2
-margin/left = 0.0
-margin/top = -20.0
-margin/right = 11545.0
-margin/bottom = 674.0
+margin/left = 34.0
+margin/top = 10.0
+margin/right = 29034.0
+margin/bottom = 46.0
 texture = ExtResource( 3 )
 expand = true
+stretch_mode = 0
+
+[node name="label_P1" type="RichTextLabel" parent="CanvasLayer/Panel"]
+
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 6.0
+margin/top = 4.0
+margin/right = 37.0
+margin/bottom = 25.0
+custom_fonts/normal_font = ExtResource( 4 )
+bbcode/enabled = false
+bbcode/bbcode = "P1"
+visible_characters = -1
+percent_visible = 1.0
+
+[node name="Label" type="Label" parent="CanvasLayer/Panel"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 333.0
+margin/top = 4.0
+margin/right = 347.0
+margin/bottom = 23.0
+custom_fonts/font = ExtResource( 4 )
+text = "x"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="label_lives" type="Label" parent="CanvasLayer/Panel"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 348.0
+margin/top = 4.0
+margin/right = 388.0
+margin/bottom = 23.0
+custom_fonts/font = ExtResource( 4 )
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
 
 

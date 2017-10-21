@@ -86,7 +86,7 @@ tracks/2/keys = {
 
 [sub_resource type="Animation" id=5]
 
-length = 1.0
+length = 2.0
 loop = false
 step = 0.1
 tracks/0/type = "value"
@@ -108,6 +108,28 @@ tracks/1/keys = {
 "transitions": FloatArray( 1 ),
 "update": 1,
 "values": [ false ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("sprite:visibility/visible")
+tracks/2/interp = 1
+tracks/2/imported = false
+tracks/2/keys = {
+"times": FloatArray( 1, 1.2, 1.4, 1.6, 1.8, 2 ),
+"transitions": FloatArray( 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ false, true, false, true, false, true ]
+}
+tracks/3/type = "method"
+tracks/3/path = NodePath(".")
+tracks/3/interp = 1
+tracks/3/imported = false
+tracks/3/keys = {
+"times": FloatArray( 2 ),
+"transitions": FloatArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "dead"
+} ]
 }
 
 [sub_resource type="Animation" id=6]
@@ -170,7 +192,7 @@ rotating = false
 current = true
 zoom = Vector2( 1, 1 )
 limit/left = 0
-limit/top = -10000000
+limit/top = -40
 limit/right = 10000000
 limit/bottom = 10000000
 drag_margin/h_enabled = true
