@@ -118,6 +118,16 @@ tracks/2/keys = {
 "update": 1,
 "values": [ true, false ]
 }
+tracks/3/type = "value"
+tracks/3/path = NodePath("defensive_hitbox_area:monitorable")
+tracks/3/interp = 1
+tracks/3/imported = false
+tracks/3/keys = {
+"times": FloatArray( 0, 2 ),
+"transitions": FloatArray( 1, 1 ),
+"update": 1,
+"values": [ false, true ]
+}
 
 [sub_resource type="Animation" id=5]
 
@@ -235,6 +245,7 @@ transform/pos = Vector2( 1.50739, -3.4248 )
 texture = ExtResource( 2 )
 vframes = 5
 hframes = 4
+frame = 15
 
 [node name="anim" type="AnimationPlayer" parent="."]
 

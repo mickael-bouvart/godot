@@ -186,7 +186,7 @@ script/script = ExtResource( 1 )
 texture = ExtResource( 2 )
 vframes = 4
 hframes = 3
-frame = 9
+frame = 6
 
 [node name="anim" type="AnimationPlayer" parent="."]
 

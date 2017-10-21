@@ -2,10 +2,11 @@ extends KinematicBody2D
 
 const MAX_LIFE = 20
 const GRAVITY = 500.0
-const WALK_SPEED = 120
+const WALK_SPEED = 160
 const HIT_02_JUMP_FORCE_X = 80
 const HIT_02_JUMP_FORCE_Y = -600
 const HIT_02_FALL_FORCE_Y = 200
+const MIN_DISTANCE_FOLLOW = 200
 
 enum STATE {
 	HIT,
@@ -16,9 +17,9 @@ enum STATE {
 }
 
 var patterns = [
-	{ "key": "STAND", "func": funcref(self, "pattern_stand"), "duration": 100, "prob": 30 },
+	{ "key": "STAND", "func": funcref(self, "pattern_stand"), "duration": 50, "prob": 20 },
 	{ "key": "HIT_01", "func": funcref(self, "pattern_hit_01"), "duration": 100, "prob": 30 },
-	{ "key": "HIT_02", "func": funcref(self, "pattern_hit_02"), "duration": 100, "prob": 10 },
+	{ "key": "HIT_02", "func": funcref(self, "pattern_hit_02"), "duration": 100, "prob": 20 },
 	{ "key": "FOLLOW", "func": funcref(self, "pattern_follow"), "duration": 100, "prob": 30 }
 ]
 
@@ -44,12 +45,12 @@ func pattern_stand(frame, duration):
 	pass
 
 func pattern_follow(frame, duration):
-	var char1 = get_node("../char1")
-	var char1_pos = char1.get_pos().x
+	var hero1 = get_node("../hero1")
+	var hero1_pos = hero1.get_pos().x
 	var self_pos = get_pos().x
-	var dist = abs(char1_pos - self_pos)
+	var dist = abs(hero1_pos - self_pos)
 	#print("Distance: " + str(dist))
-	if (dist > 300):
+	if (dist > MIN_DISTANCE_FOLLOW):
 		if (state == STATE.IDLE || state == STATE.WALK):
 			velocity.x = -current_left * WALK_SPEED
 			if (state == STATE.IDLE):
@@ -74,16 +75,17 @@ func _fixed_process(delta):
 	if (state != STATE.HIT && get_node("offensive_hitbox_area").is_monitoring_enabled()):
 		get_node("offensive_hitbox_area").set_enable_monitoring(false)
 	
-	var char1 = get_node("../char1")
-	var new_left = null
-	if (get_pos().x < char1.get_pos().x):
-		new_left = -1
-	else:
-		new_left = 1
-	if (new_left != null && new_left != current_left):
-		print("Switching direction: " + str(new_left))
-		set_scale(Vector2(new_left, 1))
-		current_left = new_left
+	if state == STATE.IDLE || state == STATE.WALK:
+		var hero1 = get_node("../hero1")
+		var new_left = null
+		if (get_pos().x < hero1.get_pos().x):
+			new_left = -1
+		else:
+			new_left = 1
+		if (new_left != null && new_left != current_left):
+			print("Switching direction: " + str(new_left))
+			set_scale(Vector2(new_left, 1))
+			current_left = new_left
 	
 	var force = Vector2(0, GRAVITY)
 	
@@ -125,8 +127,8 @@ func get_hit():
 func _ready():
 	current_pattern = patterns[3]
 	life = MAX_LIFE
-	state = STATE.HIT
-	get_node("anim").play("hit_01")
+	state = STATE.IDLE
+	get_node("anim").play("stand")
 	current_left = null
 	set_fixed_process(true)
 	pass
