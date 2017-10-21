@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=1]
+[gd_scene load_steps=10 format=1]
 
 [ext_resource path="res://scripts/Stage.gd" type="Script" id=1]
 [ext_resource path="res://assets/background/bg_labo.png" type="Texture" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://scenes/hero1.tscn" type="PackedScene" id=4]
 [ext_resource path="res://scenes/char2.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scenes/hud.tscn" type="PackedScene" id=6]
+[ext_resource path="res://scenes/char1.tscn" type="PackedScene" id=7]
 
 [sub_resource type="SegmentShape2D" id=1]
 
@@ -107,16 +108,12 @@ transform/pos = Vector2( 255.463, 316.718 )
 
 [node name="char2" parent="." instance=ExtResource( 5 )]
 
-transform/pos = Vector2( 1031.81, 264.07 )
-
-[node name="char4" parent="." instance=ExtResource( 5 )]
-
-transform/pos = Vector2( 731.809, 264.07 )
-
-[node name="char3" parent="." instance=ExtResource( 5 )]
-
-transform/pos = Vector2( 1329.8, 261.482 )
+transform/pos = Vector2( 1341.81, 264.07 )
 
 [node name="hud" parent="." instance=ExtResource( 6 )]
+
+[node name="char1" parent="." instance=ExtResource( 7 )]
+
+transform/pos = Vector2( 870, 340 )
 
 

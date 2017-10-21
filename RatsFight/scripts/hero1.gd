@@ -77,7 +77,6 @@ func _fixed_process(delta):
 	move_body(delta)
 
 func move_body(delta):
-	print("move!!")
 	var force = Vector2(0, GRAVITY)
 	
 	# Integrate forces to velocity

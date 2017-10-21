@@ -4,12 +4,12 @@
 [ext_resource path="res://assets/sound/punch_01.wav" type="Sample" id=2]
 [ext_resource path="res://assets/sprites/sprites_hero1.png" type="Texture" id=3]
 
-[sub_resource type="RectangleShape2D" id=9]
+[sub_resource type="RectangleShape2D" id=1]
 
 custom_solver_bias = 0.0
 extents = Vector2( 60, 100 )
 
-[sub_resource type="SampleLibrary" id=8]
+[sub_resource type="SampleLibrary" id=2]
 
 samples/punch_01 = {
 "db": 0.0,
@@ -18,9 +18,8 @@ samples/punch_01 = {
 "sample": ExtResource( 2 )
 }
 
-[sub_resource type="Animation" id=1]
+[sub_resource type="Animation" id=3]
 
-resource/name = "being_hit"
 length = 0.5
 loop = false
 step = 0.1
@@ -47,9 +46,8 @@ tracks/1/keys = {
 } ]
 }
 
-[sub_resource type="Animation" id=2]
+[sub_resource type="Animation" id=4]
 
-resource/name = "hit_01"
 length = 0.5
 loop = false
 step = 0.1
@@ -86,9 +84,8 @@ tracks/2/keys = {
 } ]
 }
 
-[sub_resource type="Animation" id=3]
+[sub_resource type="Animation" id=5]
 
-resource/name = "ko"
 length = 1.0
 loop = false
 step = 0.1
@@ -113,7 +110,7 @@ tracks/1/keys = {
 "values": [ false ]
 }
 
-[sub_resource type="Animation" id=4]
+[sub_resource type="Animation" id=6]
 
 length = 1.0
 loop = true
@@ -129,7 +126,7 @@ tracks/0/keys = {
 "values": [ 0, 1, 2, 3, 2, 3, 4, 3, 2, 1, 0 ]
 }
 
-[sub_resource type="Animation" id=5]
+[sub_resource type="Animation" id=7]
 
 length = 1.0
 loop = true
@@ -145,12 +142,12 @@ tracks/0/keys = {
 "values": [ 5, 6, 7, 6 ]
 }
 
-[sub_resource type="RectangleShape2D" id=6]
+[sub_resource type="RectangleShape2D" id=8]
 
 custom_solver_bias = 0.0
 extents = Vector2( 60, 100 )
 
-[sub_resource type="RectangleShape2D" id=7]
+[sub_resource type="RectangleShape2D" id=9]
 
 custom_solver_bias = 0.0
 extents = Vector2( 75, 20 )
@@ -158,7 +155,7 @@ extents = Vector2( 75, 20 )
 [node name="hero1" type="KinematicBody2D"]
 
 input/pickable = false
-shapes/0/shape = SubResource( 9 )
+shapes/0/shape = SubResource( 1 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, 0, 30 )
 shapes/0/trigger = false
 collision/layers = 2
@@ -173,7 +170,7 @@ rotating = false
 current = true
 zoom = Vector2( 1, 1 )
 limit/left = -10000000
-limit/top = 0
+limit/top = -10000000
 limit/right = 10000000
 limit/bottom = 10000000
 drag_margin/h_enabled = true
@@ -188,7 +185,7 @@ drag_margin/bottom = 0.2
 [node name="sound" type="SamplePlayer" parent="."]
 
 config/polyphony = 1
-config/samples = SubResource( 8 )
+config/samples = SubResource( 2 )
 default/volume_db = 0.0
 default/pitch_scale = 1.0
 default/pan = 0.0
@@ -208,18 +205,17 @@ texture = ExtResource( 3 )
 flip_h = true
 vframes = 6
 hframes = 5
-frame = 10
 
 [node name="anim" type="AnimationPlayer" parent="."]
 
 playback/process_mode = 1
 playback/default_blend_time = 0.0
 root/root = NodePath("..")
-anims/being_hit = SubResource( 1 )
-anims/hit_01 = SubResource( 2 )
-anims/ko = SubResource( 3 )
-anims/stand = SubResource( 4 )
-anims/walk = SubResource( 5 )
+anims/being_hit = SubResource( 3 )
+anims/hit_01 = SubResource( 4 )
+anims/ko = SubResource( 5 )
+anims/stand = SubResource( 6 )
+anims/walk = SubResource( 7 )
 playback/active = true
 playback/speed = 1.0
 blend_times = [  ]
@@ -228,7 +224,7 @@ autoplay = ""
 [node name="defensive_hitbox_area" type="Area2D" parent="."]
 
 input/pickable = true
-shapes/0/shape = SubResource( 6 )
+shapes/0/shape = SubResource( 8 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, 0, 30 )
 shapes/0/trigger = false
 gravity_vec = Vector2( 0, 1 )
@@ -242,14 +238,14 @@ collision/mask = 8192
 [node name="defensive_hitbox_collision" type="CollisionShape2D" parent="defensive_hitbox_area"]
 
 transform/pos = Vector2( 0, 30 )
-shape = SubResource( 6 )
+shape = SubResource( 8 )
 trigger = false
 _update_shape_index = 0
 
 [node name="offensive_hitbox_area" type="Area2D" parent="."]
 
 input/pickable = true
-shapes/0/shape = SubResource( 7 )
+shapes/0/shape = SubResource( 9 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, -82, -20 )
 shapes/0/trigger = false
 gravity_vec = Vector2( 0, 1 )
@@ -263,14 +259,14 @@ collision/mask = 4096
 [node name="offensive_hitbox_collision" type="CollisionShape2D" parent="offensive_hitbox_area"]
 
 transform/pos = Vector2( -82, -20 )
-shape = SubResource( 7 )
+shape = SubResource( 9 )
 trigger = false
 _update_shape_index = 0
 
 [node name="world_collision" type="CollisionShape2D" parent="."]
 
 transform/pos = Vector2( 0, 30 )
-shape = SubResource( 9 )
+shape = SubResource( 1 )
 trigger = false
 _update_shape_index = 0
 

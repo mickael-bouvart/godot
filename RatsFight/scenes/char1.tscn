@@ -93,9 +93,9 @@ tracks/2/keys = {
 
 [sub_resource type="Animation" id=5]
 
-length = 1.0
+length = 2.0
 loop = false
-step = 0.1
+step = 0.2
 tracks/0/type = "value"
 tracks/0/path = NodePath("sprite:frame")
 tracks/0/interp = 1
@@ -115,6 +115,28 @@ tracks/1/keys = {
 "transitions": FloatArray( 1 ),
 "update": 1,
 "values": [ false ]
+}
+tracks/2/type = "method"
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/imported = false
+tracks/2/keys = {
+"times": FloatArray( 2 ),
+"transitions": FloatArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "dead"
+} ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("sprite:visibility/visible")
+tracks/3/interp = 1
+tracks/3/imported = false
+tracks/3/keys = {
+"times": FloatArray( 1, 1.2, 1.4, 1.6, 1.8, 2 ),
+"transitions": FloatArray( 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ true, false, true, false, true, false ]
 }
 
 [sub_resource type="Animation" id=6]
@@ -176,7 +198,7 @@ input/pickable = false
 shapes/0/shape = SubResource( 1 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, -24.8428, 30.379 )
 shapes/0/trigger = false
-collision/layers = 2
+collision/layers = 4
 collision/mask = 1
 collision/margin = 0.08
 script/script = ExtResource( 1 )
@@ -186,7 +208,6 @@ script/script = ExtResource( 1 )
 texture = ExtResource( 2 )
 vframes = 4
 hframes = 3
-frame = 6
 
 [node name="anim" type="AnimationPlayer" parent="."]
 
@@ -204,26 +225,6 @@ playback/speed = 1.0
 blend_times = [  ]
 autoplay = ""
 
-[node name="camera" type="Camera2D" parent="."]
-
-offset = Vector2( 0, -40 )
-anchor_mode = 1
-rotating = false
-current = true
-zoom = Vector2( 1, 1 )
-limit/left = -10000000
-limit/top = 0
-limit/right = 10000000
-limit/bottom = 10000000
-drag_margin/h_enabled = true
-drag_margin/v_enabled = true
-smoothing/enable = false
-smoothing/speed = 5.0
-drag_margin/left = 0.2
-drag_margin/top = 0.2
-drag_margin/right = 0.2
-drag_margin/bottom = 0.2
-
 [node name="defensive_hitbox_area" type="Area2D" parent="."]
 
 input/pickable = true
@@ -234,8 +235,9 @@ gravity_vec = Vector2( 0, 1 )
 gravity = 98.0
 linear_damp = 0.1
 angular_damp = 1.0
-collision/layers = 1024
-collision/mask = 8192
+monitoring = false
+collision/layers = 4096
+collision/mask = 2048
 
 [node name="defensive_hitbox_collision" type="CollisionShape2D" parent="defensive_hitbox_area"]
 
@@ -256,8 +258,8 @@ gravity = 98.0
 linear_damp = 0.1
 angular_damp = 1.0
 monitoring = false
-collision/layers = 2048
-collision/mask = 4096
+collision/layers = 8192
+collision/mask = 1024
 
 [node name="offensive_hitbox_collision" type="CollisionShape2D" parent="offensive_hitbox_area"]
 

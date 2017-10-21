@@ -1,10 +1,9 @@
 extends KinematicBody2D
 
-signal state_changed
-
-const MAX_LIFE = 10
+const MAX_LIFE = 5
 const GRAVITY = 500.0
-const WALK_SPEED = 200
+const WALK_SPEED = 100
+const MIN_DISTANCE_FOLLOW = 200
 
 enum STATE {
 	HIT,
@@ -14,118 +13,129 @@ enum STATE {
 	KO
 }
 
-var _life
-var _current_left
-var _state
-var _hit_released
-var _velocity
+var patterns = [
+	{ "key": "STAND", "func": funcref(self, "pattern_stand"), "duration": 50, "prob": 20 },
+	{ "key": "HIT", "func": funcref(self, "pattern_hit"), "duration": 100, "prob": 30 },
+	{ "key": "FOLLOW", "func": funcref(self, "pattern_follow"), "duration": 100, "prob": 50 }
+]
 
-onready var _node_anim = get_node("anim")
-onready var _node_offensive_hitbox_area = get_node("offensive_hitbox_area")
-onready var _node_sound = get_node("sound")
+var life = null
+var state = null
+var velocity = Vector2()
+var current_left = null
+var current_anim = null
+var current_pattern = null
+var pattern_duration_cnt = 0
 
-func _ready():
-	set_fixed_process(true)
-	_life = MAX_LIFE
-	_hit_released = true
-	_node_anim.play("stand")
-	_current_left = -1
-	_state = STATE.IDLE
-	_velocity = Vector2(0, 0)
-	set_scale(Vector2(_current_left, 1))
+func pattern_hit(frame, duration):
+	if (state == STATE.IDLE):
+		state = STATE.HIT
+		get_node("anim").play("hit")
+
+func pattern_stand(frame, duration):
+	pass
+
+func pattern_follow(frame, duration):
+	var hero1 = get_node("../hero1")
+	var hero1_pos = hero1.get_pos().x
+	var self_pos = get_pos().x
+	var dist = abs(hero1_pos - self_pos)
+	#print("Distance: " + str(dist))
+	if (dist > MIN_DISTANCE_FOLLOW):
+		if (state == STATE.IDLE || state == STATE.WALK):
+			velocity.x = -current_left * WALK_SPEED
+			if (state == STATE.IDLE):
+				get_node("anim").play("walk")
+				state = STATE.WALK
+	elif (state == STATE.WALK):
+		get_node("anim").play("stand")
+		state = STATE.IDLE
+		velocity.x = 0
+		pattern_duration_cnt = duration - 1
+		return
+		
+	#print(str(frame) + " / " + str(duration))
+	if (frame == duration - 1 && state == STATE.WALK):
+		print("STOP " + str(state))
+		velocity.x = 0
+		get_node("anim").play("stand")
+		state = STATE.IDLE
 
 func _fixed_process(delta):
-	var action_hit = Input.is_action_pressed("ui_accept")
-	var walk_left = Input.is_action_pressed("ui_left")
-	var walk_right = Input.is_action_pressed("ui_right")
-	var new_left = null
+	# disable offensive hitbox area in case attack animation got interrupted
+	if (state != STATE.HIT && get_node("offensive_hitbox_area").is_monitoring_enabled()):
+		get_node("offensive_hitbox_area").set_enable_monitoring(false)
 	
-	# disable offensive hitbox area in case animation got interrupted
-	if (_state != STATE.HIT && _node_offensive_hitbox_area.is_monitoring_enabled()):
-		_node_offensive_hitbox_area.set_enable_monitoring(false)
-	
-	if (!action_hit):
-		_hit_released = true
-	if (_hit_released && action_hit):
-		_hit_released = false
-		if (_state == STATE.IDLE || _state == STATE.WALK):
-			_node_anim.play("hit")
-			_state = STATE.HIT
-			_velocity.x = 0
-	elif (walk_right):
-		if (_state == STATE.IDLE || _current_left == 1):
+	if state == STATE.IDLE || state == STATE.WALK:
+		var hero1 = get_node("../hero1")
+		var new_left = null
+		if (get_pos().x < hero1.get_pos().x):
 			new_left = -1
-			_node_anim.play("walk")
-			_velocity.x = WALK_SPEED
-			_state = STATE.WALK
-	elif walk_left:
-		if (_state == STATE.IDLE || _current_left == -1):
+		else:
 			new_left = 1
-			_node_anim.play("walk")
-			_velocity.x = -WALK_SPEED
-			_state = STATE.WALK
-	else:
-		if (_state == STATE.WALK):
-			_node_anim.play("stand")
-			_state = STATE.IDLE
-			_velocity.x = 0
+		if (new_left != null && new_left != current_left):
+			print("Switching direction: " + str(new_left))
+			set_scale(Vector2(new_left, 1))
+			current_left = new_left
 	
-	if (new_left != null && new_left != _current_left):
-		set_scale(Vector2(new_left, 1))
-		_current_left = new_left
-	
-	move_body(delta)
-
-func move_body(delta):
-	print("move!!")
 	var force = Vector2(0, GRAVITY)
 	
 	# Integrate forces to velocity
-	_velocity += force * delta
+	velocity += force*delta
 	# Integrate velocity into motion and move
-	var motion = _velocity * delta
+	var motion = velocity*delta	
 	motion = move(motion)
 	
-	# Not be blocked on border (slide instead)
-	if is_colliding():
+	if (is_colliding()):
 		var n = get_collision_normal()
 		motion = n.slide(motion)
-		_velocity = n.slide(_velocity)
+		velocity = n.slide(velocity)
 		motion = move(motion)
-
-func _on_offensive_hitbox_area_area_enter( area ):
-	print("_on_offensive_hitbox_area_area_enter")
-	var enemy = area.get_node("../")
-	enemy.get_hit()
-	_node_sound.play("punch_01")
-
-func _on_defensive_hitbox_area_area_exit( area ):
+	current_pattern["func"].call_func(pattern_duration_cnt, current_pattern.duration)
+	pattern_duration_cnt += 1
+	if (pattern_duration_cnt == current_pattern["duration"]):
+		pattern_duration_cnt = 0
+		var rand = randi() % 100
+		var cumul = 0
+		for p in patterns:
+			if (rand < cumul + p["prob"]):
+				current_pattern = p
+				break
+			cumul += p["prob"]
+		print("Switching to pattern " + current_pattern["key"])
 	pass
 
-func _on_defensive_hitbox_area_area_enter( area ):
-	pass
-
-func _on_offensive_hitbox_area_area_exit( area ):
-	pass
-
-func end_hit():
-	_state = STATE.IDLE
-	_node_anim.play("stand")
-	
 func get_hit():
-	_velocity.x = 0
-	_life -= 1
-	if (_life == 0):
-		_node_anim.play("ko")
-		_state = STATE.KO
+	velocity = Vector2(0, 0)
+	life -= 1
+	if (life == 0):
+		get_node("anim").play("ko")
+		state = STATE.KO
 	else:
-		_node_anim.play("being_hit")
-		_state = STATE.BEING_HIT
-	emit_signal("state_changed", self)
+		get_node("anim").play("being_hit")
+		state = STATE.BEING_HIT
+
+func _ready():
+	current_pattern = patterns[2]
+	life = MAX_LIFE
+	state = STATE.IDLE
+	get_node("anim").play("stand")
+	current_left = null
+	set_fixed_process(true)
+	pass
 
 func recovered_hit():
-	_node_anim.play("stand")
-	_state = STATE.IDLE
+	get_node("anim").play("stand")
+	state = STATE.IDLE
+
+func dead():
+	queue_free()
+
+func _on_offensive_hitbox_area_area_enter( area ):
+	var player = area.get_node("../")
+	player.get_hit()
+	get_node("sound").play("punch_01")
 	
-func get_life():
-	return _life
+func end_hit():
+	state = STATE.IDLE
+	get_node("anim").play("stand")

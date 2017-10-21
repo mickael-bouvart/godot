@@ -245,7 +245,6 @@ transform/pos = Vector2( 1.50739, -3.4248 )
 texture = ExtResource( 2 )
 vframes = 5
 hframes = 4
-frame = 15
 
 [node name="anim" type="AnimationPlayer" parent="."]
 
