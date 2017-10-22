@@ -54,6 +54,7 @@ stream/buffering_ms = 500
 
 [node name="down_border" type="StaticBody2D" parent="."]
 
+editor/display_folded = true
 transform/pos = Vector2( -1500, 460 )
 input/pickable = false
 shapes/0/shape = SubResource( 1 )
@@ -74,6 +75,7 @@ _update_shape_index = 0
 
 [node name="left_border" type="StaticBody2D" parent="."]
 
+editor/display_folded = true
 input/pickable = false
 shapes/0/shape = SubResource( 2 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, 0, 0 )
@@ -116,7 +118,7 @@ _update_shape_index = 0
 
 [node name="hero1" parent="." instance=ExtResource( 5 )]
 
-transform/pos = Vector2( 255.463, 316.718 )
+transform/pos = Vector2( 195.463, 306.718 )
 
 [node name="hud" parent="." instance=ExtResource( 6 )]
 
@@ -127,14 +129,6 @@ transform/pos = Vector2( 1341.81, 264.07 )
 [node name="char1" parent="." instance=ExtResource( 8 )]
 
 transform/pos = Vector2( 870, 340 )
-
-[node name="char6" parent="." instance=ExtResource( 8 )]
-
-transform/pos = Vector2( -140, 340 )
-
-[node name="char7" parent="." instance=ExtResource( 8 )]
-
-transform/pos = Vector2( -460, 340 )
 
 [node name="char3" parent="." instance=ExtResource( 8 )]
 

@@ -116,4 +116,35 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
+[node name="Label1" type="Label" parent="CanvasLayer/Panel"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 393.0
+margin/top = 4.0
+margin/right = 418.0
+margin/bottom = 23.0
+custom_fonts/font = ExtResource( 4 )
+text = "S x"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="label_specials" type="Label" parent="CanvasLayer/Panel"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 428.0
+margin/top = 4.0
+margin/right = 468.0
+margin/bottom = 23.0
+custom_fonts/font = ExtResource( 4 )
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
 

@@ -65,7 +65,7 @@ func pattern_follow(frame, duration):
 		
 	#print(str(frame) + " / " + str(duration))
 	if (frame == duration - 1 && state == STATE.WALK):
-		print("STOP " + str(state))
+		#print("STOP " + str(state))
 		velocity.x = 0
 		get_node("anim").play("stand")
 		state = STATE.IDLE
@@ -111,7 +111,7 @@ func _fixed_process(delta):
 				current_pattern = p
 				break
 			cumul += p["prob"]
-		print("Switching to pattern " + current_pattern["key"])
+		#print("Switching to pattern " + current_pattern["key"])
 	pass
 
 func get_hit():
