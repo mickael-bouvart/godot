@@ -2,7 +2,7 @@ extends KinematicBody2D
 
 const MAX_LIFE = 20
 const GRAVITY = 500.0
-const WALK_SPEED = 160
+const WALK_SPEED = 300
 const HIT_02_JUMP_FORCE_X = 80
 const HIT_02_JUMP_FORCE_Y = -600
 const HIT_02_FALL_FORCE_Y = 200
@@ -17,10 +17,10 @@ enum STATE {
 }
 
 var patterns = [
-	{ "key": "STAND", "func": funcref(self, "pattern_stand"), "duration": 50, "prob": 20 },
-	{ "key": "HIT_01", "func": funcref(self, "pattern_hit_01"), "duration": 100, "prob": 30 },
-	{ "key": "HIT_02", "func": funcref(self, "pattern_hit_02"), "duration": 100, "prob": 20 },
-	{ "key": "FOLLOW", "func": funcref(self, "pattern_follow"), "duration": 100, "prob": 30 }
+	{ "key": "STAND", "func": funcref(self, "pattern_stand"), "duration": 50, "prob": 0 },
+	{ "key": "HIT_01", "func": funcref(self, "pattern_hit_01"), "duration": 100, "prob": 25 },
+	{ "key": "HIT_02", "func": funcref(self, "pattern_hit_02"), "duration": 100, "prob": 5 },
+	{ "key": "FOLLOW", "func": funcref(self, "pattern_follow"), "duration": 100, "prob": 70 }
 ]
 
 var life = null
@@ -56,10 +56,11 @@ func pattern_follow(frame, duration):
 			if (state == STATE.IDLE):
 				get_node("anim").play("walk")
 				state = STATE.WALK
-	elif (state == STATE.WALK):
-		get_node("anim").play("stand")
-		state = STATE.IDLE
-		velocity.x = 0
+	else:
+		if (state == STATE.WALK):
+			get_node("anim").play("stand")
+			state = STATE.IDLE
+			velocity.x = 0
 		pattern_duration_cnt = duration - 1
 		return
 		

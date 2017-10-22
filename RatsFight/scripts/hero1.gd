@@ -41,6 +41,7 @@ onready var _node_anim = get_node("anim")
 onready var _node_defensive_hitbox_area = get_node("defensive_hitbox_area")
 onready var _node_offensive_hitbox_area = get_node("offensive_hitbox_area")
 onready var _node_offensive_hitbox_area2 = get_node("offensive_hitbox_area2")
+onready var _node_offensive_hitbox_area3 = get_node("offensive_hitbox_area3")
 onready var _node_sound = get_node("sound")
 onready var _node_timer = get_node("timer")
 
@@ -67,9 +68,11 @@ func _fixed_process(delta):
 	var new_left = null
 	
 	# disable offensive hitbox area in case animation got interrupted
-	if (![STATE.HIT, STATE.SPECIAL].has(_state) && _node_offensive_hitbox_area.is_monitoring_enabled()):
+	if (![STATE.HIT].has(_state) && _node_offensive_hitbox_area.is_monitoring_enabled()):
 		_node_offensive_hitbox_area.set_enable_monitoring(false)
-	
+	if (![STATE.JUMP_HIT].has(_state) && _node_offensive_hitbox_area3.is_monitoring_enabled()):
+		_node_offensive_hitbox_area3.set_enable_monitoring(false)
+		
 	if (!action_hit):
 		_hit_released = true
 	if (!action_jump):
@@ -86,28 +89,35 @@ func _fixed_process(delta):
 			_node_timer.start()
 			_node_defensive_hitbox_area.set_monitorable(false)
 			_node_anim.play("special")
-	elif (_hit_released && action_hit):
+	if (_hit_released && action_hit):
 		_hit_released = false
+		print("HIT " + str(_state))
 		if (_state == STATE.IDLE || _state == STATE.WALK):
 			_node_anim.play("hit_01")
 			_state = STATE.HIT
 			_velocity.x = 0
-	elif (_jump_released && action_jump):
+		elif ([STATE.JUMP, STATE.FALL].has(_state)):
+			print ("JUMPHIT")
+			_velocity.x += 150 * -_current_left
+			_velocity.y += 50
+			_node_anim.play("jump_hit")
+			_state = STATE.JUMP_HIT
+	if (_jump_released && action_jump):
 		_jump_released = false
 		if ([STATE.IDLE, STATE.WALK, STATE.SPECIAL].has(_state) && _touch_floor):
 			jump()
-	elif (walk_right):
-		if (_state == STATE.JUMP || _state == STATE.SPECIAL || _state == STATE.IDLE || (_state == STATE.WALK && _current_left == 1)):
+	if (walk_right):
+		if ([STATE.JUMP, STATE.SPECIAL, STATE.IDLE, STATE.FALL].has(_state) || (_state == STATE.WALK && _current_left == 1)):
 			new_left = -1
 			_velocity.x = _speed
-			if (_state != STATE.JUMP && _state != STATE.SPECIAL):
+			if (![STATE.JUMP, STATE.FALL, STATE.SPECIAL].has(_state)):
 				_node_anim.play("walk")
 				_state = STATE.WALK
 	elif walk_left:
-		if (_state == STATE.JUMP || _state == STATE.SPECIAL || _state == STATE.IDLE || (_state == STATE.WALK && _current_left == -1)):
+		if ([STATE.JUMP, STATE.SPECIAL, STATE.IDLE, STATE.FALL].has(_state) || (_state == STATE.WALK && _current_left == -1)):
 			new_left = 1
 			_velocity.x = -_speed
-			if (_state != STATE.JUMP && _state != STATE.SPECIAL):
+			if (![STATE.JUMP, STATE.FALL, STATE.SPECIAL].has(_state)):
 				_node_anim.play("walk")
 				_state = STATE.WALK
 	else:
@@ -142,10 +152,13 @@ func move_body(delta):
 		var n = get_collision_normal()
 		if (rad2deg(acos(n.dot(Vector2(0, -1)))) < FLOOR_ANGLE_TOLERANCE):
 			new_touch_floor = true
-			if ([STATE.JUMP, STATE.FALL].has(_state)):
+			if ([STATE.JUMP, STATE.FALL, STATE.JUMP_HIT].has(_state)):
 				_state = STATE.IDLE
 				_node_anim.play("stand")
 				_velocity.x = 0
+			if (_state == STATE.JUMP_HIT):
+				_node_offensive_hitbox_area3.set_enable_monitoring(false)
+				
 		motion = n.slide(motion)
 		_velocity = n.slide(_velocity)
 		motion = move(motion)
@@ -177,8 +190,12 @@ func get_hit():
 	emit_signal("state_changed", self)
 
 func recovered_hit():
-	_node_anim.play("stand")
-	_state = STATE.IDLE
+	if _touch_floor:
+		_node_anim.play("stand")
+		_state = STATE.IDLE
+	else:
+		_node_anim.play("fall")
+		_state = STATE.FALL
 	
 func get_life():
 	return _life
@@ -205,10 +222,11 @@ func dead():
 
 func respawn():
 	_hp = MAX_HP
-	_state = STATE.IDLE
+	_state = STATE.FALL
+	_node_anim.play("fall")
+	_touch_floor = false
 	_current_left = -1
 	set_scale(Vector2(_current_left, 1))
-	_node_anim.play("stand")
 	get_node("defensive_hitbox_area").set_monitorable(true)
 	set_pos(Vector2(get_pos().x, 0))
 	emit_signal("state_changed", self)
@@ -226,8 +244,12 @@ func get_special():
 	return _special
 
 func _on_timer_timeout():
-	_state = STATE.IDLE
-	_node_anim.play("stand")
+	if _touch_floor:
+		_state = STATE.IDLE
+		_node_anim.play("stand")
+	else:
+		_state = STATE.FALL
+		_node_anim.play("fall")
 	_speed = WALK_SPEED
 	_node_offensive_hitbox_area2.set_enable_monitoring(false)
 	_node_defensive_hitbox_area.set_monitorable(true)
