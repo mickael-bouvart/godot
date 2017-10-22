@@ -2,6 +2,8 @@ extends KinematicBody2D
 
 signal state_changed
 
+# Angle in degrees towards either side that the player can consider "floor"
+const FLOOR_ANGLE_TOLERANCE = 40
 const MAX_LIFE = 3
 const INIT_SPECIAL = 2
 const MAX_HP = 20
@@ -33,6 +35,7 @@ var _velocity
 var _speed
 var _special
 var _special_cnt
+var _touch_floor
 
 onready var _node_anim = get_node("anim")
 onready var _node_defensive_hitbox_area = get_node("defensive_hitbox_area")
@@ -53,6 +56,7 @@ func _ready():
 	_velocity = Vector2(0, 0)
 	set_scale(Vector2(_current_left, 1))
 	_node_anim.play("stand")
+	_touch_floor = false
 	
 func _fixed_process(delta):
 	var action_hit = Input.is_action_pressed("hit")
@@ -88,22 +92,22 @@ func _fixed_process(delta):
 			_node_anim.play("hit_01")
 			_state = STATE.HIT
 			_velocity.x = 0
-	#elif (_jump_released && action_jump):
-	#	_jump_released = false
-	#	if (_state == STATE.IDLE || _state == STATE.WALK):
-	#		jump()
+	elif (_jump_released && action_jump):
+		_jump_released = false
+		if ([STATE.IDLE, STATE.WALK, STATE.SPECIAL].has(_state) && _touch_floor):
+			jump()
 	elif (walk_right):
-		if (_state == STATE.SPECIAL || _state == STATE.IDLE || (_state == STATE.WALK && _current_left == 1)):
+		if (_state == STATE.JUMP || _state == STATE.SPECIAL || _state == STATE.IDLE || (_state == STATE.WALK && _current_left == 1)):
 			new_left = -1
 			_velocity.x = _speed
-			if (_state != STATE.SPECIAL):
+			if (_state != STATE.JUMP && _state != STATE.SPECIAL):
 				_node_anim.play("walk")
 				_state = STATE.WALK
 	elif walk_left:
-		if (_state == STATE.SPECIAL || _state == STATE.IDLE || (_state == STATE.WALK && _current_left == -1)):
+		if (_state == STATE.JUMP || _state == STATE.SPECIAL || _state == STATE.IDLE || (_state == STATE.WALK && _current_left == -1)):
 			new_left = 1
 			_velocity.x = -_speed
-			if (_state != STATE.SPECIAL):
+			if (_state != STATE.JUMP && _state != STATE.SPECIAL):
 				_node_anim.play("walk")
 				_state = STATE.WALK
 	else:
@@ -113,6 +117,9 @@ func _fixed_process(delta):
 			_velocity.x = 0
 		elif (_state == STATE.SPECIAL):
 			_velocity.x = 0
+	
+	#print("Is colliding: " + str(is_colliding()))
+	#print("Collision normal: " + str(get_collision_normal()))
 	
 	if (new_left != null && new_left != _current_left):
 		set_scale(Vector2(new_left, 1))
@@ -130,14 +137,26 @@ func move_body(delta):
 	motion = move(motion)
 	
 	# Not be blocked on border (slide instead)
+	var new_touch_floor = false
 	if is_colliding():
 		var n = get_collision_normal()
+		if (rad2deg(acos(n.dot(Vector2(0, -1)))) < FLOOR_ANGLE_TOLERANCE):
+			new_touch_floor = true
+			if ([STATE.JUMP, STATE.FALL].has(_state)):
+				_state = STATE.IDLE
+				_node_anim.play("stand")
+				_velocity.x = 0
 		motion = n.slide(motion)
 		_velocity = n.slide(_velocity)
 		motion = move(motion)
+	else:
+		if _velocity.y > 0 && _state == STATE.JUMP:
+			_state = STATE.FALL
+			_node_anim.play("fall")
+	_touch_floor = new_touch_floor
 
 func _on_offensive_hitbox_area_area_enter( area ):
-	print("_on_offensive_hitbox_area_area_enter")
+	#print("_on_offensive_hitbox_area_area_enter")
 	var enemy = area.get_node("../")
 	enemy.get_hit()
 	_node_sound.play("punch_01")
@@ -195,10 +214,10 @@ func respawn():
 	emit_signal("state_changed", self)
 
 func jump():
-	_state = STATE.JUMP
+	if _state != STATE.SPECIAL:
+		_state = STATE.JUMP
+		_node_anim.play("jump")
 	_velocity.y = -JUMP_FORCE
-	_node_anim.play("jump")
-	pass
 	
 func fall():
 	_node_anim.play("fall")

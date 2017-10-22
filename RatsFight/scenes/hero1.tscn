@@ -316,7 +316,7 @@ texture = ExtResource( 3 )
 flip_h = true
 vframes = 6
 hframes = 5
-frame = 10
+frame = 15
 
 [node name="anim" type="AnimationPlayer" parent="."]
 
