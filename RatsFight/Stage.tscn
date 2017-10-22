@@ -1,8 +1,8 @@
 [gd_scene load_steps=11 format=1]
 
 [ext_resource path="res://scripts/Stage.gd" type="Script" id=1]
-[ext_resource path="res://assets/background/bg_street.png" type="Texture" id=2]
-[ext_resource path="res://assets/bgm/street.ogg" type="AudioStream" id=3]
+[ext_resource path="res://assets/background/bg_cuisine.png" type="Texture" id=2]
+[ext_resource path="res://assets/bgm/cosy1-cuisine.ogg" type="AudioStream" id=3]
 [ext_resource path="res://assets/bgm/cathedrale1 game over.ogg" type="AudioStream" id=4]
 [ext_resource path="res://scenes/hero1.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scenes/hud.tscn" type="PackedScene" id=6]
@@ -124,7 +124,7 @@ transform/pos = Vector2( 195.463, 306.718 )
 
 [node name="char2" parent="." instance=ExtResource( 7 )]
 
-transform/pos = Vector2( 1341.81, 264.07 )
+transform/pos = Vector2( 1277.04, 160.436 )
 
 [node name="char1" parent="." instance=ExtResource( 8 )]
 
@@ -141,13 +141,5 @@ transform/pos = Vector2( -471.842, 345.035 )
 [node name="char3" parent="." instance=ExtResource( 8 )]
 
 transform/pos = Vector2( 1090, 340 )
-
-[node name="char4" parent="." instance=ExtResource( 8 )]
-
-transform/pos = Vector2( 1630, 340 )
-
-[node name="char5" parent="." instance=ExtResource( 8 )]
-
-transform/pos = Vector2( 1860, 340 )
 
 

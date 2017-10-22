@@ -429,6 +429,7 @@ _update_shape_index = 0
 
 [node name="offensive_hitbox_area3" type="Area2D" parent="."]
 
+editor/display_folded = true
 input/pickable = true
 shapes/0/shape = SubResource( 15 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, 15, 4 )

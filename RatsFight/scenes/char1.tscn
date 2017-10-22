@@ -294,10 +294,6 @@ _update_shape_index = 0
 
 [connection signal="area_enter" from="defensive_hitbox_area" to="." method="_on_defensive_hitbox_area_area_enter"]
 
-[connection signal="area_exit" from="defensive_hitbox_area" to="." method="_on_defensive_hitbox_area_area_exit"]
-
 [connection signal="area_enter" from="offensive_hitbox_area" to="." method="_on_offensive_hitbox_area_area_enter"]
-
-[connection signal="area_exit" from="offensive_hitbox_area" to="." method="_on_offensive_hitbox_area_area_exit"]
 
 
