@@ -1,8 +1,8 @@
 [gd_scene load_steps=11 format=1]
 
 [ext_resource path="res://scripts/Stage.gd" type="Script" id=1]
-[ext_resource path="res://assets/background/bg_cuisine.png" type="Texture" id=2]
-[ext_resource path="res://assets/bgm/cosy1-cuisine.ogg" type="AudioStream" id=3]
+[ext_resource path="res://assets/background/bg_street.png" type="Texture" id=2]
+[ext_resource path="res://assets/bgm/street.ogg" type="AudioStream" id=3]
 [ext_resource path="res://assets/bgm/cathedrale1 game over.ogg" type="AudioStream" id=4]
 [ext_resource path="res://scenes/hero1.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scenes/hud.tscn" type="PackedScene" id=6]

@@ -9,12 +9,14 @@ const INIT_SPECIAL = 2
 const MAX_HP = 20
 const GRAVITY = 1000.0
 const WALK_SPEED = 200
+const RUN_SPEED = 400
 const SPECIAL_SPEED = 800
 const JUMP_FORCE = 600
 
 enum STATE {
 	HIT,
 	WALK,
+	RUN,
 	BEING_HIT,
 	IDLE,
 	KO,
@@ -30,6 +32,7 @@ var _current_left
 var _state
 var _hit_released
 var _jump_released
+var _run_released
 var _special_released
 var _velocity
 var _speed
@@ -65,6 +68,7 @@ func _fixed_process(delta):
 	var walk_left = Input.is_action_pressed("ui_left")
 	var walk_right = Input.is_action_pressed("ui_right")
 	var action_jump = Input.is_action_pressed("jump")
+	var action_run = Input.is_action_pressed("run")
 	var new_left = null
 	
 	# disable offensive hitbox area in case animation got interrupted
@@ -77,6 +81,8 @@ func _fixed_process(delta):
 		_hit_released = true
 	if (!action_jump):
 		_jump_released = true
+	if (!action_run):
+		_run_released = true
 	if !action_special:
 		_special_released = true
 	if (_special_released && action_special):
@@ -91,29 +97,51 @@ func _fixed_process(delta):
 			_node_anim.play("special")
 	if (_hit_released && action_hit):
 		_hit_released = false
-		print("HIT " + str(_state))
 		if (_state == STATE.IDLE || _state == STATE.WALK):
 			_node_anim.play("hit_01")
 			_state = STATE.HIT
 			_velocity.x = 0
 		elif ([STATE.JUMP, STATE.FALL].has(_state)):
-			print ("JUMPHIT")
 			_velocity.x += 150 * -_current_left
 			_velocity.y += 50
 			_node_anim.play("jump_hit")
 			_state = STATE.JUMP_HIT
 	if (_jump_released && action_jump):
 		_jump_released = false
-		if ([STATE.IDLE, STATE.WALK, STATE.SPECIAL].has(_state) && _touch_floor):
+		if ([STATE.IDLE, STATE.WALK, STATE.RUN, STATE.SPECIAL].has(_state) && _touch_floor):
 			jump()
 	if (walk_right):
-		if ([STATE.JUMP, STATE.SPECIAL, STATE.IDLE, STATE.FALL].has(_state) || (_state == STATE.WALK && _current_left == 1)):
+		if (action_run && (_state == STATE.WALK || (_state == STATE.RUN && _current_left == 1))):
+			new_left = -1
+			_speed = RUN_SPEED
+			_velocity.x = _speed
+			_node_anim.play("run")
+			_state = STATE.RUN
+		if (_state == STATE.RUN && !action_run):
+			_speed = WALK_SPEED
+			new_left = -1
+			_velocity.x = _speed
+			_node_anim.play("walk")
+			_state = STATE.WALK
+		if ([STATE.JUMP, STATE.SPECIAL, STATE.IDLE, STATE.FALL].has(_state) || ([STATE.WALK, STATE.RUN].has(_state) && _current_left == 1)):
 			new_left = -1
 			_velocity.x = _speed
 			if (![STATE.JUMP, STATE.FALL, STATE.SPECIAL].has(_state)):
 				_node_anim.play("walk")
 				_state = STATE.WALK
 	elif walk_left:
+		if (action_run && (_state == STATE.WALK || (_state == STATE.RUN && _current_left == -1))):
+			new_left = 1
+			_speed = RUN_SPEED
+			_velocity.x = -_speed
+			_node_anim.play("run")
+			_state = STATE.RUN
+		if (_state == STATE.RUN && !action_run):
+			_speed = WALK_SPEED
+			new_left = 1
+			_velocity.x = -_speed
+			_node_anim.play("walk")
+			_state = STATE.WALK
 		if ([STATE.JUMP, STATE.SPECIAL, STATE.IDLE, STATE.FALL].has(_state) || (_state == STATE.WALK && _current_left == -1)):
 			new_left = 1
 			_velocity.x = -_speed
@@ -121,9 +149,10 @@ func _fixed_process(delta):
 				_node_anim.play("walk")
 				_state = STATE.WALK
 	else:
-		if (_state == STATE.WALK):
+		if ([STATE.WALK, STATE.RUN].has(_state)):
 			_node_anim.play("stand")
 			_state = STATE.IDLE
+			_speed = WALK_SPEED
 			_velocity.x = 0
 		elif (_state == STATE.SPECIAL):
 			_velocity.x = 0
@@ -156,6 +185,7 @@ func move_body(delta):
 				_state = STATE.IDLE
 				_node_anim.play("stand")
 				_velocity.x = 0
+				_speed = WALK_SPEED
 			if (_state == STATE.JUMP_HIT):
 				_node_offensive_hitbox_area3.set_enable_monitoring(false)
 				
@@ -179,6 +209,7 @@ func end_hit():
 	_node_anim.play("stand")
 	
 func get_hit():
+	_speed = WALK_SPEED
 	_velocity.x = 0
 	_hp -= 1
 	if (_hp == 0):
