@@ -135,46 +135,46 @@ length = 2.0
 loop = false
 step = 0.1
 tracks/0/type = "value"
-tracks/0/path = NodePath("sprite:frame")
+tracks/0/path = NodePath("defensive_hitbox_area:monitorable")
 tracks/0/interp = 1
 tracks/0/imported = false
 tracks/0/keys = {
+"times": FloatArray( 0 ),
+"transitions": FloatArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("sprite:frame")
+tracks/1/interp = 1
+tracks/1/imported = false
+tracks/1/keys = {
 "times": FloatArray( 0, 0.1, 0.2, 0.3 ),
 "transitions": FloatArray( 1, 1, 1, 1 ),
 "update": 1,
 "values": [ 16, 17, 18, 19 ]
 }
-tracks/1/type = "value"
-tracks/1/path = NodePath("sprite:visibility/visible")
-tracks/1/interp = 1
-tracks/1/imported = false
-tracks/1/keys = {
+tracks/2/type = "value"
+tracks/2/path = NodePath("sprite:visibility/visible")
+tracks/2/interp = 1
+tracks/2/imported = false
+tracks/2/keys = {
 "times": FloatArray( 1, 1.2, 1.4, 1.6, 1.8, 2 ),
 "transitions": FloatArray( 1, 1, 1, 1, 1, 1 ),
 "update": 1,
 "values": [ false, true, false, true, false, true ]
 }
-tracks/2/type = "method"
-tracks/2/path = NodePath(".")
-tracks/2/interp = 1
-tracks/2/imported = false
-tracks/2/keys = {
+tracks/3/type = "method"
+tracks/3/path = NodePath(".")
+tracks/3/interp = 1
+tracks/3/imported = false
+tracks/3/keys = {
 "times": FloatArray( 2 ),
 "transitions": FloatArray( 1 ),
 "values": [ {
 "args": [  ],
 "method": "dead"
 } ]
-}
-tracks/3/type = "value"
-tracks/3/path = NodePath("defensive_hitbox_area:monitorable")
-tracks/3/interp = 1
-tracks/3/imported = false
-tracks/3/keys = {
-"times": FloatArray( 0 ),
-"transitions": FloatArray( 1 ),
-"update": 1,
-"values": [ false ]
 }
 
 [sub_resource type="Animation" id=6]

@@ -118,7 +118,7 @@ func _fixed_process(delta):
 func get_hit():
 	velocity = Vector2(0, 0)
 	life -= 1
-	if (life == 0):
+	if (life <= 0):
 		get_node("anim").play("ko")
 		state = STATE.KO
 	else:

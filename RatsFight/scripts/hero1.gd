@@ -39,6 +39,9 @@ var _speed
 var _special
 var _special_cnt
 var _touch_floor
+var _combo_count
+var _last_hit_connect
+var _combo_frame_count
 
 onready var _node_anim = get_node("anim")
 onready var _node_defensive_hitbox_area = get_node("defensive_hitbox_area")
@@ -61,6 +64,9 @@ func _ready():
 	set_scale(Vector2(_current_left, 1))
 	_node_anim.play("stand")
 	_touch_floor = false
+	_combo_count = 0
+	_last_hit_connect = false
+	_combo_frame_count = 0
 	
 func _fixed_process(delta):
 	var action_hit = Input.is_action_pressed("hit")
@@ -76,7 +82,8 @@ func _fixed_process(delta):
 		_node_offensive_hitbox_area.set_enable_monitoring(false)
 	if (![STATE.JUMP_HIT].has(_state) && _node_offensive_hitbox_area3.is_monitoring_enabled()):
 		_node_offensive_hitbox_area3.set_enable_monitoring(false)
-		
+	
+	_combo_frame_count += 1
 	if (!action_hit):
 		_hit_released = true
 	if (!action_jump):
@@ -98,8 +105,20 @@ func _fixed_process(delta):
 	if (_hit_released && action_hit):
 		_hit_released = false
 		if (_state == STATE.IDLE || _state == STATE.WALK):
-			_node_anim.play("hit_01")
 			_state = STATE.HIT
+			if _last_hit_connect:
+				_combo_count += 1
+				_last_hit_connect = false
+			else:
+				_combo_count = 0
+			if _combo_frame_count > 100:
+				_combo_count = 0
+			_combo_frame_count = 0
+			if _combo_count == 2:
+				_node_anim.play("hit_02")
+				_combo_count = -1
+			else:
+				_node_anim.play("hit_01")
 			_velocity.x = 0
 		elif ([STATE.JUMP, STATE.FALL].has(_state)):
 			_velocity.x += 150 * -_current_left
@@ -202,6 +221,7 @@ func _on_offensive_hitbox_area_area_enter( area ):
 	#print("_on_offensive_hitbox_area_area_enter")
 	var enemy = area.get_node("../")
 	enemy.get_hit()
+	_last_hit_connect = true
 	_node_sound.play("punch_01")
 
 func end_hit():
@@ -253,6 +273,7 @@ func dead():
 
 func respawn():
 	_hp = MAX_HP
+	_special = INIT_SPECIAL
 	_state = STATE.FALL
 	_node_anim.play("fall")
 	_touch_floor = false
@@ -273,6 +294,9 @@ func fall():
 
 func get_special():
 	return _special
+
+func last_hit_connected():
+	_last_hit_connect = true
 
 func _on_timer_timeout():
 	if _touch_floor:
