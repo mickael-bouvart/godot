@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=1]
+[gd_scene load_steps=9 format=1]
 
 [ext_resource path="res://scripts/Stage.gd" type="Script" id=1]
 [ext_resource path="res://assets/background/bg_street.png" type="Texture" id=2]
@@ -6,8 +6,6 @@
 [ext_resource path="res://assets/bgm/cathedrale1 game over.ogg" type="AudioStream" id=4]
 [ext_resource path="res://scenes/hero1.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scenes/hud.tscn" type="PackedScene" id=6]
-[ext_resource path="res://scenes/char2.tscn" type="PackedScene" id=7]
-[ext_resource path="res://scenes/char1.tscn" type="PackedScene" id=8]
 
 [sub_resource type="SegmentShape2D" id=1]
 
@@ -97,10 +95,10 @@ _update_shape_index = 0
 [node name="right_border" type="StaticBody2D" parent="."]
 
 editor/display_folded = true
-transform/pos = Vector2( 850, -60 )
+transform/pos = Vector2( 1130, -40 )
 input/pickable = false
 shapes/0/shape = SubResource( 2 )
-shapes/0/transform = Matrix32( 1, 0, 0, 1, 1110, 50 )
+shapes/0/transform = Matrix32( 1, 0, 0, 1, 0, 50 )
 shapes/0/trigger = false
 collision/layers = 2
 collision/mask = 4
@@ -111,7 +109,7 @@ bounce = 0.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="right_border"]
 
-transform/pos = Vector2( 1110, 50 )
+transform/pos = Vector2( 0, 50 )
 shape = SubResource( 2 )
 trigger = false
 _update_shape_index = 0
@@ -122,84 +120,15 @@ transform/pos = Vector2( 195.463, 306.718 )
 
 [node name="hud" parent="." instance=ExtResource( 6 )]
 
-[node name="char2" parent="." instance=ExtResource( 7 )]
+[node name="swarms" type="Node" parent="."]
 
-transform/pos = Vector2( 1277.04, 160.436 )
+[node name="swarm_01" parent="swarms" instance_placeholder="res://scenes/swarm_01.tscn"]
 
-[node name="char1" parent="." instance=ExtResource( 8 )]
+camera_limit = 1130
 
-transform/pos = Vector2( 870, 340 )
+[node name="swarm_02" parent="swarms" instance_placeholder="res://scenes/swarm_01.tscn"]
 
-[node name="char6" parent="." instance=ExtResource( 8 )]
-
-transform/pos = Vector2( -162.186, 342.518 )
-
-[node name="char7" parent="." instance=ExtResource( 8 )]
-
-transform/pos = Vector2( -642.002, 342.246 )
-
-[node name="char17" parent="." instance=ExtResource( 8 )]
-
-transform/pos = Vector2( -915.373, 336.667 )
-
-[node name="char18" parent="." instance=ExtResource( 8 )]
-
-transform/pos = Vector2( -1188.74, 333.877 )
-
-[node name="char19" parent="." instance=ExtResource( 8 )]
-
-transform/pos = Vector2( -1384.01, 336.666 )
-
-[node name="char20" parent="." instance=ExtResource( 8 )]
-
-transform/pos = Vector2( -1384.01, 336.666 )
-
-[node name="char8" parent="." instance=ExtResource( 8 )]
-
-transform/pos = Vector2( -329.577, 339.456 )
-
-[node name="char9" parent="." instance=ExtResource( 8 )]
-
-transform/pos = Vector2( -399.315, 342.245 )
-
-[node name="char3" parent="." instance=ExtResource( 8 )]
-
-transform/pos = Vector2( 1090, 340 )
-
-[node name="char4" parent="." instance=ExtResource( 8 )]
-
-transform/pos = Vector2( 1307.58, 331.631 )
-
-[node name="char5" parent="." instance=ExtResource( 8 )]
-
-transform/pos = Vector2( 1514, 334.421 )
-
-[node name="char10" parent="." instance=ExtResource( 8 )]
-
-transform/pos = Vector2( 1703.69, 334.421 )
-
-[node name="char11" parent="." instance=ExtResource( 8 )]
-
-transform/pos = Vector2( 1871.06, 337.211 )
-
-[node name="char12" parent="." instance=ExtResource( 8 )]
-
-transform/pos = Vector2( 2138.85, 331.631 )
-
-[node name="char13" parent="." instance=ExtResource( 8 )]
-
-transform/pos = Vector2( 2350.86, 334.421 )
-
-[node name="char14" parent="." instance=ExtResource( 8 )]
-
-transform/pos = Vector2( 2576.81, 331.631 )
-
-[node name="char15" parent="." instance=ExtResource( 8 )]
-
-transform/pos = Vector2( 2794.39, 328.842 )
-
-[node name="char16" parent="." instance=ExtResource( 8 )]
-
-transform/pos = Vector2( 2981.28, 328.842 )
+editor/display_folded = true
+camera_limit = 1960
 
 

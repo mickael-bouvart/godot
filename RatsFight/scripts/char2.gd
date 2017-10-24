@@ -1,6 +1,8 @@
 extends KinematicBody2D
 
-const MAX_LIFE = 20
+signal signal_dead
+
+const MAX_LIFE = 40
 const GRAVITY = 500.0
 const WALK_SPEED = 300
 const HIT_02_JUMP_FORCE_X = 80
@@ -18,8 +20,8 @@ enum STATE {
 
 var patterns = [
 	{ "key": "STAND", "func": funcref(self, "pattern_stand"), "duration": 50, "prob": 0 },
-	{ "key": "HIT_01", "func": funcref(self, "pattern_hit_01"), "duration": 100, "prob": 25 },
-	{ "key": "HIT_02", "func": funcref(self, "pattern_hit_02"), "duration": 100, "prob": 5 },
+	{ "key": "HIT_01", "func": funcref(self, "pattern_hit_01"), "duration": 100, "prob": 20 },
+	{ "key": "HIT_02", "func": funcref(self, "pattern_hit_02"), "duration": 100, "prob": 10 },
 	{ "key": "FOLLOW", "func": funcref(self, "pattern_follow"), "duration": 100, "prob": 70 }
 ]
 
@@ -30,14 +32,20 @@ var current_left = null
 var current_anim = null
 var current_pattern = null
 var pattern_duration_cnt = 0
+var _power
+var _knock_down
 
 func pattern_hit_01(frame, duration):
 	if (state == STATE.IDLE):
+		_power = 1
+		_knock_down = false
 		state = STATE.HIT
 		get_node("anim").play("hit_01")
 
 func pattern_hit_02(frame, duration):
 	if (state == STATE.IDLE):
+		_power = 5
+		_knock_down = true
 		state = STATE.HIT
 		get_node("anim").play("hit_02")
 
@@ -45,7 +53,7 @@ func pattern_stand(frame, duration):
 	pass
 
 func pattern_follow(frame, duration):
-	var hero1 = get_node("../hero1")
+	var hero1 = get_tree().get_root().get_node("Main/hero1")
 	var hero1_pos = hero1.get_pos().x
 	var self_pos = get_pos().x
 	var dist = abs(hero1_pos - self_pos)
@@ -77,7 +85,7 @@ func _fixed_process(delta):
 		get_node("offensive_hitbox_area").set_enable_monitoring(false)
 	
 	if state == STATE.IDLE || state == STATE.WALK:
-		var hero1 = get_node("../hero1")
+		var hero1 = get_tree().get_root().get_node("Main/hero1")
 		var new_left = null
 		if (get_pos().x < hero1.get_pos().x):
 			new_left = -1
@@ -98,8 +106,9 @@ func _fixed_process(delta):
 	
 	if (is_colliding()):
 		var n = get_collision_normal()
-		motion = n.slide(motion)
-		velocity = n.slide(velocity)
+		if ![STATE.BEING_HIT, STATE.KO].has(state):
+			motion = n.slide(motion)
+			velocity = n.slide(velocity)
 		motion = move(motion)
 	current_pattern["func"].call_func(pattern_duration_cnt, current_pattern.duration)
 	pattern_duration_cnt += 1
@@ -115,14 +124,19 @@ func _fixed_process(delta):
 		#print("Switching to pattern " + current_pattern["key"])
 	pass
 
-func get_hit():
+func get_hit(power, knock_down):
 	velocity = Vector2(0, 0)
-	life -= 1
+	life -= power
 	if (life <= 0):
+		velocity = Vector2(current_left * WALK_SPEED, -200)
 		get_node("anim").play("ko")
 		state = STATE.KO
-	else:
+	elif !knock_down:
 		get_node("anim").play("being_hit")
+		state = STATE.BEING_HIT
+	else:
+		velocity = Vector2(current_left * WALK_SPEED, -200)
+		get_node("anim").play("knock_down")
 		state = STATE.BEING_HIT
 
 func _ready():
@@ -139,14 +153,20 @@ func recovered_hit():
 	state = STATE.IDLE
 
 func dead():
+	emit_signal("signal_dead")
 	queue_free()
 
 func _on_offensive_hitbox_area_area_enter( area ):
 	var player = area.get_node("../")
-	player.get_hit()
+	player.get_hit(_power, _knock_down)
 	get_node("sound").play("punch_01")
-	
+
 func end_hit():
+	state = STATE.IDLE
+	get_node("anim").play("stand")
+
+func get_up():
+	velocity = Vector2(0, 0)
 	state = STATE.IDLE
 	get_node("anim").play("stand")
 

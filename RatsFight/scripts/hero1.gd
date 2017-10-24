@@ -42,6 +42,8 @@ var _touch_floor
 var _combo_count
 var _last_hit_connect
 var _combo_frame_count
+var _power
+var _knock_down
 
 onready var _node_anim = get_node("anim")
 onready var _node_defensive_hitbox_area = get_node("defensive_hitbox_area")
@@ -59,6 +61,7 @@ func _ready():
 	_speed = WALK_SPEED
 	_hit_released = true
 	_current_left = -1
+	defensive_hitbox(true)
 	_state = STATE.IDLE
 	_velocity = Vector2(0, 0)
 	set_scale(Vector2(_current_left, 1))
@@ -97,10 +100,12 @@ func _fixed_process(delta):
 		if (![STATE.SPECIAL, STATE.KO].has(_state) && _special > 0):
 			_special -= 1
 			emit_signal("state_changed", self)
+			_power = 3
+			_knock_down = true
 			_state = STATE.SPECIAL
 			_speed = SPECIAL_SPEED
 			_node_timer.start()
-			_node_defensive_hitbox_area.set_monitorable(false)
+			defensive_hitbox(false)
 			_node_anim.play("special")
 	if (_hit_released && action_hit):
 		_hit_released = false
@@ -115,14 +120,20 @@ func _fixed_process(delta):
 				_combo_count = 0
 			_combo_frame_count = 0
 			if _combo_count == 2:
+				_power = 2
+				_knock_down = true
 				_node_anim.play("hit_02")
 				_combo_count = -1
 			else:
+				_power = 1
+				_knock_down = false
 				_node_anim.play("hit_01")
 			_velocity.x = 0
 		elif ([STATE.JUMP, STATE.FALL].has(_state)):
 			_velocity.x += 150 * -_current_left
 			_velocity.y += 50
+			_power = 1
+			_knock_down = false
 			_node_anim.play("jump_hit")
 			_state = STATE.JUMP_HIT
 	if (_jump_released && action_jump):
@@ -135,17 +146,20 @@ func _fixed_process(delta):
 			_speed = RUN_SPEED
 			_velocity.x = _speed
 			_node_anim.play("run")
+			defensive_hitbox(true)
 			_state = STATE.RUN
 		if (_state == STATE.RUN && !action_run):
 			_speed = WALK_SPEED
 			new_left = -1
 			_velocity.x = _speed
 			_node_anim.play("walk")
+			defensive_hitbox(true)
 			_state = STATE.WALK
 		if ([STATE.JUMP, STATE.SPECIAL, STATE.IDLE, STATE.FALL].has(_state) || ([STATE.WALK, STATE.RUN].has(_state) && _current_left == 1)):
 			new_left = -1
 			_velocity.x = _speed
 			if (![STATE.JUMP, STATE.FALL, STATE.SPECIAL].has(_state)):
+				defensive_hitbox(true)
 				_node_anim.play("walk")
 				_state = STATE.WALK
 	elif walk_left:
@@ -159,16 +173,19 @@ func _fixed_process(delta):
 			_speed = WALK_SPEED
 			new_left = 1
 			_velocity.x = -_speed
+			defensive_hitbox(true)
 			_node_anim.play("walk")
 			_state = STATE.WALK
 		if ([STATE.JUMP, STATE.SPECIAL, STATE.IDLE, STATE.FALL].has(_state) || (_state == STATE.WALK && _current_left == -1)):
 			new_left = 1
 			_velocity.x = -_speed
 			if (![STATE.JUMP, STATE.FALL, STATE.SPECIAL].has(_state)):
+				defensive_hitbox(true)
 				_node_anim.play("walk")
 				_state = STATE.WALK
 	else:
 		if ([STATE.WALK, STATE.RUN].has(_state)):
+			defensive_hitbox(true)
 			_node_anim.play("stand")
 			_state = STATE.IDLE
 			_speed = WALK_SPEED
@@ -201,15 +218,16 @@ func move_body(delta):
 		if (rad2deg(acos(n.dot(Vector2(0, -1)))) < FLOOR_ANGLE_TOLERANCE):
 			new_touch_floor = true
 			if ([STATE.JUMP, STATE.FALL, STATE.JUMP_HIT].has(_state)):
+				defensive_hitbox(true)
 				_state = STATE.IDLE
 				_node_anim.play("stand")
 				_velocity.x = 0
 				_speed = WALK_SPEED
 			if (_state == STATE.JUMP_HIT):
 				_node_offensive_hitbox_area3.set_enable_monitoring(false)
-				
-		motion = n.slide(motion)
-		_velocity = n.slide(_velocity)
+		if (![STATE.BEING_HIT, STATE.KO].has(_state)):
+			motion = n.slide(motion)
+			_velocity = n.slide(_velocity)
 		motion = move(motion)
 	else:
 		if _velocity.y > 0 && _state == STATE.JUMP:
@@ -220,28 +238,35 @@ func move_body(delta):
 func _on_offensive_hitbox_area_area_enter( area ):
 	#print("_on_offensive_hitbox_area_area_enter")
 	var enemy = area.get_node("../")
-	enemy.get_hit()
+	enemy.get_hit(_power, _knock_down)
 	_last_hit_connect = true
 	_node_sound.play("punch_01")
 
 func end_hit():
+	defensive_hitbox(true)
 	_state = STATE.IDLE
 	_node_anim.play("stand")
 	
-func get_hit():
+func get_hit(power, knock_down):
 	_speed = WALK_SPEED
 	_velocity.x = 0
-	_hp -= 1
-	if (_hp == 0):
+	_hp -= power
+	if _hp <= 0:
+		_velocity = Vector2(_current_left * _speed, -200)
 		_node_anim.play("ko")
 		_state = STATE.KO
-	else:
+	elif !knock_down:
 		_node_anim.play("being_hit")
+		_state = STATE.BEING_HIT
+	else:
+		_velocity = Vector2(_current_left * _speed, -200)
+		_node_anim.play("knock_down")
 		_state = STATE.BEING_HIT
 	emit_signal("state_changed", self)
 
 func recovered_hit():
 	if _touch_floor:
+		defensive_hitbox(true)
 		_node_anim.play("stand")
 		_state = STATE.IDLE
 	else:
@@ -278,6 +303,7 @@ func respawn():
 	_node_anim.play("fall")
 	_touch_floor = false
 	_current_left = -1
+	_velocity = Vector2(0, 0)
 	set_scale(Vector2(_current_left, 1))
 	get_node("defensive_hitbox_area").set_monitorable(true)
 	set_pos(Vector2(get_pos().x, 0))
@@ -307,5 +333,8 @@ func _on_timer_timeout():
 		_node_anim.play("fall")
 	_speed = WALK_SPEED
 	_node_offensive_hitbox_area2.set_enable_monitoring(false)
-	_node_defensive_hitbox_area.set_monitorable(true)
+	defensive_hitbox(true)
 	pass
+
+func defensive_hitbox(active):
+	_node_defensive_hitbox_area.set_monitorable(active)
