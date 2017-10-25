@@ -2,6 +2,8 @@ extends KinematicBody2D
 
 signal signal_dead
 
+# Angle in degrees towards either side that the player can consider "floor"
+const FLOOR_ANGLE_TOLERANCE = 40
 const MAX_LIFE = 40
 const GRAVITY = 500.0
 const WALK_SPEED = 300
@@ -21,7 +23,7 @@ enum STATE {
 var patterns = [
 	{ "key": "STAND", "func": funcref(self, "pattern_stand"), "duration": 50, "prob": 0 },
 	{ "key": "HIT_01", "func": funcref(self, "pattern_hit_01"), "duration": 100, "prob": 20 },
-	{ "key": "HIT_02", "func": funcref(self, "pattern_hit_02"), "duration": 100, "prob": 10 },
+	{ "key": "HIT_02", "func": funcref(self, "pattern_hit_02"), "duration": 30, "prob": 10 },
 	{ "key": "FOLLOW", "func": funcref(self, "pattern_follow"), "duration": 100, "prob": 70 }
 ]
 
@@ -92,10 +94,9 @@ func _fixed_process(delta):
 		else:
 			new_left = 1
 		if (new_left != null && new_left != current_left):
-			print("Switching direction: " + str(new_left))
+			#print("Switching direction: " + str(new_left))
 			set_scale(Vector2(new_left, 1))
 			current_left = new_left
-	
 	var force = Vector2(0, GRAVITY)
 	
 	# Integrate forces to velocity
@@ -106,6 +107,10 @@ func _fixed_process(delta):
 	
 	if (is_colliding()):
 		var n = get_collision_normal()
+		# touch the floor
+		if (rad2deg(acos(n.dot(Vector2(0, -1)))) < FLOOR_ANGLE_TOLERANCE):
+			if [STATE.BEING_HIT, STATE.KO, STATE.IDLE, STATE.HIT].has(state):
+				motion.x = 0
 		if ![STATE.BEING_HIT, STATE.KO].has(state):
 			motion = n.slide(motion)
 			velocity = n.slide(velocity)

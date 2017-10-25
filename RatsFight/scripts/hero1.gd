@@ -162,6 +162,8 @@ func _fixed_process(delta):
 				defensive_hitbox(true)
 				_node_anim.play("walk")
 				_state = STATE.WALK
+		if [STATE.WALK, STATE.RUN, STATE.SPECIAL].has(_state):
+			_velocity.x = _speed
 	elif walk_left:
 		if (action_run && (_state == STATE.WALK || (_state == STATE.RUN && _current_left == -1))):
 			new_left = 1
@@ -183,6 +185,8 @@ func _fixed_process(delta):
 				defensive_hitbox(true)
 				_node_anim.play("walk")
 				_state = STATE.WALK
+		if [STATE.WALK, STATE.RUN, STATE.SPECIAL].has(_state):
+			_velocity.x = -_speed
 	else:
 		if ([STATE.WALK, STATE.RUN].has(_state)):
 			defensive_hitbox(true)
@@ -191,6 +195,8 @@ func _fixed_process(delta):
 			_speed = WALK_SPEED
 			_velocity.x = 0
 		elif (_state == STATE.SPECIAL):
+			_velocity.x = 0
+		if _state == STATE.IDLE || _state == STATE.HIT || _state == STATE.BEING_HIT:
 			_velocity.x = 0
 	
 	#print("Is colliding: " + str(is_colliding()))
@@ -212,9 +218,11 @@ func move_body(delta):
 	motion = move(motion)
 	
 	# Not be blocked on border (slide instead)
-	var new_touch_floor = false
+	var new_touch_floor = null
 	if is_colliding():
+		#print(get_collider())
 		var n = get_collision_normal()
+		#print(n)
 		if (rad2deg(acos(n.dot(Vector2(0, -1)))) < FLOOR_ANGLE_TOLERANCE):
 			new_touch_floor = true
 			if ([STATE.JUMP, STATE.FALL, STATE.JUMP_HIT].has(_state)):
@@ -225,7 +233,7 @@ func move_body(delta):
 				_speed = WALK_SPEED
 			if (_state == STATE.JUMP_HIT):
 				_node_offensive_hitbox_area3.set_enable_monitoring(false)
-		if (![STATE.BEING_HIT, STATE.KO].has(_state)):
+		if (![STATE.BEING_HIT, STATE.KO].has(_state) || !new_touch_floor):
 			motion = n.slide(motion)
 			_velocity = n.slide(_velocity)
 		motion = move(motion)
@@ -233,7 +241,8 @@ func move_body(delta):
 		if _velocity.y > 0 && _state == STATE.JUMP:
 			_state = STATE.FALL
 			_node_anim.play("fall")
-	_touch_floor = new_touch_floor
+	if new_touch_floor != null:
+		_touch_floor = new_touch_floor
 
 func _on_offensive_hitbox_area_area_enter( area ):
 	#print("_on_offensive_hitbox_area_area_enter")
@@ -290,8 +299,7 @@ func dead():
 	if _life == 0:
 		#TODO: Game Over
 		emit_signal("state_changed", self)
-		get_node("../bgm").stop()
-		get_node("../bgm_gameover").play()
+		bgms.play("game_over")
 		pass
 	else:
 		respawn()
@@ -314,6 +322,7 @@ func jump():
 		_state = STATE.JUMP
 		_node_anim.play("jump")
 	_velocity.y = -JUMP_FORCE
+	_touch_floor = false
 	
 func fall():
 	_node_anim.play("fall")

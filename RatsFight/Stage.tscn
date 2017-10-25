@@ -1,11 +1,9 @@
-[gd_scene load_steps=9 format=1]
+[gd_scene load_steps=7 format=1]
 
 [ext_resource path="res://scripts/Stage.gd" type="Script" id=1]
 [ext_resource path="res://assets/background/bg_street.png" type="Texture" id=2]
-[ext_resource path="res://assets/bgm/street.ogg" type="AudioStream" id=3]
-[ext_resource path="res://assets/bgm/cathedrale1 game over.ogg" type="AudioStream" id=4]
-[ext_resource path="res://scenes/hero1.tscn" type="PackedScene" id=5]
-[ext_resource path="res://scenes/hud.tscn" type="PackedScene" id=6]
+[ext_resource path="res://scenes/hero1.tscn" type="PackedScene" id=3]
+[ext_resource path="res://scenes/hud.tscn" type="PackedScene" id=4]
 
 [sub_resource type="SegmentShape2D" id=1]
 
@@ -22,33 +20,12 @@ b = Vector2( 0, 560 )
 [node name="Main" type="Node"]
 
 script/script = ExtResource( 1 )
+bgm = "stage_kitchen"
 
 [node name="background" type="Sprite" parent="."]
 
 texture = ExtResource( 2 )
 centered = false
-
-[node name="bgm" type="StreamPlayer" parent="."]
-
-stream/stream = ExtResource( 3 )
-stream/play = false
-stream/loop = true
-stream/volume_db = 2.0
-stream/autoplay = true
-stream/paused = false
-stream/loop_restart_time = 0.0
-stream/buffering_ms = 500
-
-[node name="bgm_gameover" type="StreamPlayer" parent="."]
-
-stream/stream = ExtResource( 4 )
-stream/play = false
-stream/loop = false
-stream/volume_db = 0.0
-stream/autoplay = false
-stream/paused = false
-stream/loop_restart_time = 0.0
-stream/buffering_ms = 500
 
 [node name="down_border" type="StaticBody2D" parent="."]
 
@@ -114,11 +91,11 @@ shape = SubResource( 2 )
 trigger = false
 _update_shape_index = 0
 
-[node name="hero1" parent="." instance=ExtResource( 5 )]
+[node name="hero1" parent="." instance=ExtResource( 3 )]
 
 transform/pos = Vector2( 195.463, 306.718 )
 
-[node name="hud" parent="." instance=ExtResource( 6 )]
+[node name="hud" parent="." instance=ExtResource( 4 )]
 
 [node name="swarms" type="Node" parent="."]
 

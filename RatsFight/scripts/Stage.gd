@@ -1,6 +1,8 @@
 extends Node
 const CAMERA_SCROLL_SPEED = 5
 
+export var bgm = ""
+
 onready var _camera = get_node("hero1").get_node("camera")
 
 var camera_limit
@@ -8,6 +10,7 @@ var swarms
 var current_swarm
 
 func _ready():
+	bgms.play(bgm)
 	current_swarm = -1
 	swarms = get_node("swarms").get_children()
 	var bg_tex = get_node("background").get_texture()

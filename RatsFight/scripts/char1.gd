@@ -83,7 +83,8 @@ func _fixed_process(delta):
 			print("Switching direction: " + str(new_left))
 			set_scale(Vector2(new_left, 1))
 			current_left = new_left
-	
+	if [STATE.BEING_HIT, STATE.IDLE].has(state):
+		velocity.x = 0
 	var force = Vector2(0, GRAVITY)
 	
 	# Integrate forces to velocity
@@ -94,6 +95,11 @@ func _fixed_process(delta):
 	
 	if (is_colliding()):
 		var n = get_collision_normal()
+		# touch the floor
+		if (rad2deg(acos(n.dot(Vector2(0, -1)))) < FLOOR_ANGLE_TOLERANCE):
+			if [STATE.BEING_HIT, STATE.KO, STATE.IDLE, STATE.HIT].has(state):
+				motion.x = 0
+		
 		if ![STATE.BEING_HIT, STATE.KO].has(state):
 			motion = n.slide(motion)
 			velocity = n.slide(velocity)
