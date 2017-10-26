@@ -2,10 +2,11 @@ extends KinematicBody2D
 
 signal signal_dead
 
+export var walk_speed = 100
+
 const FLOOR_ANGLE_TOLERANCE = 40
 const MAX_LIFE = 5
 const GRAVITY = 500.0
-const WALK_SPEED = 100
 const MIN_DISTANCE_FOLLOW = 200
 
 enum STATE {
@@ -50,7 +51,7 @@ func pattern_follow(frame, duration):
 	#print("Distance: " + str(dist))
 	if (dist > MIN_DISTANCE_FOLLOW):
 		if (state == STATE.IDLE || state == STATE.WALK):
-			velocity.x = -current_left * WALK_SPEED
+			velocity.x = -current_left * walk_speed
 			if (state == STATE.IDLE):
 				get_node("anim").play("walk")
 				state = STATE.WALK
@@ -83,8 +84,6 @@ func _fixed_process(delta):
 			print("Switching direction: " + str(new_left))
 			set_scale(Vector2(new_left, 1))
 			current_left = new_left
-	if [STATE.BEING_HIT, STATE.IDLE].has(state):
-		velocity.x = 0
 	var force = Vector2(0, GRAVITY)
 	
 	# Integrate forces to velocity
@@ -122,14 +121,14 @@ func get_hit(power, knock_down):
 	velocity = Vector2(0, 0)
 	life -= power
 	if (life <= 0):
-		velocity = Vector2(current_left * WALK_SPEED, -200)
+		velocity = Vector2(current_left * walk_speed, -200)
 		get_node("anim").play("ko")
 		state = STATE.KO
 	elif !knock_down:
 		get_node("anim").play("being_hit")
 		state = STATE.BEING_HIT
 	else:
-		velocity = Vector2(current_left * WALK_SPEED, -200)
+		velocity = Vector2(current_left * walk_speed, -200)
 		get_node("anim").play("knock_down")
 		state = STATE.BEING_HIT
 func _ready():
@@ -150,7 +149,7 @@ func recovered_hit():
 	state = STATE.IDLE
 
 func dead():
-	emit_signal("signal_dead")
+	emit_signal("signal_dead", self)
 	queue_free()
 
 func _on_offensive_hitbox_area_area_enter( area ):

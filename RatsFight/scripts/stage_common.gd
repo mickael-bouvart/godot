@@ -12,6 +12,9 @@ var _camera_limit
 var _swarms
 var _current_swarm
 
+var plchar1 = preload("res://scenes/char1.tscn")
+var plchar2 = preload("res://scenes/char2.tscn")
+
 func _ready():
 	bgms.play(bgm)
 	_current_swarm = -1
@@ -19,8 +22,8 @@ func _ready():
 	var bg_tex = get_node("background").get_texture()
 	var cam_margin_right = bg_tex.get_width()
 	var cam_margin_bottom = bg_tex.get_height()
-	_camera_limit = _node_right_border.get_pos().x
-	_node_camera.set_limit(MARGIN_RIGHT, _camera_limit)
+	#_camera_limit = _node_right_border.get_pos().x
+	#_node_camera.set_limit(MARGIN_RIGHT, _camera_limit)
 	_node_camera.set_limit(MARGIN_BOTTOM, cam_margin_bottom)
 	set_fixed_process(true)
 	next_step()
@@ -32,10 +35,15 @@ func next_step():
 		var new_swarm = _swarms[_current_swarm]
 		var path = new_swarm.get_path()
 		new_swarm.replace_by_instance()
-		get_node(path).connect("signal_clear", self, "next_step")
-		_camera_limit = get_node(path).get_camera_limit()
+		var swarm_instance = get_node(path)
+		swarm_instance.connect("signal_clear", self, "next_step")
+		bgms.play(swarm_instance.get_bgm())
+		_camera_limit = swarm_instance.get_camera_limit()
 		print("Camera limit: " + str(_camera_limit))
 		_node_right_border.set_pos(Vector2(_camera_limit, _node_right_border.get_pos().y))
+	else:
+		print("END LEVEL")
+		bgms.play("game_over")
 
 func _fixed_process(delta):
 	if _node_camera.get_limit(MARGIN_RIGHT) < _camera_limit:

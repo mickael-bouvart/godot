@@ -91,7 +91,7 @@ tracks/2/keys = {
 } ]
 }
 
-[sub_resource type="Animation" id=6]
+[sub_resource type="Animation" id=5]
 
 resource/name = "knock_down"
 length = 2.0
@@ -130,7 +130,7 @@ tracks/2/keys = {
 } ]
 }
 
-[sub_resource type="Animation" id=5]
+[sub_resource type="Animation" id=6]
 
 length = 2.0
 loop = false
@@ -230,7 +230,7 @@ samples/punch_01 = {
 }
 
 [node name="char1" type="KinematicBody2D" groups=[
-"heros",
+"simple_enemy",
 ]]
 
 input/pickable = false
@@ -241,6 +241,7 @@ collision/layers = 8
 collision/mask = 1
 collision/margin = 0.08
 script/script = ExtResource( 1 )
+walk_speed = 100
 
 [node name="sprite" type="Sprite" parent="."]
 
@@ -257,8 +258,8 @@ root/root = NodePath("..")
 anims/being_hit = SubResource( 2 )
 anims/down = SubResource( 3 )
 anims/hit = SubResource( 4 )
-anims/knock_down = SubResource( 6 )
-anims/ko = SubResource( 5 )
+anims/knock_down = SubResource( 5 )
+anims/ko = SubResource( 6 )
 anims/stand = SubResource( 7 )
 anims/walk = SubResource( 8 )
 playback/active = true

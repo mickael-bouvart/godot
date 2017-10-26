@@ -2,9 +2,9 @@ extends KinematicBody2D
 
 signal signal_dead
 
+const MAX_LIFE = 40
 # Angle in degrees towards either side that the player can consider "floor"
 const FLOOR_ANGLE_TOLERANCE = 40
-const MAX_LIFE = 40
 const GRAVITY = 500.0
 const WALK_SPEED = 300
 const HIT_02_JUMP_FORCE_X = 80
@@ -158,7 +158,7 @@ func recovered_hit():
 	state = STATE.IDLE
 
 func dead():
-	emit_signal("signal_dead")
+	emit_signal("signal_dead", self)
 	queue_free()
 
 func _on_offensive_hitbox_area_area_enter( area ):
