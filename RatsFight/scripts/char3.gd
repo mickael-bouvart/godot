@@ -6,17 +6,39 @@ const DRIVE_SPEED = 800
 var _power = 2
 var _knock_down = true
 
-var char1_preload = preload("res://scenes/char1.tscn")
+var _limit_left
+var _limit_right
+
+var _detached
+
+var char3_2_preload = preload("res://scenes/char3_2.tscn")
 
 var _velocity = Vector2()
+var _current_left
 
 func _ready():
-	_velocity = Vector2(-DRIVE_SPEED, 0)
+	_detached = false
+	var pos = get_pos()
+	_limit_left = -500
+	_limit_right = 1960 + 500
+	update_current_left()
+	_velocity = Vector2(-DRIVE_SPEED * _current_left, 0)
 	get_node("anim").play("drive_bike")
 	set_fixed_process(true)
 	pass
 
 func _fixed_process(delta):
+	var pos = get_pos()
+	#print(str(pos.x) + ", " + str(_limit_left))
+	if _current_left == 1 && pos.x < _limit_left:
+		_current_left = -1
+		_velocity.x = DRIVE_SPEED
+		set_scale(Vector2(_current_left, 1))
+	elif _current_left == -1 && pos.x > _limit_right:
+		_current_left = 1
+		_velocity.x = -DRIVE_SPEED
+		set_scale(Vector2(_current_left, 1))
+	
 	var force = Vector2(0, GRAVITY)
 	# Integrate forces to velocity
 	_velocity += force*delta
@@ -32,12 +54,29 @@ func _fixed_process(delta):
 	#print("Monitoring: " + str(n.is_monitoring_enabled()))
 	pass
 
+func update_current_left():
+	var hero1 = get_tree().get_root().get_node("Main/hero1")
+	var new_left = null
+	if (get_pos().x < hero1.get_pos().x):
+		new_left = -1
+	else:
+		new_left = 1
+	if (new_left != null && new_left != _current_left):
+		print("Switching direction: " + str(new_left))
+		set_scale(Vector2(new_left, 1))
+		_current_left = new_left
+
 func get_hit(power, knock_down):
-	var char1 = char1_preload.instance()
-	char1.set_pos(get_pos())
-	get_node("../").add_child(char1)
-	char1.get_hit(power, true)
-	queue_free()
+	if _detached:
+		return
+	_detached = true
+	var char3_2 = char3_2_preload.instance()
+	char3_2.set_pos(get_pos())
+	get_node("../").add_child(char3_2)
+	char3_2.get_node("sprite").set_modulate(get_node("sprite").get_modulate())
+	char3_2.get_hit(power, true)
+	#queue_free()
+	get_node("sprite").set_texture(load("res://assets/sprites/sprites_char3_1.png"))
 	pass
 
 func _on_offensive_hitbox_area_area_enter( area ):

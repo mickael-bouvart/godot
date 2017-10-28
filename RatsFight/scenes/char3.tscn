@@ -31,7 +31,7 @@ tracks/0/keys = {
 "times": FloatArray( 0, 0.1 ),
 "transitions": FloatArray( 1, 1 ),
 "update": 1,
-"values": [ 5, 6 ]
+"values": [ 0, 1 ]
 }
 tracks/1/type = "value"
 tracks/1/path = NodePath("offensive_hitbox_area:monitoring")
@@ -85,9 +85,7 @@ default/chorus_send = 0.0
 [node name="sprite" type="Sprite" parent="."]
 
 texture = ExtResource( 3 )
-vframes = 4
-hframes = 4
-frame = 6
+hframes = 2
 
 [node name="anim" type="AnimationPlayer" parent="."]
 
@@ -135,7 +133,6 @@ gravity_vec = Vector2( 0, 1 )
 gravity = 98.0
 linear_damp = 0.1
 angular_damp = 1.0
-monitoring = false
 monitorable = false
 collision/layers = 8192
 collision/mask = 1025
