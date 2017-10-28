@@ -68,22 +68,26 @@ func pattern_follow(frame, duration):
 		get_node("anim").play("stand")
 		state = STATE.IDLE
 
+func update_current_left():
+	var hero1 = get_tree().get_root().get_node("Main/hero1")
+	var new_left = null
+	if (get_pos().x < hero1.get_pos().x):
+		new_left = -1
+	else:
+		new_left = 1
+	if (new_left != null && new_left != current_left):
+		print("Switching direction: " + str(new_left))
+		set_scale(Vector2(new_left, 1))
+		current_left = new_left
+
 func _fixed_process(delta):
 	# disable offensive hitbox area in case attack animation got interrupted
 	if (state != STATE.HIT && get_node("offensive_hitbox_area").is_monitoring_enabled()):
 		get_node("offensive_hitbox_area").set_enable_monitoring(false)
 	
 	if state == STATE.IDLE || state == STATE.WALK:
-		var hero1 = get_tree().get_root().get_node("Main/hero1")
-		var new_left = null
-		if (get_pos().x < hero1.get_pos().x):
-			new_left = -1
-		else:
-			new_left = 1
-		if (new_left != null && new_left != current_left):
-			print("Switching direction: " + str(new_left))
-			set_scale(Vector2(new_left, 1))
-			current_left = new_left
+		update_current_left()
+		
 	var force = Vector2(0, GRAVITY)
 	
 	# Integrate forces to velocity
@@ -128,6 +132,7 @@ func get_hit(power, knock_down):
 		get_node("anim").play("being_hit")
 		state = STATE.BEING_HIT
 	else:
+		get_node("defensive_hitbox_area").set_monitorable(false)
 		velocity = Vector2(current_left * walk_speed, -200)
 		get_node("anim").play("knock_down")
 		state = STATE.BEING_HIT
@@ -136,7 +141,7 @@ func _ready():
 	life = MAX_LIFE
 	state = STATE.IDLE
 	get_node("anim").play("stand")
-	current_left = null
+	update_current_left()
 	var r = (randi() % 200 + 55) / 255.0
 	var g = (randi() % 200 + 55) / 255.0
 	var b = (randi() % 200 + 55) / 255.0
@@ -162,6 +167,7 @@ func end_hit():
 	get_node("anim").play("stand")
 	
 func get_up():
+	get_node("defensive_hitbox_area").set_monitorable(true)
 	velocity = Vector2(0, 0)
 	state = STATE.IDLE
 	get_node("anim").play("stand")

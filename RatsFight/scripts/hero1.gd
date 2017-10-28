@@ -281,7 +281,15 @@ func recovered_hit():
 	else:
 		_node_anim.play("fall")
 		_state = STATE.FALL
-	
+
+func get_up():
+	print("GET_UP")
+	print(str(_node_defensive_hitbox_area.is_monitorable()))
+	defensive_hitbox(true)
+	print(str(_node_defensive_hitbox_area.is_monitorable()))
+	_node_anim.play("stand")
+	_state = STATE.IDLE
+
 func get_life():
 	return _life
 
