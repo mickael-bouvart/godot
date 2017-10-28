@@ -130,6 +130,7 @@ func _fixed_process(delta):
 	pass
 
 func get_hit(power, knock_down):
+	get_node("defensive_hitbox_area").set_monitorable(true)
 	velocity = Vector2(0, 0)
 	life -= power
 	if (life <= 0):

@@ -5,7 +5,7 @@ const DRIVE_SPEED = 800
 
 var _power = 2
 var _knock_down = true
-
+var _sound_playing
 var _limit_left
 var _limit_right
 
@@ -17,6 +17,7 @@ var _velocity = Vector2()
 var _current_left
 
 func _ready():
+	_sound_playing = false
 	_detached = false
 	var pos = get_pos()
 	_limit_left = -500
@@ -29,12 +30,25 @@ func _ready():
 
 func _fixed_process(delta):
 	var pos = get_pos()
+	var hero1 = get_tree().get_root().get_node("Main/hero1")
+	var hero1_pos = hero1.get_pos()
+	
+	if abs(hero1_pos.x - pos.x) < 500 && !_sound_playing:
+		_sound_playing = true
+		get_node("sound").play("motorbike")
+	if abs(hero1_pos.x - pos.x) >= 500:
+		_sound_playing = false
+
 	#print(str(pos.x) + ", " + str(_limit_left))
 	if _current_left == 1 && pos.x < _limit_left:
+		if _detached:
+			queue_free()
 		_current_left = -1
 		_velocity.x = DRIVE_SPEED
 		set_scale(Vector2(_current_left, 1))
 	elif _current_left == -1 && pos.x > _limit_right:
+		if _detached:
+			queue_free()
 		_current_left = 1
 		_velocity.x = -DRIVE_SPEED
 		set_scale(Vector2(_current_left, 1))

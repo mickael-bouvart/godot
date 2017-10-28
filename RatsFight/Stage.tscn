@@ -21,7 +21,7 @@ b = Vector2( 0, 560 )
 [node name="Main" type="Node"]
 
 script/script = ExtResource( 1 )
-bgm = "stage_kitchen"
+bgm = "stage_street"
 
 [node name="background" type="Sprite" parent="."]
 
@@ -103,5 +103,9 @@ transform/pos = Vector2( 195.463, 306.718 )
 [node name="char3" parent="." instance=ExtResource( 5 )]
 
 transform/pos = Vector2( 1130, 340 )
+
+[node name="char4" parent="." instance=ExtResource( 5 )]
+
+transform/pos = Vector2( -495.79, 349.273 )
 
 
