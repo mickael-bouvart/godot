@@ -8,9 +8,10 @@ onready var _node_anim = get_node("anim")
 
 var _preload_bullet = preload("res://scenes/bullet.tscn")
 
+const NEAR_THRESHOLD = 50
 const FLOOR_ANGLE_TOLERANCE = 40
-const MAX_HP = 20
-const WALK_SPEED = 400
+const MAX_HP = 40
+const WALK_SPEED = 1500
 const GRAVITY = 500.0
 
 enum STATE {
@@ -34,18 +35,59 @@ func _ready():
 	set_fixed_process(true)
 
 var _hit_time_cnt = 0
-const TIME_LIMIT = 4
+const TIME_LIMIT = 1
+
+var _objective_x
 
 func _fixed_process(delta):
+	var pos = get_pos()
 	if _state == STATE.IDLE:
 		_velocity.x = 0
 		update_current_left()
-		_hit_time_cnt += delta
-		if _hit_time_cnt > TIME_LIMIT:
-			_hit_time_cnt = 0
-			_state = STATE.HIT
-			get_node("anim").play("hit_01")
+		_objective_x = find_objective()
+		if is_near(pos.x, _objective_x):
+			print("OBJECTIVE")
+			_hit_time_cnt += delta
+			if _hit_time_cnt > TIME_LIMIT:
+				_hit_time_cnt = 0
+				_state = STATE.HIT
+				_node_anim.play("hit_01")
+		else:
+			print("NOT FOUND")
+			_state = STATE.WALK
+			_node_anim.play("walk")
+	if _state == STATE.WALK:
+		var new_left = null
+		if is_near(pos.x, _objective_x):
+			print("ARRIVED")
+			_state = STATE.IDLE
+			_node_anim.play("stand")
+			_velocity.x = 0
+		elif pos.x < _objective_x:
+			new_left = -1
+			_velocity.x = WALK_SPEED
+		elif pos.x > _objective_x:
+			new_left = 1
+			_velocity.x = -WALK_SPEED
+		if new_left != null && new_left != _current_left:
+			set_scale(Vector2(new_left, 1))
+			_current_left = new_left
 	apply_forces(delta)
+
+func is_near(pos_x, objective_x):
+	return abs(pos_x - objective_x) < NEAR_THRESHOLD
+
+func find_objective():
+	var objective_x = 0
+	var hero1 = get_tree().get_root().get_node("Main/hero1")
+	var hero1_pos = hero1.get_pos()
+	if hero1_pos.x >= 0 && hero1_pos.x < 650:
+		objective_x = 975
+	elif hero1_pos.x >= 650 && hero1_pos.x < 1300:
+		objective_x = 1900
+	else:
+		objective_x = 20
+	return objective_x
 
 func update_current_left():
 	var hero1 = get_tree().get_root().get_node("Main/hero1")
@@ -89,7 +131,7 @@ func get_hit(power, knock_down):
 	_velocity = Vector2(0, 0)
 	_hp -= power
 	if (_hp <= 0):
-		_velocity = Vector2(_current_left * WALK_SPEED, -200)
+		_velocity = Vector2(_current_left * WALK_SPEED / 3, -200)
 		_node_defensive_hitbox_area.set_monitorable(false)
 		_node_anim.play("ko")
 		_state = STATE.KO

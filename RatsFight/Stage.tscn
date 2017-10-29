@@ -102,6 +102,6 @@ transform/pos = Vector2( 195.463, 306.718 )
 
 [node name="char5" parent="." instance=ExtResource( 5 )]
 
-transform/pos = Vector2( 700, 140 )
+transform/pos = Vector2( 530, 320 )
 
 
