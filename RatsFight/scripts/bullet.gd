@@ -1,6 +1,8 @@
 extends KinematicBody2D
 
-var SPEED = 30
+const POWER = 4
+const SPEED = 30
+
 var _velocity
 
 func _ready():
@@ -16,3 +18,8 @@ func _fixed_process(delta):
 
 func set_velocity(current_left):
 	_velocity = Vector2(-current_left * SPEED, 0)
+
+func _on_offensive_hitbox_area_area_enter( area ):
+	var hero = area.get_node("../")
+	hero.get_hit(POWER, true)
+	get_node("sound").play("punch_01")

@@ -136,6 +136,7 @@ func get_hit(power, knock_down):
 		velocity = Vector2(current_left * walk_speed, -200)
 		get_node("anim").play("knock_down")
 		state = STATE.BEING_HIT
+
 func _ready():
 	current_pattern = patterns[2]
 	life = MAX_LIFE
