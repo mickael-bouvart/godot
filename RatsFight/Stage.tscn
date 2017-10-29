@@ -4,7 +4,7 @@
 [ext_resource path="res://assets/background/bg_street.png" type="Texture" id=2]
 [ext_resource path="res://scenes/hero1.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scenes/hud.tscn" type="PackedScene" id=4]
-[ext_resource path="res://scenes/char3.tscn" type="PackedScene" id=5]
+[ext_resource path="res://scenes/char4.tscn" type="PackedScene" id=5]
 
 [sub_resource type="SegmentShape2D" id=1]
 
@@ -100,12 +100,8 @@ transform/pos = Vector2( 195.463, 306.718 )
 
 [node name="swarms" type="Node" parent="."]
 
-[node name="char3" parent="." instance=ExtResource( 5 )]
-
-transform/pos = Vector2( 1130, 340 )
-
 [node name="char4" parent="." instance=ExtResource( 5 )]
 
-transform/pos = Vector2( -495.79, 349.273 )
+transform/pos = Vector2( 660, 320 )
 
 
