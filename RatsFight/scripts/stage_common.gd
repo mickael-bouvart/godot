@@ -48,5 +48,7 @@ func next_step():
 func _fixed_process(delta):
 	if _node_camera.get_limit(MARGIN_RIGHT) < _camera_limit:
 		_node_camera.set_limit(MARGIN_RIGHT, _node_camera.get_limit(MARGIN_RIGHT) + CAMERA_SCROLL_SPEED)
+	if _node_camera.get_limit(MARGIN_RIGHT) > _camera_limit:
+		_node_camera.set_limit(MARGIN_RIGHT, _camera_limit)
 	if (Input.is_action_pressed("reset_scene")):
 		get_tree().reload_current_scene()

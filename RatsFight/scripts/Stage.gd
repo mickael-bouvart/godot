@@ -38,6 +38,10 @@ func next_step():
 func _fixed_process(delta):
 	if _camera.get_limit(MARGIN_RIGHT) < camera_limit:
 		_camera.set_limit(MARGIN_RIGHT, _camera.get_limit(MARGIN_RIGHT) + CAMERA_SCROLL_SPEED)
+		if _camera.get_limit(MARGIN_RIGHT) > camera_limit:
+			_camera.set_limit(MARGIN_RIGHT, camera_limit)
+	elif _camera.get_limit(MARGIN_RIGHT) > camera_limit:
+		_camera.set_limit(MARGIN_RIGHT, camera_limit)
 	var reset = Input.is_action_pressed("reset_scene")
 	if (reset):
 		get_tree().reload_current_scene()
