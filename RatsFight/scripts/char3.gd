@@ -3,13 +3,17 @@ extends KinematicBody2D
 const GRAVITY = 500
 const DRIVE_SPEED = 800
 
+signal signal_dead
+
 var _power = 2
 var _knock_down = true
 var _sound_playing
 var _limit_left
 var _limit_right
-
 var _detached
+var _spawner = null
+
+export var char_walk_speed = 100
 
 var char3_2_preload = preload("res://scenes/char3_2.tscn")
 
@@ -42,12 +46,14 @@ func _fixed_process(delta):
 	#print(str(pos.x) + ", " + str(_limit_left))
 	if _current_left == 1 && pos.x < _limit_left:
 		if _detached:
+			emit_signal("signal_dead", self)
 			queue_free()
 		_current_left = -1
 		_velocity.x = DRIVE_SPEED
 		set_scale(Vector2(_current_left, 1))
 	elif _current_left == -1 && pos.x > _limit_right:
 		if _detached:
+			emit_signal("signal_dead", self)
 			queue_free()
 		_current_left = 1
 		_velocity.x = -DRIVE_SPEED
@@ -85,7 +91,10 @@ func get_hit(power, knock_down):
 		return
 	_detached = true
 	var char3_2 = char3_2_preload.instance()
+	if _spawner != null:
+		_spawner.connect_event("signal_dead", char3_2)
 	char3_2.set_pos(get_pos())
+	char3_2.set_walk_speed(char_walk_speed)
 	get_node("../").add_child(char3_2)
 	char3_2.get_node("sprite").set_modulate(get_node("sprite").get_modulate())
 	char3_2.get_hit(power, true)
@@ -98,3 +107,9 @@ func _on_offensive_hitbox_area_area_enter( area ):
 	var player = area.get_node("../")
 	player.get_hit(_power, _knock_down)
 	get_node("sound").play("punch_01")
+
+func set_spawner(spawner):
+	_spawner = spawner
+
+func set_char_walk_speed(new_speed):
+	char_walk_speed = new_speed

@@ -14,9 +14,9 @@ const MAX_HP = 60
 const WALK_SPEED = 1500
 
 const PARAMS = [
-	{ "WALK_SPEED": 700, "GRAVITY": 1200.0, "JUMP_FORCE": 800, "KNOCK_DOWN_FORCE": 300 },
-	{ "WALK_SPEED": 1100, "GRAVITY": 3200.0, "JUMP_FORCE": 1400, "KNOCK_DOWN_FORCE": 500 },
-	{ "WALK_SPEED": 1500, "GRAVITY": 5000.0, "JUMP_FORCE": 1750, "KNOCK_DOWN_FORCE": 1500 }
+	{ "WALK_SPEED": 700, "GRAVITY": 1200.0, "JUMP_FORCE": 800, "KNOCK_DOWN_FORCE": 300, "CAN_JUMP": false },
+	{ "WALK_SPEED": 1100, "GRAVITY": 3200.0, "JUMP_FORCE": 1400, "KNOCK_DOWN_FORCE": 500, "CAN_JUMP": false },
+	{ "WALK_SPEED": 1500, "GRAVITY": 5000.0, "JUMP_FORCE": 1750, "KNOCK_DOWN_FORCE": 1500, "CAN_JUMP": true }
 ]
 
 func params_idx():
@@ -41,6 +41,9 @@ func jump_force():
 
 func knock_down_force():
 	return PARAMS[params_idx()].KNOCK_DOWN_FORCE
+
+func can_jump():
+	return PARAMS[params_idx()].CAN_JUMP
 
 enum STATE {
 	HIT,
@@ -109,7 +112,7 @@ func _fixed_process(delta):
 		if new_left != null && new_left != _current_left:
 			set_scale(Vector2(new_left, 1))
 			_current_left = new_left
-		if !is_near && should_jump() && _attempt_jump:
+		if !is_near && should_jump() && _attempt_jump && can_jump():
 			_state = STATE.JUMP
 			_velocity.y = -jump_force()
 			_velocity.x = -walk_speed() * _current_left

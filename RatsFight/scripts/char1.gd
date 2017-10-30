@@ -172,3 +172,6 @@ func get_up():
 	velocity = Vector2(0, 0)
 	state = STATE.IDLE
 	get_node("anim").play("stand")
+
+func set_walk_speed(new_walk_speed):
+	walk_speed = new_walk_speed
