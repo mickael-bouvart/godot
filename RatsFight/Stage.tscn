@@ -21,7 +21,7 @@ b = Vector2( 0, 560 )
 [node name="Main" type="Node"]
 
 script/script = ExtResource( 1 )
-bgm = "stage_street"
+bgm = "boss"
 
 [node name="background" type="Sprite" parent="."]
 
@@ -94,7 +94,7 @@ _update_shape_index = 0
 
 [node name="hero1" parent="." instance=ExtResource( 3 )]
 
-transform/pos = Vector2( 195.463, 306.718 )
+transform/pos = Vector2( 55.463, 306.718 )
 
 [node name="hud" parent="." instance=ExtResource( 4 )]
 
@@ -102,6 +102,6 @@ transform/pos = Vector2( 195.463, 306.718 )
 
 [node name="char5" parent="." instance=ExtResource( 5 )]
 
-transform/pos = Vector2( 530, 320 )
+transform/pos = Vector2( 1080, 330 )
 
 

@@ -259,6 +259,7 @@ func end_hit():
 func get_hit(power, knock_down):
 	_speed = WALK_SPEED
 	_velocity.x = 0
+	print(str(_hp) + " - " + str(power))
 	_hp -= power
 	if _hp <= 0:
 		_velocity = Vector2(_current_left * _speed, -200)
@@ -268,6 +269,7 @@ func get_hit(power, knock_down):
 		_node_anim.play("being_hit")
 		_state = STATE.BEING_HIT
 	else:
+		defensive_hitbox(false)
 		_velocity = Vector2(_current_left * _speed, -200)
 		_node_anim.play("knock_down")
 		_state = STATE.BEING_HIT
@@ -318,7 +320,7 @@ func respawn():
 	_current_left = -1
 	_velocity = Vector2(0, 0)
 	set_scale(Vector2(_current_left, 1))
-	get_node("defensive_hitbox_area").set_monitorable(true)
+	defensive_hitbox(true)
 	set_pos(Vector2(get_pos().x, 0))
 	emit_signal("state_changed", self)
 
