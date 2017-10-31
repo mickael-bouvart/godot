@@ -168,9 +168,12 @@ tracks/2/path = NodePath(".")
 tracks/2/interp = 1
 tracks/2/imported = false
 tracks/2/keys = {
-"times": FloatArray( 2 ),
-"transitions": FloatArray( 1 ),
+"times": FloatArray( 0.8, 2 ),
+"transitions": FloatArray( 1, 1 ),
 "values": [ {
+"args": [  ],
+"method": "shake_camera"
+}, {
 "args": [  ],
 "method": "dead"
 } ]
@@ -264,7 +267,7 @@ default/chorus_send = 0.0
 texture = ExtResource( 3 )
 vframes = 4
 hframes = 3
-frame = 9
+frame = 11
 
 [node name="anim" type="AnimationPlayer" parent="."]
 
@@ -294,6 +297,7 @@ gravity = 98.0
 linear_damp = 0.1
 angular_damp = 1.0
 monitoring = false
+monitorable = false
 collision/layers = 4096
 collision/mask = 2048
 

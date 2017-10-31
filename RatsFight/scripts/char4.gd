@@ -62,6 +62,7 @@ var _touch_floor
 var _objective_cnt
 
 func _ready():
+	get_node("sprite").show()
 	randomize()
 	_objective_cnt = 0
 	_attempt_jump = false
@@ -231,3 +232,6 @@ func get_up():
 func dead():
 	emit_signal("signal_dead", self)
 	queue_free()
+
+func shake_camera():
+	utils.shake_camera(utils.BOSS_DIE_SHAKE_MAGNITUDE, utils.BOSS_DIE_SHAKE_DURATION)

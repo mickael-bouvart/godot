@@ -138,6 +138,7 @@ func get_hit(power, knock_down):
 		state = STATE.BEING_HIT
 
 func _ready():
+	get_node("defensive_hitbox_area").set_monitorable(true)
 	current_pattern = patterns[2]
 	life = MAX_LIFE
 	state = STATE.IDLE
@@ -162,11 +163,11 @@ func _on_offensive_hitbox_area_area_enter( area ):
 	var player = area.get_node("../")
 	player.get_hit(_power, _knock_down)
 	get_node("sound").play("punch_01")
-	
+
 func end_hit():
 	state = STATE.IDLE
 	get_node("anim").play("stand")
-	
+
 func get_up():
 	get_node("defensive_hitbox_area").set_monitorable(true)
 	velocity = Vector2(0, 0)
@@ -175,3 +176,6 @@ func get_up():
 
 func set_walk_speed(new_walk_speed):
 	walk_speed = new_walk_speed
+
+func shake_camera():
+	utils.shake_camera(utils.DEFAULT_SHAKE_MAGNITUDE, utils.DEFAULT_SHAKE_DURATION)

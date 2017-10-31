@@ -48,6 +48,8 @@ var _power
 var _knock_down
 var _invicibility_cnt
 
+var preload_spark = preload("res://scenes/spark_hit.tscn")
+
 onready var _node_anim = get_node("anim")
 onready var _node_defensive_hitbox_area = get_node("defensive_hitbox_area")
 onready var _node_offensive_hitbox_area = get_node("offensive_hitbox_area")
@@ -55,6 +57,7 @@ onready var _node_offensive_hitbox_area2 = get_node("offensive_hitbox_area2")
 onready var _node_offensive_hitbox_area3 = get_node("offensive_hitbox_area3")
 onready var _node_sound = get_node("sound")
 onready var _node_timer = get_node("timer")
+onready var _node_camera = get_node("camera")
 
 func _ready():
 	_invicibility_cnt = 0
@@ -253,7 +256,19 @@ func _on_offensive_hitbox_area_area_enter( area ):
 	var enemy = area.get_node("../")
 	enemy.get_hit(_power, _knock_down)
 	_last_hit_connect = true
-	_node_sound.play("punch_01")
+	var spark
+	if _knock_down:
+		spark = preload_spark.instance()
+		_node_sound.play("punch_02")
+	else:
+		spark = preload_spark.instance()
+		_node_sound.play("punch_01")
+	var pos = Vector2()
+	pos.x = (area.get_global_pos().x + _node_offensive_hitbox_area.get_global_pos().x) / 2
+	pos.y = (area.get_global_pos().y + _node_offensive_hitbox_area.get_global_pos().y) / 2
+	spark.set_pos(pos)
+	spark.set_scale(Vector2(_current_left, 1))
+	get_node("../").add_child(spark)
 
 func end_hit():
 	_state = STATE.IDLE
@@ -265,6 +280,8 @@ func get_hit(power, knock_down):
 	print(str(_hp) + " - " + str(power))
 	_hp -= power
 	if _hp <= 0:
+		_node_camera.shake(utils.DEFAULT_SHAKE_MAGNITUDE, utils.DEFAULT_SHAKE_DURATION)
+		defensive_hitbox(false)
 		_velocity = Vector2(_current_left * _speed, -200)
 		_node_anim.play("ko")
 		_state = STATE.KO
@@ -272,6 +289,7 @@ func get_hit(power, knock_down):
 		_node_anim.play("being_hit")
 		_state = STATE.BEING_HIT
 	else:
+		_node_camera.shake(utils.DEFAULT_SHAKE_MAGNITUDE, utils.DEFAULT_SHAKE_DURATION)
 		defensive_hitbox(false)
 		_velocity = Vector2(_current_left * _speed, -200)
 		_node_anim.play("knock_down")

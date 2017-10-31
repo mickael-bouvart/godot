@@ -135,9 +135,12 @@ tracks/2/path = NodePath(".")
 tracks/2/interp = 1
 tracks/2/imported = false
 tracks/2/keys = {
-"times": FloatArray( 2 ),
-"transitions": FloatArray( 1 ),
+"times": FloatArray( 0.5, 2 ),
+"transitions": FloatArray( 1, 1 ),
 "values": [ {
+"args": [  ],
+"method": "shake_camera"
+}, {
 "args": [  ],
 "method": "dead"
 } ]
@@ -193,6 +196,7 @@ script/script = ExtResource( 1 )
 
 [node name="sprite" type="Sprite" parent="."]
 
+visibility/visible = false
 texture = ExtResource( 2 )
 flip_h = true
 vframes = 3

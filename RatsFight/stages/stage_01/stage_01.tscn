@@ -211,7 +211,7 @@ transform/pos = Vector2( 195.463, 306.718 )
 
 [node name="swarm_01" parent="swarms" instance_placeholder="res://stages/stage_01/swarm_01.tscn"]
 
-camera_limit = 1024
+camera_limit = 1100
 
 [node name="swarm_02" parent="swarms" instance_placeholder="res://stages/stage_01/swarm_02.tscn"]
 
