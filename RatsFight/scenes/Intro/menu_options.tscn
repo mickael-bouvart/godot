@@ -1,0 +1,47 @@
+[gd_scene load_steps=2 format=1]
+
+[sub_resource type="GDScript" id=1]
+
+resource/name = "menu_options"
+script/source = "extends VBoxContainer
+
+func _ready():
+	get_node(\"button_back\").grab_focus()
+	pass
+
+func _on_button_back_pressed():
+	utils.switch_menu(self, \"res://scenes/Intro/main_menu.tscn\")
+"
+
+[node name="menu_options" type="VBoxContainer"]
+
+focus/ignore_mouse = false
+focus/stop_mouse = false
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 370.0
+margin/top = 340.0
+margin/right = 580.0
+margin/bottom = 530.0
+alignment = 0
+script/script = SubResource( 1 )
+
+[node name="button_back" type="Button" parent="."]
+
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 0.0
+margin/top = 0.0
+margin/right = 210.0
+margin/bottom = 20.0
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+text = "Back"
+flat = false
+
+[connection signal="pressed" from="button_back" to="." method="_on_button_back_pressed"]
+
+
