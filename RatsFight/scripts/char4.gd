@@ -9,7 +9,6 @@ onready var _node_anim = get_node("anim")
 var _preload_bullet = preload("res://scenes/bullet.tscn")
 
 const NEAR_THRESHOLD = 50
-const FLOOR_ANGLE_TOLERANCE = 40
 const MAX_HP = 60
 const WALK_SPEED = 1500
 
@@ -179,7 +178,7 @@ func apply_forces(delta):
 	if (is_colliding()):
 		var n = get_collision_normal()
 		# touch the floor
-		if (rad2deg(acos(n.dot(Vector2(0, -1)))) < FLOOR_ANGLE_TOLERANCE):
+		if (rad2deg(acos(n.dot(Vector2(0, -1)))) < globals.FLOOR_ANGLE_TOLERANCE):
 			_touch_floor = 1
 			if [STATE.BEING_HIT, STATE.KO, STATE.IDLE, STATE.HIT].has(_state):
 				motion.x = 0
@@ -234,4 +233,4 @@ func dead():
 	queue_free()
 
 func shake_camera():
-	utils.shake_camera(utils.BOSS_DIE_SHAKE_MAGNITUDE, utils.BOSS_DIE_SHAKE_DURATION)
+	utils.shake_camera(globals.BOSS_DIE_SHAKE_MAGNITUDE, globals.BOSS_DIE_SHAKE_DURATION)

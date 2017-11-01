@@ -4,9 +4,7 @@ signal signal_dead
 
 export var walk_speed = 100
 
-const FLOOR_ANGLE_TOLERANCE = 40
 const MAX_LIFE = 5
-const GRAVITY = 500.0
 const MIN_DISTANCE_FOLLOW = 200
 
 enum STATE {
@@ -88,7 +86,7 @@ func _fixed_process(delta):
 	if state == STATE.IDLE || state == STATE.WALK:
 		update_current_left()
 		
-	var force = Vector2(0, GRAVITY)
+	var force = Vector2(0, globals.GRAVITY)
 	
 	# Integrate forces to velocity
 	velocity += force*delta
@@ -99,7 +97,7 @@ func _fixed_process(delta):
 	if (is_colliding()):
 		var n = get_collision_normal()
 		# touch the floor
-		if (rad2deg(acos(n.dot(Vector2(0, -1)))) < FLOOR_ANGLE_TOLERANCE):
+		if (rad2deg(acos(n.dot(Vector2(0, -1)))) < globals.FLOOR_ANGLE_TOLERANCE):
 			if [STATE.BEING_HIT, STATE.KO, STATE.IDLE, STATE.HIT].has(state):
 				motion.x = 0
 		
@@ -178,4 +176,4 @@ func set_walk_speed(new_walk_speed):
 	walk_speed = new_walk_speed
 
 func shake_camera():
-	utils.shake_camera(utils.DEFAULT_SHAKE_MAGNITUDE, utils.DEFAULT_SHAKE_DURATION)
+	utils.shake_camera(globals.DEFAULT_SHAKE_MAGNITUDE, globals.DEFAULT_SHAKE_DURATION)

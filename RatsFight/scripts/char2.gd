@@ -3,9 +3,6 @@ extends KinematicBody2D
 signal signal_dead
 
 const MAX_LIFE = 40
-# Angle in degrees towards either side that the player can consider "floor"
-const FLOOR_ANGLE_TOLERANCE = 40
-const GRAVITY = 500.0
 const WALK_SPEED = 300
 const HIT_02_JUMP_FORCE_X = 80
 const HIT_02_JUMP_FORCE_Y = -600
@@ -97,7 +94,7 @@ func _fixed_process(delta):
 			#print("Switching direction: " + str(new_left))
 			set_scale(Vector2(new_left, 1))
 			current_left = new_left
-	var force = Vector2(0, GRAVITY)
+	var force = Vector2(0, globals.GRAVITY)
 	
 	# Integrate forces to velocity
 	velocity += force*delta
@@ -108,7 +105,7 @@ func _fixed_process(delta):
 	if (is_colliding()):
 		var n = get_collision_normal()
 		# touch the floor
-		if (rad2deg(acos(n.dot(Vector2(0, -1)))) < FLOOR_ANGLE_TOLERANCE):
+		if (rad2deg(acos(n.dot(Vector2(0, -1)))) < globals.FLOOR_ANGLE_TOLERANCE):
 			if [STATE.BEING_HIT, STATE.KO, STATE.IDLE, STATE.HIT].has(state):
 				motion.x = 0
 		if ![STATE.BEING_HIT, STATE.KO].has(state):
@@ -192,4 +189,4 @@ func hit_02_ground():
 	state = STATE.IDLE
 
 func shake_camera():
-	utils.shake_camera(utils.BOSS_DIE_SHAKE_MAGNITUDE, utils.BOSS_DIE_SHAKE_DURATION)
+	utils.shake_camera(globals.BOSS_DIE_SHAKE_MAGNITUDE, globals.BOSS_DIE_SHAKE_DURATION)

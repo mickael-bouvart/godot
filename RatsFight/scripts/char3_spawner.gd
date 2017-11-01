@@ -1,11 +1,11 @@
 extends Node
 
-const MAX_SPAWNS = 2
+const MAX_SPAWNS = 1
+const SPAWN_INTERVAL = 5
 
 var preload_char3 = preload("res://scenes/char3.tscn")
 var _spawn_cnt
 var _spawn_time_cnt
-const SPAWN_INTERVAL = 5
 
 func _ready():
 	_spawn_cnt = 0

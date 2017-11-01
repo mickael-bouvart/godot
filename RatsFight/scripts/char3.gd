@@ -1,6 +1,5 @@
 extends KinematicBody2D
 
-const GRAVITY = 500
 const DRIVE_SPEED = 800
 
 signal signal_dead
@@ -59,7 +58,7 @@ func _fixed_process(delta):
 		_velocity.x = -DRIVE_SPEED
 		set_scale(Vector2(_current_left, 1))
 	
-	var force = Vector2(0, GRAVITY)
+	var force = Vector2(0, globals.GRAVITY)
 	# Integrate forces to velocity
 	_velocity += force*delta
 	# Integrate velocity into motion and move

@@ -2,12 +2,10 @@ extends KinematicBody2D
 
 signal state_changed
 
-# Angle in degrees towards either side that the player can consider "floor"
-const FLOOR_ANGLE_TOLERANCE = 40
+const GRAVITY = 1000.0
 const MAX_LIFE = 3
 const INIT_SPECIAL = 2
 const MAX_HP = 20
-const GRAVITY = 1000.0
 const WALK_SPEED = 200
 const RUN_SPEED = 400
 const SPECIAL_SPEED = 800
@@ -27,6 +25,8 @@ enum STATE {
 	JUMP_HIT,
 	SPECIAL
 }
+
+export var _player = "p1"
 
 var _hp
 var _life
@@ -60,8 +60,8 @@ onready var _node_timer = get_node("timer")
 onready var _node_camera = get_node("camera")
 
 func _ready():
-	_invicibility_cnt = 0
 	set_fixed_process(true)
+	_invicibility_cnt = 0
 	_hp = MAX_HP
 	_special = INIT_SPECIAL
 	_life = MAX_LIFE
@@ -79,12 +79,12 @@ func _ready():
 	_combo_frame_count = 0
 	
 func _fixed_process(delta):
-	var action_hit = Input.is_action_pressed("hit")
-	var action_special = Input.is_action_pressed("special")
-	var walk_left = Input.is_action_pressed("ui_left")
-	var walk_right = Input.is_action_pressed("ui_right")
-	var action_jump = Input.is_action_pressed("jump")
-	var action_run = Input.is_action_pressed("run")
+	var action_hit = utils.is_input_action_pressed(_player, "hit")
+	var action_special = utils.is_input_action_pressed(_player, "special")
+	var walk_left = utils.is_input_action_pressed(_player, "left")
+	var walk_right = utils.is_input_action_pressed(_player, "right")
+	var action_jump = utils.is_input_action_pressed(_player, "jump")
+	var action_run = utils.is_input_action_pressed(_player, "run")
 	var new_left = null
 
 	if _invicibility_cnt > 0:
@@ -231,7 +231,7 @@ func move_body(delta):
 		#print(get_collider())
 		var n = get_collision_normal()
 		#print(n)
-		if (rad2deg(acos(n.dot(Vector2(0, -1)))) < FLOOR_ANGLE_TOLERANCE):
+		if (rad2deg(acos(n.dot(Vector2(0, -1)))) < globals.FLOOR_ANGLE_TOLERANCE):
 			new_touch_floor = true
 			if (_state == STATE.JUMP_HIT):
 				_node_offensive_hitbox_area3.set_enable_monitoring(false)
@@ -280,7 +280,7 @@ func get_hit(power, knock_down):
 	print(str(_hp) + " - " + str(power))
 	_hp -= power
 	if _hp <= 0:
-		_node_camera.shake(utils.DEFAULT_SHAKE_MAGNITUDE, utils.DEFAULT_SHAKE_DURATION)
+		_node_camera.shake(globals.DEFAULT_SHAKE_MAGNITUDE, globals.DEFAULT_SHAKE_DURATION)
 		defensive_hitbox(false)
 		_velocity = Vector2(_current_left * _speed, -200)
 		_node_anim.play("ko")
@@ -289,7 +289,7 @@ func get_hit(power, knock_down):
 		_node_anim.play("being_hit")
 		_state = STATE.BEING_HIT
 	else:
-		_node_camera.shake(utils.DEFAULT_SHAKE_MAGNITUDE, utils.DEFAULT_SHAKE_DURATION)
+		_node_camera.shake(globals.DEFAULT_SHAKE_MAGNITUDE, globals.DEFAULT_SHAKE_DURATION)
 		defensive_hitbox(false)
 		_velocity = Vector2(_current_left * _speed, -200)
 		_node_anim.play("knock_down")

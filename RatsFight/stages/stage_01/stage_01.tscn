@@ -204,6 +204,7 @@ _update_shape_index = 0
 [node name="hero1" parent="." instance=ExtResource( 3 )]
 
 transform/pos = Vector2( 195.463, 306.718 )
+_player = "p1"
 
 [node name="hud" parent="." instance=ExtResource( 4 )]
 

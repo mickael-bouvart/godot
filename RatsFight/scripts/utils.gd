@@ -1,10 +1,5 @@
 extends Node
 
-const DEFAULT_SHAKE_MAGNITUDE = 2
-const DEFAULT_SHAKE_DURATION = 0.2
-const BOSS_DIE_SHAKE_MAGNITUDE = 5
-const BOSS_DIE_SHAKE_DURATION = 0.4
-
 func _ready():
 	pass
 
@@ -16,3 +11,6 @@ func get_camera():
 
 func shake_camera(magnitude, duration):
 	get_camera().shake(magnitude, duration)
+
+func is_input_action_pressed(p, action):
+	return Input.is_action_pressed(p + "_" + action)
