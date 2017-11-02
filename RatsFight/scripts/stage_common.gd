@@ -16,6 +16,7 @@ var plchar1 = preload("res://scenes/char1.tscn")
 var plchar2 = preload("res://scenes/char2.tscn")
 
 func _ready():
+	_node_camera.make_current()
 	bgms.play(bgm)
 	_current_swarm = -1
 	_swarms = _node_swarms.get_children()

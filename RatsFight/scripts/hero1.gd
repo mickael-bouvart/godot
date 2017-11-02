@@ -375,3 +375,6 @@ func _on_timer_timeout():
 
 func defensive_hitbox(active):
 	_node_defensive_hitbox_area.set_monitorable(active)
+
+func get_player():
+	return _player

@@ -10,6 +10,7 @@ var swarms
 var current_swarm
 
 func _ready():
+	_camera.make_current()
 	bgms.play(bgm)
 	current_swarm = -1
 	swarms = get_node("swarms").get_children()

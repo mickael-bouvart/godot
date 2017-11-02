@@ -405,6 +405,7 @@ collision/layers = 4
 collision/mask = 3
 collision/margin = 0.079
 script/script = ExtResource( 1 )
+_player = "p1"
 
 [node name="timer" type="Timer" parent="."]
 
@@ -417,7 +418,7 @@ autostart = false
 
 anchor_mode = 1
 rotating = false
-current = true
+current = false
 zoom = Vector2( 1, 1 )
 limit/left = 0
 limit/top = -40
