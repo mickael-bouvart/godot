@@ -1,11 +1,15 @@
 extends Node
 
+signal signal_dead
+
 const MAX_SPAWNS = 1
 const SPAWN_INTERVAL = 5
 
 var preload_char3 = preload("res://scenes/char3.tscn")
 var _spawn_cnt
 var _spawn_time_cnt
+var _deadsignal_receiver = null
+var _deadsignal_callback = null
 
 func _ready():
 	_spawn_cnt = 0
@@ -23,8 +27,10 @@ func _fixed_process(delta):
 
 func spawn():
 	var char3 = preload_char3.instance()
+	char3.add_to_group("spawned")
 	char3.set_spawner(self)
 	char3.set_char_walk_speed(300)
+	char3.connect_dead(_deadsignal_receiver, _deadsignal_callback)
 	var left = randi() % 2 == 0
 	if left:
 		char3.set_pos(Vector2(-500, 300))
@@ -39,4 +45,10 @@ func on_char3_2_dead(char):
 	_spawn_cnt -= 1
 
 func get_hit(power, knock_down):
+	emit_signal("signal_dead", self)
 	queue_free()
+
+func connect_dead(receiver, callback):
+	connect("signal_dead", receiver, callback)
+	_deadsignal_receiver = receiver
+	_deadsignal_callback = callback

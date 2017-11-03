@@ -1,9 +1,10 @@
-[gd_scene load_steps=11 format=1]
+[gd_scene load_steps=12 format=1]
 
 [ext_resource path="res://scripts/stage_common.gd" type="Script" id=1]
-[ext_resource path="res://assets/background/bg_cuisine.png" type="Texture" id=2]
-[ext_resource path="res://scenes/hero1.tscn" type="PackedScene" id=3]
-[ext_resource path="res://scenes/hud.tscn" type="PackedScene" id=4]
+[ext_resource path="res://stages/stage_02/stage_02.tscn" type="PackedScene" id=2]
+[ext_resource path="res://assets/background/bg_cuisine.png" type="Texture" id=3]
+[ext_resource path="res://scenes/hero1.tscn" type="PackedScene" id=4]
+[ext_resource path="res://scenes/hud.tscn" type="PackedScene" id=5]
 
 [sub_resource type="SegmentShape2D" id=1]
 
@@ -45,10 +46,11 @@ b = Vector2( 5000, 0 )
 
 script/script = ExtResource( 1 )
 bgm = "stage_kitchen"
+next_stage = ExtResource( 2 )
 
 [node name="background" type="Sprite" parent="."]
 
-texture = ExtResource( 2 )
+texture = ExtResource( 3 )
 centered = false
 
 [node name="borders" type="Node" parent="."]
@@ -203,16 +205,16 @@ shape = SubResource( 6 )
 trigger = false
 _update_shape_index = 0
 
-[node name="hero1" parent="." instance=ExtResource( 3 )]
+[node name="hero1" parent="." instance=ExtResource( 4 )]
 
 transform/pos = Vector2( 195.463, 306.718 )
 
-[node name="hero2" parent="." instance=ExtResource( 3 )]
+[node name="hero2" parent="." instance=ExtResource( 4 )]
 
 transform/pos = Vector2( 195.463, 306.718 )
 _player = "p2"
 
-[node name="hud" parent="." instance=ExtResource( 4 )]
+[node name="hud" parent="." instance=ExtResource( 5 )]
 
 [node name="swarms" type="Node" parent="."]
 

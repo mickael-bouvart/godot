@@ -61,7 +61,9 @@ extents = Vector2( 110, 50 )
 custom_solver_bias = 0.0
 extents = Vector2( 90, 40 )
 
-[node name="char3" type="KinematicBody2D"]
+[node name="char3" type="KinematicBody2D" groups=[
+"simple_enemy",
+]]
 
 input/pickable = false
 shapes/0/shape = SubResource( 1 )
@@ -71,6 +73,7 @@ collision/layers = 8
 collision/mask = 1
 collision/margin = 0.08
 script/script = ExtResource( 1 )
+char_walk_speed = 100
 
 [node name="sound" type="SamplePlayer" parent="."]
 

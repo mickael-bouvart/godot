@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=1]
+
+[ext_resource path="res://scripts/swarm_common.gd" type="Script" id=1]
+[ext_resource path="res://scenes/char4.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/char3_spawner.tscn" type="PackedScene" id=3]
+
+[node name="swarm_03_4" type="Node"]
+
+script/script = ExtResource( 1 )
+camera_limit = 0
+bgm = ""
+
+[node name="char4" parent="." instance=ExtResource( 2 )]
+
+transform/pos = Vector2( 2070, 350 )
+
+[node name="char3_spawner" parent="." instance=ExtResource( 3 )]
+
+

@@ -3,8 +3,8 @@ extends KinematicBody2D
 signal signal_dead
 
 export var walk_speed = 100
+export var max_hp = 5
 
-const MAX_LIFE = 5
 const MIN_DISTANCE_FOLLOW = 200
 
 enum STATE {
@@ -138,7 +138,7 @@ func get_hit(power, knock_down):
 func _ready():
 	get_node("defensive_hitbox_area").set_monitorable(true)
 	current_pattern = patterns[2]
-	life = MAX_LIFE
+	life = max_hp
 	state = STATE.IDLE
 	get_node("anim").play("stand")
 	update_current_left()
@@ -177,3 +177,6 @@ func set_walk_speed(new_walk_speed):
 
 func shake_camera():
 	utils.shake_camera(globals.DEFAULT_SHAKE_MAGNITUDE, globals.DEFAULT_SHAKE_DURATION)
+
+func connect_dead(receiver, callback):
+	connect("signal_dead", receiver, callback)

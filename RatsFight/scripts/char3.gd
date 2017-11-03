@@ -11,6 +11,8 @@ var _limit_left
 var _limit_right
 var _detached
 var _spawner = null
+var _deadsignal_receiver = null
+var _deadsignal_callback = null
 
 export var char_walk_speed = 100
 
@@ -92,8 +94,11 @@ func get_hit(power, knock_down):
 	var char3_2 = char3_2_preload.instance()
 	if _spawner != null:
 		_spawner.connect_event("signal_dead", char3_2)
+	char3_2.connect_dead(_deadsignal_receiver, _deadsignal_callback)
 	char3_2.set_pos(get_pos())
 	char3_2.set_walk_speed(char_walk_speed)
+	if is_in_group("spawned"):
+		char3_2.add_to_group("spawned")
 	get_node("../").add_child(char3_2)
 	char3_2.get_node("sprite").set_modulate(get_node("sprite").get_modulate())
 	char3_2.get_hit(power, true)
@@ -112,3 +117,7 @@ func set_spawner(spawner):
 
 func set_char_walk_speed(new_speed):
 	char_walk_speed = new_speed
+
+func connect_dead(receiver, callback):
+	_deadsignal_receiver = receiver
+	_deadsignal_callback = callback

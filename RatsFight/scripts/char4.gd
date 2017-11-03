@@ -234,3 +234,6 @@ func dead():
 
 func shake_camera():
 	utils.shake_camera(globals.BOSS_DIE_SHAKE_MAGNITUDE, globals.BOSS_DIE_SHAKE_DURATION)
+
+func connect_dead(receiver, callback):
+	connect("signal_dead", receiver, callback)

@@ -1,6 +1,7 @@
 extends Node
 
 export var bgm = ""
+export (PackedScene) var next_stage = null
 
 const CAMERA_SCROLL_SPEED = 5
 
@@ -44,7 +45,10 @@ func next_step():
 		_node_right_border.set_pos(Vector2(_camera_limit, _node_right_border.get_pos().y))
 	else:
 		print("END LEVEL")
-		bgms.play("game_over")
+		if next_stage != null:
+			scene_manager.change_scene(next_stage.get_path())
+		else:
+			bgms.play("game_over")
 
 func _fixed_process(delta):
 	if _node_camera.get_limit(MARGIN_RIGHT) < _camera_limit:

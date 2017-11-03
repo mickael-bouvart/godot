@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=1]
+
+[ext_resource path="res://scripts/swarm_common.gd" type="Script" id=1]
+[ext_resource path="res://scenes/char3_2.tscn" type="PackedScene" id=2]
+
+[node name="swarm_01" type="Node"]
+
+script/script = ExtResource( 1 )
+camera_limit = 0
+bgm = ""
+
+[node name="char3_2_01" parent="." instance=ExtResource( 2 )]
+
+transform/pos = Vector2( 1290, 340 )
+max_hp = 5
+
+[node name="char3_2_02" parent="." instance=ExtResource( 2 )]
+
+transform/pos = Vector2( 1470, 340 )
+
+[node name="char3_2_03" parent="." instance=ExtResource( 2 )]
+
+transform/pos = Vector2( 1600, 340 )
+walk_speed = 130
+
+

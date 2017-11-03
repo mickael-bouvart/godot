@@ -171,6 +171,8 @@ func _fixed_process(delta):
 			new_left = -1
 			_velocity.x = _speed
 			if (![STATE.JUMP, STATE.FALL, STATE.SPECIAL].has(_state)):
+				_speed = WALK_SPEED
+				_velocity.x = _speed
 				_node_anim.play("walk")
 				_state = STATE.WALK
 		if [STATE.WALK, STATE.RUN, STATE.SPECIAL].has(_state):
@@ -192,6 +194,8 @@ func _fixed_process(delta):
 			new_left = 1
 			_velocity.x = -_speed
 			if (![STATE.JUMP, STATE.FALL, STATE.SPECIAL].has(_state)):
+				_speed = WALK_SPEED
+				_velocity.x = _speed
 				_node_anim.play("walk")
 				_state = STATE.WALK
 		if [STATE.WALK, STATE.RUN, STATE.SPECIAL].has(_state):

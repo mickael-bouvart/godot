@@ -12,9 +12,11 @@ func _ready():
 	_count_dead = 0
 	_nb_enemies = get_children().size()
 	for child in get_children():
-		child.connect("signal_dead", self, "one_dead")
+		child.connect_dead(self, "one_dead")
 
 func one_dead(char):
+	if char.is_in_group("spawned"):
+		return
 	if char.is_in_group("boss"):
 		for child in get_children():
 			if child.is_in_group("simple_enemy"):
