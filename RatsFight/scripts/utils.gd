@@ -4,8 +4,14 @@ func _ready():
 	pass
 
 func get_hero1():
-	return get_tree().get_root().get_node("Main/hero1")
+	return get_tree().get_root().get_node("Main/heroes").get_children()[0]
 
+func get_hero2():
+	var heroes = get_tree().get_root().get_node("Main/heroes").get_children()
+	if heroes.size() < 2:
+		return null
+	return heroes[1]
+	
 func get_camera():
 	return get_hero1().get_node("camera")
 

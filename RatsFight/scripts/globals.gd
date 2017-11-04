@@ -20,6 +20,28 @@ var score =  {
 	"p2": 0
 }
 
+var p1_control = "keyboard" setget set_p1_control, get_p1_control
+var p2_control = "keyboard" setget set_p2_control, get_p2_control
+var nb_players = 2 setget set_nb_players, get_nb_players
+
+func set_nb_players(value):
+	nb_players = value
+
+func get_nb_players():
+	return nb_players
+
+func set_p1_control(value):
+	p1_control = value
+
+func get_p1_control():
+	return p1_control
+
+func set_p2_control(value):
+	p2_control = value
+
+func get_p2_control():
+	return p2_control
+
 func add_score(p, value):
 	score[p] += value
 

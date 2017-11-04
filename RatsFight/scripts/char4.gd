@@ -104,7 +104,7 @@ func is_near(pos_x, objective_x):
 	return abs(pos_x - objective_x) < NEAR_THRESHOLD
 
 func should_jump():
-	var hero1 = get_tree().get_root().get_node("Main/hero1")
+	var hero1 = utils.get_hero1()
 	var hero1_pos = hero1.get_pos()
 	var pos = get_pos()
 	var dist = abs(pos.x - hero1_pos.x)
@@ -116,7 +116,7 @@ func should_jump():
 
 func find_objective():
 	var objective_x = 0
-	var hero1 = get_tree().get_root().get_node("Main/hero1")
+	var hero1 = utils.get_hero1()
 	var hero1_pos = hero1.get_pos()
 	var pos = get_pos()
 	if hero1_pos.x >= 0 && hero1_pos.x < 650:
@@ -131,7 +131,7 @@ func find_objective():
 	return objective_x
 
 func update_current_left():
-	var hero1 = get_tree().get_root().get_node("Main/hero1")
+	var hero1 = utils.get_hero1()
 	var new_left = null
 	if (get_pos().x < hero1.get_pos().x):
 		new_left = -1

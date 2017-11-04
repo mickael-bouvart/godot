@@ -3,19 +3,21 @@ extends Node
 var _hp_bar_initial_width
 
 func _ready():
-	var hero1 = get_tree().get_root().get_node("Main/hero1")
-	var hero2 = get_tree().get_root().get_node("Main/hero2")
+	pass
+
+func init_hud():
 	_hp_bar_initial_width = get_node("CanvasLayer/Panel/p1/current_hp_bar").get_size().x
+	var hero1 = utils.get_hero1()
 	if (hero1):
 		hero1.connect("state_changed", self, "_on_hero_state_changed")
 		_on_hero_state_changed(hero1)
+	var hero2 = utils.get_hero2()
 	if (hero2):
 		hero2.connect("state_changed", self, "_on_hero_state_changed")
 		_on_hero_state_changed(hero2)
 	else:
 		get_node("CanvasLayer/Panel/p2").hide()
-	pass
-
+	
 func _on_hero_state_changed(hero):
 	print("_on_hero_state_changed")
 	var p = hero.get_player()

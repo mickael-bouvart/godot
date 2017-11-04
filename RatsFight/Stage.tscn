@@ -1,9 +1,8 @@
-[gd_scene load_steps=7 format=1]
+[gd_scene load_steps=6 format=1]
 
 [ext_resource path="res://scripts/stage_common.gd" type="Script" id=1]
 [ext_resource path="res://assets/background/bg_street.png" type="Texture" id=2]
-[ext_resource path="res://scenes/hero1.tscn" type="PackedScene" id=3]
-[ext_resource path="res://scenes/hud.tscn" type="PackedScene" id=4]
+[ext_resource path="res://scenes/hud.tscn" type="PackedScene" id=3]
 
 [sub_resource type="SegmentShape2D" id=1]
 
@@ -29,6 +28,8 @@ texture = ExtResource( 2 )
 centered = false
 
 [node name="borders" type="Node" parent="."]
+
+editor/display_folded = true
 
 [node name="down_border" type="StaticBody2D" parent="borders"]
 
@@ -94,16 +95,9 @@ shape = SubResource( 2 )
 trigger = false
 _update_shape_index = 0
 
-[node name="hero1" parent="." instance=ExtResource( 3 )]
+[node name="heroes" type="Node" parent="."]
 
-transform/pos = Vector2( 287.277, 275.809 )
-
-[node name="hero2" parent="." instance=ExtResource( 3 )]
-
-transform/pos = Vector2( 287.277, 275.809 )
-_player = "p2"
-
-[node name="hud" parent="." instance=ExtResource( 4 )]
+[node name="hud" parent="." instance=ExtResource( 3 )]
 
 [node name="swarms" type="Node" parent="."]
 

@@ -36,7 +36,7 @@ func _ready():
 
 func _fixed_process(delta):
 	var pos = get_pos()
-	var hero1 = get_tree().get_root().get_node("Main/hero1")
+	var hero1 = utils.get_hero1()
 	var hero1_pos = hero1.get_pos()
 	
 	if abs(hero1_pos.x - pos.x) < 500 && !_sound_playing:
@@ -77,7 +77,7 @@ func _fixed_process(delta):
 	pass
 
 func update_current_left():
-	var hero1 = get_tree().get_root().get_node("Main/hero1")
+	var hero1 = utils.get_hero1()
 	var new_left = null
 	if (get_pos().x < hero1.get_pos().x):
 		new_left = -1

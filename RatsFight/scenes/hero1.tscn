@@ -5,8 +5,6 @@
 [ext_resource path="res://assets/sound/punch_02.wav" type="Sample" id=3]
 [ext_resource path="res://assets/sprites/sprites_hero1.png" type="Texture" id=4]
 
-
-
 [sub_resource type="RectangleShape2D" id=1]
 
 custom_solver_bias = 0.0
@@ -408,6 +406,7 @@ collision/mask = 3
 collision/margin = 0.079
 script/script = ExtResource( 1 )
 _player = "p1"
+_control = "keyboard"
 
 [node name="timer" type="Timer" parent="."]
 
@@ -459,7 +458,6 @@ texture = ExtResource( 4 )
 flip_h = true
 vframes = 6
 hframes = 5
-frame = 11
 
 [node name="anim" type="AnimationPlayer" parent="."]
 

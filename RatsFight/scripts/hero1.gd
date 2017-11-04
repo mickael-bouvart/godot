@@ -27,6 +27,7 @@ enum STATE {
 }
 
 export var _player = "p1"
+export var _control = "keyboard"
 
 var _hp
 var _life
@@ -79,12 +80,12 @@ func _ready():
 	_combo_frame_count = 0
 	
 func _fixed_process(delta):
-	var action_hit = utils.is_input_action_pressed(_player, "hit")
-	var action_special = utils.is_input_action_pressed(_player, "special")
-	var walk_left = utils.is_input_action_pressed(_player, "left")
-	var walk_right = utils.is_input_action_pressed(_player, "right")
-	var action_jump = utils.is_input_action_pressed(_player, "jump")
-	var action_run = utils.is_input_action_pressed(_player, "run")
+	var action_hit = utils.is_input_action_pressed(_control, "hit")
+	var action_special = utils.is_input_action_pressed(_control, "special")
+	var walk_left = utils.is_input_action_pressed(_control, "left")
+	var walk_right = utils.is_input_action_pressed(_control, "right")
+	var action_jump = utils.is_input_action_pressed(_control, "jump")
+	var action_run = utils.is_input_action_pressed(_control, "run")
 	var new_left = null
 
 	if _invicibility_cnt > 0:
@@ -389,3 +390,9 @@ func get_score():
 func add_score(value):
 	globals.add_score(_player, value)
 	emit_signal("state_changed", self)
+
+func set_player(player):
+	_player = player
+
+func set_control(control):
+	_control = control

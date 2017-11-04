@@ -5,18 +5,33 @@ export (PackedScene) var next_stage = null
 
 const CAMERA_SCROLL_SPEED = 5
 
-onready var _node_camera = get_node("hero1/camera")
+
 onready var _node_right_border = get_node("borders/right_border")
 onready var _node_swarms = get_node("swarms")
 
 var _camera_limit
 var _swarms
 var _current_swarm
+var _node_camera
 
 var plchar1 = preload("res://scenes/char1.tscn")
 var plchar2 = preload("res://scenes/char2.tscn")
-
+var plhero1 = preload("res://scenes/hero1.tscn")
+	
 func _ready():
+	var hero1 = plhero1.instance()
+	hero1.set_pos(Vector2(200, 0))
+	hero1.set_player("p1")
+	hero1.set_control(globals.p1_control)
+	get_node("heroes").add_child(hero1)
+	if globals.nb_players > 1:
+		var hero2 = plhero1.instance()
+		hero2.set_pos(Vector2(100, 0))
+		hero2.set_player("p2")
+		hero2.set_control(globals.p2_control)
+		get_node("heroes").add_child(hero2)
+	get_node("hud").init_hud()
+	_node_camera = hero1.get_node("camera")
 	_node_camera.make_current()
 	bgms.play(bgm)
 	_current_swarm = -1
