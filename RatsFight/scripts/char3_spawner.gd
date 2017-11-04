@@ -53,7 +53,7 @@ func on_char3_2_dead(char):
 	_spawn_cnt -= 1
 
 func get_hit(hero, power, knock_down):
-	_dying = 2.5
+	_dying = 5
 
 func connect_dead(receiver, callback):
 	connect("signal_dead", receiver, callback)
