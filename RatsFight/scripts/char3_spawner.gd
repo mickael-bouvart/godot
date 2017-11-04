@@ -45,6 +45,12 @@ func on_char3_2_dead(char):
 	_spawn_cnt -= 1
 
 func get_hit(power, knock_down):
+	var timer = Timer.new()
+	timer.set_wait_time(2.5)
+	timer.set_one_shot(true)
+	add_child(timer)
+	timer.start()
+	yield(timer, "timeout")
 	emit_signal("signal_dead", self)
 	queue_free()
 

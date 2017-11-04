@@ -138,5 +138,6 @@ camera_limit = 1960
 [node name="swarm_03_4" parent="swarms" instance_placeholder="res://stages/stage_02/swarm_03_3.tscn"]
 
 camera_limit = 1960
+bgm = "boss"
 
 
