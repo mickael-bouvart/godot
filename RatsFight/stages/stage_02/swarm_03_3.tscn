@@ -4,6 +4,8 @@
 [ext_resource path="res://scenes/char4.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/char3_spawner.tscn" type="PackedScene" id=3]
 
+
+
 [node name="swarm_03_4" type="Node"]
 
 script/script = ExtResource( 1 )

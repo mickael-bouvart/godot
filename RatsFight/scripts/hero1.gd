@@ -258,7 +258,7 @@ func move_body(delta):
 func _on_offensive_hitbox_area_area_enter( area ):
 	#print("_on_offensive_hitbox_area_area_enter")
 	var enemy = area.get_node("../")
-	enemy.get_hit(_power, _knock_down)
+	enemy.get_hit(self, _power, _knock_down)
 	_last_hit_connect = true
 	var spark
 	if _knock_down:
@@ -382,3 +382,10 @@ func defensive_hitbox(active):
 
 func get_player():
 	return _player
+
+func get_score():
+	return globals.get_score(_player)
+
+func add_score(value):
+	globals.add_score(_player, value)
+	emit_signal("state_changed", self)

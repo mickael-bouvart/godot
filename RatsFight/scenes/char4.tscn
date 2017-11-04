@@ -3,6 +3,8 @@
 [ext_resource path="res://scripts/char4.gd" type="Script" id=1]
 [ext_resource path="res://assets/sprites/sprites_char4.png" type="Texture" id=2]
 
+
+
 [sub_resource type="RectangleShape2D" id=1]
 
 custom_solver_bias = 0.0

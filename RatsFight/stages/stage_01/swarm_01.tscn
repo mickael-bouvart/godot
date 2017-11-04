@@ -3,6 +3,8 @@
 [ext_resource path="res://scripts/swarm_common.gd" type="Script" id=1]
 [ext_resource path="res://scenes/char1.tscn" type="PackedScene" id=2]
 
+
+
 [node name="swarm_01" type="Node"]
 
 script/script = ExtResource( 1 )

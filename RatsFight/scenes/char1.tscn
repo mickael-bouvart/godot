@@ -244,6 +244,8 @@ collision/mask = 1
 collision/margin = 0.08
 script/script = ExtResource( 1 )
 walk_speed = 100
+max_hp = 5
+_score = 50
 
 [node name="sound" type="SamplePlayer" parent="."]
 

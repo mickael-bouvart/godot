@@ -9,6 +9,8 @@
 [ext_resource path="res://assets/bgm/style-lab.ogg" type="AudioStream" id=7]
 [ext_resource path="res://assets/bgm/rock2-boss 1.ogg" type="AudioStream" id=8]
 
+
+
 [node name="bgms" type="Node"]
 
 script/script = ExtResource( 1 )

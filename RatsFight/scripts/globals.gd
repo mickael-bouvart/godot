@@ -15,5 +15,16 @@ const BOSS_DIE_SHAKE_DURATION = 0.4
 const FLOOR_ANGLE_TOLERANCE = 40
 const GRAVITY = 500.0
 
+var score =  {
+	"p1": 0,
+	"p2": 0
+}
+
+func add_score(p, value):
+	score[p] += value
+
+func get_score(p):
+	return score[p]
+
 func _ready():
 	pass

@@ -33,6 +33,7 @@ var current_pattern = null
 var pattern_duration_cnt = 0
 var _power
 var _knock_down
+export var _score = 2000
 
 func pattern_hit_01(frame, duration):
 	if (state == STATE.IDLE):
@@ -126,11 +127,13 @@ func _fixed_process(delta):
 		#print("Switching to pattern " + current_pattern["key"])
 	pass
 
-func get_hit(power, knock_down):
+func get_hit(hero, power, knock_down):
 	get_node("defensive_hitbox_area").set_monitorable(true)
 	velocity = Vector2(0, 0)
 	life -= power
 	if (life <= 0):
+		if hero:
+			hero.add_score(_score)
 		velocity = Vector2(current_left * WALK_SPEED, -200)
 		get_node("anim").play("ko")
 		state = STATE.KO

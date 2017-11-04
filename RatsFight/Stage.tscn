@@ -1,11 +1,9 @@
-[gd_scene load_steps=9 format=1]
+[gd_scene load_steps=7 format=1]
 
-[ext_resource path="res://scripts/Stage.gd" type="Script" id=1]
+[ext_resource path="res://scripts/stage_common.gd" type="Script" id=1]
 [ext_resource path="res://assets/background/bg_street.png" type="Texture" id=2]
 [ext_resource path="res://scenes/hero1.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scenes/hud.tscn" type="PackedScene" id=4]
-[ext_resource path="res://scenes/char4.tscn" type="PackedScene" id=5]
-[ext_resource path="res://scenes/char3_spawner.tscn" type="PackedScene" id=6]
 
 [sub_resource type="SegmentShape2D" id=1]
 
@@ -22,14 +20,17 @@ b = Vector2( 0, 560 )
 [node name="Main" type="Node"]
 
 script/script = ExtResource( 1 )
-bgm = "boss"
+bgm = ""
+next_stage = null
 
 [node name="background" type="Sprite" parent="."]
 
 texture = ExtResource( 2 )
 centered = false
 
-[node name="down_border" type="StaticBody2D" parent="."]
+[node name="borders" type="Node" parent="."]
+
+[node name="down_border" type="StaticBody2D" parent="borders"]
 
 editor/display_folded = true
 transform/pos = Vector2( -1500, 460 )
@@ -44,13 +45,13 @@ constant_angular_velocity = 0.0
 friction = 1.0
 bounce = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="down_border"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="borders/down_border"]
 
 shape = SubResource( 1 )
 trigger = false
 _update_shape_index = 0
 
-[node name="left_border" type="StaticBody2D" parent="."]
+[node name="left_border" type="StaticBody2D" parent="borders"]
 
 editor/display_folded = true
 input/pickable = false
@@ -64,14 +65,14 @@ constant_angular_velocity = 0.0
 friction = 0.0
 bounce = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="left_border"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="borders/left_border"]
 
 visibility/light_mask = 2
 shape = SubResource( 2 )
 trigger = false
 _update_shape_index = 0
 
-[node name="right_border" type="StaticBody2D" parent="."]
+[node name="right_border" type="StaticBody2D" parent="borders"]
 
 editor/display_folded = true
 transform/pos = Vector2( 1960, -40 )
@@ -86,7 +87,7 @@ constant_angular_velocity = 0.0
 friction = 0.0
 bounce = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="right_border"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="borders/right_border"]
 
 transform/pos = Vector2( 0, 50 )
 shape = SubResource( 2 )
@@ -106,10 +107,9 @@ _player = "p2"
 
 [node name="swarms" type="Node" parent="."]
 
-[node name="char5" parent="." instance=ExtResource( 5 )]
+[node name="swarm_03_4" parent="swarms" instance_placeholder="res://stages/stage_02/swarm_03_3.tscn"]
 
-transform/pos = Vector2( 1080, 330 )
-
-[node name="char3_spawner" parent="." instance=ExtResource( 6 )]
+camera_limit = 1960
+bgm = "boss"
 
 

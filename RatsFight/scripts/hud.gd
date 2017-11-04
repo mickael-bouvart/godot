@@ -23,3 +23,4 @@ func _on_hero_state_changed(hero):
 	get_node("CanvasLayer/Panel/" + p + "/current_hp_bar").set_size(Vector2(hp_ratio * _hp_bar_initial_width, get_node("CanvasLayer/Panel/" + p + "/current_hp_bar").get_size().y))
 	get_node("CanvasLayer/Panel/" + p + "/label_lives").set_text(str(hero.get_life()))
 	get_node("CanvasLayer/Panel/" + p + "/label_specials").set_text(str(hero.get_special()))
+	get_node("CanvasLayer/Panel/" + p + "/label_score").set_text("%010d" % hero.get_score())

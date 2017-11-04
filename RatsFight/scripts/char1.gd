@@ -4,6 +4,7 @@ signal signal_dead
 
 export var walk_speed = 100
 export var max_hp = 5
+export var _score = 50
 
 const MIN_DISTANCE_FOLLOW = 200
 
@@ -91,7 +92,7 @@ func _fixed_process(delta):
 	# Integrate forces to velocity
 	velocity += force*delta
 	# Integrate velocity into motion and move
-	var motion = velocity*delta	
+	var motion = velocity*delta
 	motion = move(motion)
 	
 	if (is_colliding()):
@@ -101,7 +102,7 @@ func _fixed_process(delta):
 			if [STATE.BEING_HIT, STATE.KO, STATE.IDLE, STATE.HIT].has(state):
 				motion.x = 0
 		
-		if ![STATE.BEING_HIT, STATE.KO].has(state):
+		if ![STATE.IDLE, STATE.HIT, STATE.BEING_HIT, STATE.KO].has(state):
 			motion = n.slide(motion)
 			velocity = n.slide(velocity)
 		motion = move(motion)
@@ -119,10 +120,12 @@ func _fixed_process(delta):
 		#print("Switching to pattern " + current_pattern["key"])
 	pass
 
-func get_hit(power, knock_down):
+func get_hit(hero, power, knock_down):
 	velocity = Vector2(0, 0)
 	life -= power
 	if (life <= 0):
+		if hero:
+			hero.add_score(_score)
 		velocity = Vector2(current_left * walk_speed, -200)
 		get_node("anim").play("ko")
 		state = STATE.KO
@@ -167,6 +170,9 @@ func end_hit():
 	get_node("anim").play("stand")
 
 func get_up():
+	# Concurrency issue when get_hit is called at the same time as get_up
+	if life <= 0:
+		return
 	get_node("defensive_hitbox_area").set_monitorable(true)
 	velocity = Vector2(0, 0)
 	state = STATE.IDLE
@@ -180,3 +186,6 @@ func shake_camera():
 
 func connect_dead(receiver, callback):
 	connect("signal_dead", receiver, callback)
+
+func set_score(score):
+	_score = score

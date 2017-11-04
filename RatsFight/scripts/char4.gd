@@ -9,7 +9,7 @@ onready var _node_anim = get_node("anim")
 var _preload_bullet = preload("res://scenes/bullet.tscn")
 
 const NEAR_THRESHOLD = 50
-const MAX_HP = 60
+const MAX_HP = 1
 const WALK_SPEED = 1500
 
 const PARAMS = [
@@ -17,32 +17,6 @@ const PARAMS = [
 	{ "WALK_SPEED": 1100, "GRAVITY": 3200.0, "JUMP_FORCE": 1400, "KNOCK_DOWN_FORCE": 500, "CAN_JUMP": false },
 	{ "WALK_SPEED": 1500, "GRAVITY": 5000.0, "JUMP_FORCE": 1750, "KNOCK_DOWN_FORCE": 1500, "CAN_JUMP": true }
 ]
-
-func params_idx():
-	var hp_ratio = hp_ratio()
-	if hp_ratio > 80:
-		return 0
-	elif hp_ratio > 40:
-		return 1
-	return 2
-
-func hp_ratio():
-	return float(_hp) / float(MAX_HP) * 100.0
-
-func walk_speed():
-	return PARAMS[params_idx()].WALK_SPEED
-
-func gravity():
-	return PARAMS[params_idx()].GRAVITY
-
-func jump_force():
-	return PARAMS[params_idx()].JUMP_FORCE
-
-func knock_down_force():
-	return PARAMS[params_idx()].KNOCK_DOWN_FORCE
-
-func can_jump():
-	return PARAMS[params_idx()].CAN_JUMP
 
 enum STATE {
 	HIT,
@@ -59,6 +33,7 @@ var _velocity
 var _state
 var _touch_floor
 var _objective_cnt
+export var _score = 2000
 
 func _ready():
 	get_node("sprite").show()
@@ -194,10 +169,12 @@ func shoot():
 	_node_parent.add_child(bullet)
 	bullet.set_velocity(_current_left)
 
-func get_hit(power, knock_down):
+func get_hit(hero, power, knock_down):
 	_velocity = Vector2(0, 0)
 	_hp -= power
 	if (_hp <= 0):
+		if hero:
+			hero.add_score(_score)
 		_velocity = Vector2(_current_left * walk_speed() / 3, -knock_down_force())
 		_node_defensive_hitbox_area.set_monitorable(false)
 		_node_anim.play("ko")
@@ -237,3 +214,29 @@ func shake_camera():
 
 func connect_dead(receiver, callback):
 	connect("signal_dead", receiver, callback)
+
+func params_idx():
+	var hp_ratio = hp_ratio()
+	if hp_ratio > 80:
+		return 0
+	elif hp_ratio > 40:
+		return 1
+	return 2
+
+func hp_ratio():
+	return float(_hp) / float(MAX_HP) * 100.0
+
+func walk_speed():
+	return PARAMS[params_idx()].WALK_SPEED
+
+func gravity():
+	return PARAMS[params_idx()].GRAVITY
+
+func jump_force():
+	return PARAMS[params_idx()].JUMP_FORCE
+
+func knock_down_force():
+	return PARAMS[params_idx()].KNOCK_DOWN_FORCE
+
+func can_jump():
+	return PARAMS[params_idx()].CAN_JUMP

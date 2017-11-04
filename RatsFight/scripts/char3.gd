@@ -15,6 +15,7 @@ var _deadsignal_receiver = null
 var _deadsignal_callback = null
 
 export var char_walk_speed = 100
+export var char_score = 100
 
 var char3_2_preload = preload("res://scenes/char3_2.tscn")
 
@@ -87,7 +88,7 @@ func update_current_left():
 		set_scale(Vector2(new_left, 1))
 		_current_left = new_left
 
-func get_hit(power, knock_down):
+func get_hit(hero, power, knock_down):
 	if _detached:
 		return
 	_detached = true
@@ -97,12 +98,12 @@ func get_hit(power, knock_down):
 	char3_2.connect_dead(_deadsignal_receiver, _deadsignal_callback)
 	char3_2.set_pos(get_pos())
 	char3_2.set_walk_speed(char_walk_speed)
+	char3_2.set_score(char_score)
 	if is_in_group("spawned"):
 		char3_2.add_to_group("spawned")
 	get_node("../").add_child(char3_2)
 	char3_2.get_node("sprite").set_modulate(get_node("sprite").get_modulate())
-	char3_2.get_hit(power, true)
-	#queue_free()
+	char3_2.get_hit(hero, power, true)
 	get_node("sprite").set_texture(load("res://assets/sprites/sprites_char3_1.png"))
 	pass
 
@@ -117,6 +118,9 @@ func set_spawner(spawner):
 
 func set_char_walk_speed(new_speed):
 	char_walk_speed = new_speed
+
+func set_char_score(new_score):
+	char_score = new_score
 
 func connect_dead(receiver, callback):
 	_deadsignal_receiver = receiver
