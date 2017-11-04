@@ -9,7 +9,7 @@ onready var _node_anim = get_node("anim")
 var _preload_bullet = preload("res://scenes/bullet.tscn")
 
 const NEAR_THRESHOLD = 50
-const MAX_HP = 1
+const MAX_HP = 60
 const WALK_SPEED = 1500
 
 const PARAMS = [

@@ -1,4 +1,6 @@
-[gd_scene load_steps=2 format=1]
+[gd_scene load_steps=3 format=1]
+
+[ext_resource path="res://assets/fonts/arcadeclassic.fnt" type="BitmapFont" id=1]
 
 [sub_resource type="GDScript" id=1]
 
@@ -9,7 +11,7 @@ func _ready():
 	get_node(\"button_play\").grab_focus()
 
 func _on_button_play_pressed():
-	scene_manager.change_scene(\"res://stages/stage_01/stage_01.tscn\")
+	scene_manager.change_scene(\"res://scenes/Intro/selection.tscn\")
 
 func _on_button_options_pressed():
 	utils.switch_menu(self, \"res://scenes/Intro/menu_options.tscn\")"
@@ -36,7 +38,8 @@ size_flags/vertical = 2
 margin/left = 0.0
 margin/top = 0.0
 margin/right = 210.0
-margin/bottom = 20.0
+margin/bottom = 14.0
+custom_fonts/font = ExtResource( 1 )
 toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
@@ -50,9 +53,10 @@ focus/stop_mouse = true
 size_flags/horizontal = 2
 size_flags/vertical = 2
 margin/left = 0.0
-margin/top = 24.0
+margin/top = 18.0
 margin/right = 210.0
-margin/bottom = 44.0
+margin/bottom = 32.0
+custom_fonts/font = ExtResource( 1 )
 toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null

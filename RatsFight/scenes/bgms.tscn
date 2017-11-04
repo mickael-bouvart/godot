@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=1]
+[gd_scene load_steps=10 format=1]
 
 [ext_resource path="res://scripts/bgms.gd" type="Script" id=1]
 [ext_resource path="res://assets/bgm/onirism samp.ogg" type="AudioStream" id=2]
@@ -8,8 +8,7 @@
 [ext_resource path="res://assets/bgm/ruin-sewer.ogg" type="AudioStream" id=6]
 [ext_resource path="res://assets/bgm/style-lab.ogg" type="AudioStream" id=7]
 [ext_resource path="res://assets/bgm/rock2-boss 1.ogg" type="AudioStream" id=8]
-
-
+[ext_resource path="res://assets/bgm/rock1.ogg" type="AudioStream" id=9]
 
 [node name="bgms" type="Node"]
 
@@ -84,6 +83,17 @@ stream/buffering_ms = 500
 [node name="boss" type="StreamPlayer" parent="."]
 
 stream/stream = ExtResource( 8 )
+stream/play = false
+stream/loop = true
+stream/volume_db = 0.0
+stream/autoplay = false
+stream/paused = false
+stream/loop_restart_time = 0.0
+stream/buffering_ms = 500
+
+[node name="rock_intro" type="StreamPlayer" parent="."]
+
+stream/stream = ExtResource( 9 )
 stream/play = false
 stream/loop = true
 stream/volume_db = 0.0

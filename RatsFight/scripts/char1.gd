@@ -181,9 +181,6 @@ func get_up():
 func set_walk_speed(new_walk_speed):
 	walk_speed = new_walk_speed
 
-func shake_camera():
-	utils.shake_camera(globals.DEFAULT_SHAKE_MAGNITUDE, globals.DEFAULT_SHAKE_DURATION)
-
 func connect_dead(receiver, callback):
 	connect("signal_dead", receiver, callback)
 
