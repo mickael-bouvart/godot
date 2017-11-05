@@ -70,10 +70,10 @@ func _ready():
 	_hit_released = true
 	_current_left = -1
 	defensive_hitbox(true)
-	_state = STATE.IDLE
+	_state = STATE.FALL
 	_velocity = Vector2(0, 0)
 	set_scale(Vector2(_current_left, 1))
-	_node_anim.play("stand")
+	_node_anim.play("fall")
 	_touch_floor = false
 	_combo_count = 0
 	_last_hit_connect = false

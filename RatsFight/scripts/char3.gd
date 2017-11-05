@@ -92,6 +92,7 @@ func get_hit(hero, power, knock_down):
 	if _detached:
 		return
 	_detached = true
+	get_node("defensive_hitbox_area").set_monitorable(false)
 	var char3_2 = char3_2_preload.instance()
 	if _spawner != null:
 		_spawner.connect_event("signal_dead", char3_2)
