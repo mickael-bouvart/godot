@@ -361,6 +361,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id=15]
 
+resource/name = "hovered"
 length = 1.0
 loop = true
 step = 0.05
@@ -458,6 +459,7 @@ texture = ExtResource( 4 )
 flip_h = true
 vframes = 6
 hframes = 5
+frame = 6
 
 [node name="anim" type="AnimationPlayer" parent="."]
 
