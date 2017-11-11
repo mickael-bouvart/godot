@@ -3,8 +3,6 @@
 [ext_resource path="res://scripts/swarm_common.gd" type="Script" id=1]
 [ext_resource path="res://scenes/char1.tscn" type="PackedScene" id=2]
 
-
-
 [node name="swarm_01" type="Node"]
 
 script/script = ExtResource( 1 )
@@ -17,7 +15,7 @@ transform/pos = Vector2( 1427.21, 218.837 )
 
 [node name="char5" parent="." instance=ExtResource( 2 )]
 
-transform/pos = Vector2( 1346.29, 234.703 )
+transform/pos = Vector2( 926.29, 224.703 )
 walk_speed = 110
 
 [node name="char6" parent="." instance=ExtResource( 2 )]

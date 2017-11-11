@@ -15,6 +15,20 @@ const BOSS_DIE_SHAKE_DURATION = 0.4
 const FLOOR_ANGLE_TOLERANCE = 40
 const GRAVITY = 500.0
 
+enum STATE {
+	IDLE,
+	WALK,
+	RUN,
+	HIT,
+	SPECIAL,
+	BEING_HIT,
+	KNOCKED_DOWN,
+	KO,
+	JUMP,
+	JUMP_HIT
+	FALL
+}
+
 var score =  {
 	"p1": 0,
 	"p2": 0

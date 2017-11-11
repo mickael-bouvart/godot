@@ -11,7 +11,18 @@ func get_hero2():
 	if heroes.size() < 2:
 		return null
 	return heroes[1]
-	
+
+func get_nearest_hero(pos):
+	var nearest_hero = null
+	var nearest_dist = null
+	var heroes = get_tree().get_root().get_node("Main/heroes").get_children()
+	for hero in heroes:
+		var dist = abs(hero.get_pos().x - pos.x)
+		if nearest_dist == null || dist < nearest_dist:
+			nearest_hero = hero
+			nearest_dist = dist
+	return nearest_hero
+
 func get_camera():
 	return get_hero1().get_node("camera")
 

@@ -32,6 +32,9 @@ var pattern_duration_cnt = 0
 var _power
 var _knock_down
 
+var _iapreload = preload("res://scripts/char1_ia.gd")
+var _ia
+
 func pattern_hit(frame, duration):
 	if (state == STATE.IDLE):
 		_power = 1
@@ -67,10 +70,11 @@ func pattern_follow(frame, duration):
 		get_node("anim").play("stand")
 		state = STATE.IDLE
 
-func update_current_left():
-	var hero1 = utils.get_hero1()
+func update_current_left(hero = null):
+	if hero == null:
+		hero = utils.get_nearest_hero(get_pos())
 	var new_left = null
-	if (get_pos().x < hero1.get_pos().x):
+	if (get_pos().x < hero.get_pos().x):
 		new_left = -1
 	else:
 		new_left = 1
@@ -84,9 +88,31 @@ func _fixed_process(delta):
 	if (state != STATE.HIT && get_node("offensive_hitbox_area").is_monitoring_enabled()):
 		get_node("offensive_hitbox_area").set_enable_monitoring(false)
 	
+	if _ia:
+		_ia.update(delta)
+		apply_forces(delta)
+		return
+		
 	if state == STATE.IDLE || state == STATE.WALK:
 		update_current_left()
 		
+	apply_forces(delta)
+	
+	current_pattern["func"].call_func(pattern_duration_cnt, current_pattern.duration)
+	pattern_duration_cnt += 1
+	if (pattern_duration_cnt == current_pattern["duration"]):
+		pattern_duration_cnt = 0
+		var rand = randi() % 100
+		var cumul = 0
+		for p in patterns:
+			if (rand < cumul + p["prob"]):
+				current_pattern = p
+				break
+			cumul += p["prob"]
+		#print("Switching to pattern " + current_pattern["key"])
+	pass
+
+func apply_forces(delta):
 	var force = Vector2(0, globals.GRAVITY)
 	
 	# Integrate forces to velocity
@@ -106,19 +132,6 @@ func _fixed_process(delta):
 			motion = n.slide(motion)
 			velocity = n.slide(velocity)
 		motion = move(motion)
-	current_pattern["func"].call_func(pattern_duration_cnt, current_pattern.duration)
-	pattern_duration_cnt += 1
-	if (pattern_duration_cnt == current_pattern["duration"]):
-		pattern_duration_cnt = 0
-		var rand = randi() % 100
-		var cumul = 0
-		for p in patterns:
-			if (rand < cumul + p["prob"]):
-				current_pattern = p
-				break
-			cumul += p["prob"]
-		#print("Switching to pattern " + current_pattern["key"])
-	pass
 
 func get_hit(hero, power, knock_down):
 	velocity = Vector2(0, 0)
@@ -139,6 +152,8 @@ func get_hit(hero, power, knock_down):
 		state = STATE.BEING_HIT
 
 func _ready():
+	#_ia = null
+	_ia = _iapreload.new(self)
 	get_node("defensive_hitbox_area").set_monitorable(true)
 	current_pattern = patterns[2]
 	life = max_hp
@@ -186,3 +201,28 @@ func connect_dead(receiver, callback):
 
 func set_score(score):
 	_score = score
+
+func can_walk():
+	return [STATE.IDLE, STATE.WALK].has(state)
+
+func walk_towards(hero, delta):
+	var dir = 1 if get_pos().x < hero.get_pos().x else -1 
+	velocity.x = dir * walk_speed
+	if state != STATE.WALK:
+		state = STATE.WALK
+		get_node("anim").play("walk")
+
+func can_hit():
+	return [STATE.IDLE, STATE.WALK].has(state)
+
+func hit():
+	velocity.x = 0
+	state = STATE.HIT
+	_power = 1
+	_knock_down = false
+	get_node("anim").play("hit")
+
+func stand():
+	if state != STATE.IDLE:
+		state = STATE.IDLE
+		get_node("anim").play("stand")

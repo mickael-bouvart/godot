@@ -273,7 +273,7 @@ func _on_offensive_hitbox_area_area_enter( area ):
 	pos.y = (area.get_global_pos().y + _node_offensive_hitbox_area.get_global_pos().y) / 2
 	spark.set_pos(pos)
 	spark.set_scale(Vector2(_current_left, 1))
-	get_node("../").add_child(spark)
+	get_node("../../").add_child(spark)
 
 func end_hit():
 	_state = STATE.IDLE

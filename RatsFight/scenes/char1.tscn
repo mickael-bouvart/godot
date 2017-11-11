@@ -266,7 +266,6 @@ default/chorus_send = 0.0
 texture = ExtResource( 3 )
 vframes = 4
 hframes = 3
-frame = 9
 
 [node name="anim" type="AnimationPlayer" parent="."]
 
