@@ -10,6 +10,10 @@ func _input(event):
 func toggle_pause():
 	_pause = !_pause
 	get_tree().set_pause(_pause)
+	if _pause:
+		get_node("frame").show()
+	else:
+		get_node("frame").hide()
 
 
 func _ready():
