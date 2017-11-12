@@ -14,16 +14,21 @@ const HERO_SCAN_INTERVAL = 2
 const HIT_INTERVAL = 1
 const NEAR_HERO_MIN_DISTANCE = 200
 const KEEP_HERO_DISTANCE = 500
+const BEHAVIOR_SWITCH_INTERVAL = 5
 
 var _char
 var _time_cnt_hero_scan
 var _hero
 var _time_cnt_hit
+var _time_cnt_switch
+var _behavior
 
 func _init(char):
 	_char = char
 	_time_cnt_hero_scan = 0
 	_time_cnt_hit = 0
+	_time_cnt_switch = rand_range(0, BEHAVIOR_SWITCH_INTERVAL)
+	_behavior = 0
 
 func update_hero_scan(delta):
 	_time_cnt_hero_scan -= delta
@@ -41,17 +46,19 @@ func is_near_hero():
 func is_around(current_dist, expected_dist, allowed_diff):
 	return abs(current_dist - expected_dist) < allowed_diff
 
-func follow_hero(delta):
+func follow_hero_direct(delta):
 	if _char.can_walk():
 		_char.update_current_left(_hero)
-		if is_hero_looking():
-			var dist = get_distance_from_hero()
-			if is_around(dist, KEEP_HERO_DISTANCE, 50):
-				_char.stand()
-			elif dist < KEEP_HERO_DISTANCE:
-				_char.walk_away_from(_hero, delta)
-			else:
-				_char.walk_towards(_hero, delta)
+		_char.walk_towards(_hero, delta)
+
+func follow_hero_indirect(delta):
+	if _char.can_walk():
+		_char.update_current_left(_hero)
+		var dist = get_distance_from_hero()
+		if is_around(dist, KEEP_HERO_DISTANCE, 50):
+			_char.stand()
+		elif dist < KEEP_HERO_DISTANCE:
+			_char.walk_away_from(_hero, delta)
 		else:
 			_char.walk_towards(_hero, delta)
 
@@ -65,16 +72,20 @@ func hit_hero(delta):
 			_char.update_current_left(_hero)
 			_char.stand()
 
-func is_hero_looking():
-	if _hero.get_pos().x <= _char.get_pos().x && _hero.get_current_left() == -1:
-		return true
-	if _char.get_pos().x < _hero.get_pos().x && _hero.get_current_left() == 1:
-		return true
-	return false
+func check_behavior_switch(delta):
+	_time_cnt_switch -= delta
+	if _time_cnt_switch <= 0:
+		print("SWITCH")
+		_time_cnt_switch = BEHAVIOR_SWITCH_INTERVAL
+		_behavior = (_behavior + 1) % 2
 
 func update(delta):
 	update_hero_scan(delta)
-	if is_near_hero():
-		hit_hero(delta)
+	check_behavior_switch(delta)
+	if _behavior == 0:
+		follow_hero_indirect(delta)
 	else:
-		follow_hero(delta)
+		if is_near_hero():
+			hit_hero(delta)
+		else:
+			follow_hero_direct(delta)

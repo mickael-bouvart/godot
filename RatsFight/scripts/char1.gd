@@ -32,7 +32,7 @@ var pattern_duration_cnt = 0
 var _power
 var _knock_down
 
-var _iapreload = preload("res://scripts/char1_ia.gd")
+var _iapreload = preload("res://scripts/char1_ia3.gd")
 var _ia
 
 func pattern_hit(frame, duration):
