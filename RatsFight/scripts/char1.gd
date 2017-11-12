@@ -226,3 +226,13 @@ func stand():
 	if state != STATE.IDLE:
 		state = STATE.IDLE
 		get_node("anim").play("stand")
+
+func get_current_left():
+	return current_left
+
+func walk_away_from(hero, delta):
+	var dir = -1 if get_pos().x < hero.get_pos().x else 1 
+	velocity.x = dir * walk_speed
+	if state != STATE.WALK:
+		state = STATE.WALK
+		get_node("anim").play("walk")

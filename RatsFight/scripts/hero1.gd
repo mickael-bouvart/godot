@@ -396,3 +396,6 @@ func set_player(player):
 
 func set_control(control):
 	_control = control
+
+func get_current_left():
+	return _current_left
