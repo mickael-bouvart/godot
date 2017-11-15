@@ -55,8 +55,6 @@ centered = false
 
 [node name="borders" type="Node" parent="."]
 
-editor/display_folded = true
-
 [node name="down_border" type="StaticBody2D" parent="borders"]
 
 editor/display_folded = true

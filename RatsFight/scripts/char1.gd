@@ -5,6 +5,7 @@ signal signal_dead
 export var walk_speed = 100
 export var max_hp = 5
 export var _score = 50
+export var _ia = "basic"
 
 const MIN_DISTANCE_FOLLOW = 200
 
@@ -32,8 +33,12 @@ var pattern_duration_cnt = 0
 var _power
 var _knock_down
 
-var _iapreload = preload("res://scripts/char1_ia3.gd")
-var _ia
+var _iapreloads = {
+	"basic": preload("res://scripts/char1_ia.gd"),
+	"coward": preload("res://scripts/char1_ia2.gd"),
+	"careful": preload("res://scripts/char1_ia3.gd")
+}
+var _ia_instance
 
 func pattern_hit(frame, duration):
 	if (state == STATE.IDLE):
@@ -88,8 +93,8 @@ func _fixed_process(delta):
 	if (state != STATE.HIT && get_node("offensive_hitbox_area").is_monitoring_enabled()):
 		get_node("offensive_hitbox_area").set_enable_monitoring(false)
 	
-	if _ia:
-		_ia.update(delta)
+	if _ia_instance:
+		_ia_instance.update(delta)
 		apply_forces(delta)
 		return
 		
@@ -153,7 +158,7 @@ func get_hit(hero, power, knock_down):
 
 func _ready():
 	#_ia = null
-	_ia = _iapreload.new(self)
+	_ia_instance = _iapreloads[_ia].new(self)
 	get_node("defensive_hitbox_area").set_monitorable(true)
 	current_pattern = patterns[2]
 	life = max_hp

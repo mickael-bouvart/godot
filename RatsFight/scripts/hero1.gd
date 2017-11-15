@@ -48,6 +48,7 @@ var _combo_frame_count
 var _power
 var _knock_down
 var _invicibility_cnt
+var _pickables
 
 var preload_spark = preload("res://scenes/spark_hit.tscn")
 
@@ -78,7 +79,8 @@ func _ready():
 	_combo_count = 0
 	_last_hit_connect = false
 	_combo_frame_count = 0
-	
+	_pickables = {}
+
 func _fixed_process(delta):
 	var action_hit = utils.is_input_action_pressed(_control, "hit")
 	var action_special = utils.is_input_action_pressed(_control, "special")
@@ -100,6 +102,9 @@ func _fixed_process(delta):
 		_node_offensive_hitbox_area.set_enable_monitoring(false)
 	if (![STATE.JUMP_HIT].has(_state) && _node_offensive_hitbox_area3.is_monitoring_enabled()):
 		_node_offensive_hitbox_area3.set_enable_monitoring(false)
+
+	# Check if item can be consumed
+	check_items_to_consume()
 
 	_combo_frame_count += 1
 	if (!action_hit):
@@ -220,6 +225,22 @@ func _fixed_process(delta):
 		_current_left = new_left
 	
 	move_body(delta)
+
+func check_items_to_consume():
+	if _pickables.size() > 0:
+		for key in _pickables.keys():
+			var wkRef = _pickables[key]
+			if wkRef.get_ref() != null:
+				wkRef.get_ref().consume(self)
+				remove_pickable(key)
+				break
+
+func restore_hp(hp):
+	print("RESTORE %d HP" % hp)
+	_hp += hp
+	if (_hp > MAX_HP):
+		_hp = MAX_HP
+	emit_signal("state_changed", self)
 
 func move_body(delta):
 	var force = Vector2(0, GRAVITY)
@@ -399,3 +420,10 @@ func set_control(control):
 
 func get_current_left():
 	return _current_left
+
+func add_pickable(pickable):
+	print(pickable)
+	_pickables[pickable.get_instance_ID()] = weakref(pickable)
+
+func remove_pickable(id):
+	_pickables.erase(id)

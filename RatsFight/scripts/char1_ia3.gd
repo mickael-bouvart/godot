@@ -75,7 +75,6 @@ func hit_hero(delta):
 func check_behavior_switch(delta):
 	_time_cnt_switch -= delta
 	if _time_cnt_switch <= 0:
-		print("SWITCH")
 		_time_cnt_switch = BEHAVIOR_SWITCH_INTERVAL
 		_behavior = (_behavior + 1) % 2
 
