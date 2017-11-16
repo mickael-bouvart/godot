@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=1]
+[gd_scene load_steps=8 format=1]
 
 [ext_resource path="res://scripts/stage_common.gd" type="Script" id=1]
 [ext_resource path="res://assets/background/bg_street.png" type="Texture" id=2]
 [ext_resource path="res://scenes/hud.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scenes/item_acorn.tscn" type="PackedScene" id=4]
+[ext_resource path="res://scenes/item_peanut.tscn" type="PackedScene" id=5]
 
 [sub_resource type="SegmentShape2D" id=1]
 
@@ -108,5 +109,9 @@ bgm = "boss"
 [node name="item_acorn" parent="." instance=ExtResource( 4 )]
 
 transform/pos = Vector2( 750, -40 )
+
+[node name="item_peanut" parent="." instance=ExtResource( 5 )]
+
+transform/pos = Vector2( 896.348, -61.8171 )
 
 

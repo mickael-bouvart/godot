@@ -13,5 +13,5 @@ func _on_pickable_area_body_exit( body ):
 	body.remove_pickable(self)
 
 func consume(consumer):
-	consumer.restore_hp(5)
+	consumer.add_life(1)
 	queue_free()

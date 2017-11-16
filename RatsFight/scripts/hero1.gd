@@ -242,6 +242,10 @@ func restore_hp(hp):
 		_hp = MAX_HP
 	emit_signal("state_changed", self)
 
+func add_life(lives):
+	_life += lives
+	emit_signal("state_changed", self)
+
 func move_body(delta):
 	var force = Vector2(0, GRAVITY)
 	
