@@ -93,7 +93,7 @@ tracks/2/keys = {
 
 [sub_resource type="Animation" id=5]
 
-length = 2.0
+length = 2.5
 loop = false
 step = 0.05
 tracks/0/type = "value"
@@ -101,7 +101,7 @@ tracks/0/path = NodePath("sprite:frame")
 tracks/0/interp = 1
 tracks/0/imported = false
 tracks/0/keys = {
-"times": FloatArray( 0, 0.15, 0.3, 1.15 ),
+"times": FloatArray( 0, 0.15, 0.8, 1.65 ),
 "transitions": FloatArray( 1, 1, 1, 1 ),
 "update": 1,
 "values": [ 12, 13, 14, 15 ]
@@ -111,7 +111,7 @@ tracks/1/path = NodePath(".")
 tracks/1/interp = 1
 tracks/1/imported = false
 tracks/1/keys = {
-"times": FloatArray( 0.3, 1.15, 2 ),
+"times": FloatArray( 0.8, 1.65, 2.5 ),
 "transitions": FloatArray( 1, 1, 1 ),
 "values": [ {
 "args": [  ],
@@ -129,7 +129,7 @@ tracks/2/path = NodePath("offensive_hitbox_area:monitoring")
 tracks/2/interp = 1
 tracks/2/imported = false
 tracks/2/keys = {
-"times": FloatArray( 0, 1.15 ),
+"times": FloatArray( 0.8, 1.65 ),
 "transitions": FloatArray( 1, 1 ),
 "update": 1,
 "values": [ true, false ]
@@ -139,10 +139,30 @@ tracks/3/path = NodePath("defensive_hitbox_area:monitorable")
 tracks/3/interp = 1
 tracks/3/imported = false
 tracks/3/keys = {
-"times": FloatArray( 0, 2 ),
+"times": FloatArray( 0, 2.5 ),
 "transitions": FloatArray( 1, 1 ),
 "update": 1,
 "values": [ false, true ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("sprite/sprite_glow:visibility/opacity")
+tracks/4/interp = 1
+tracks/4/imported = false
+tracks/4/keys = {
+"times": FloatArray( 0, 0.15, 0.8, 1.65 ),
+"transitions": FloatArray( 1, 0.25, 4, 1 ),
+"update": 0,
+"values": [ 0.0, 0.0, 0.75, 0.0 ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("sprite/sprite_glow:frame")
+tracks/5/interp = 1
+tracks/5/imported = false
+tracks/5/keys = {
+"times": FloatArray( 0.15, 0.8 ),
+"transitions": FloatArray( 1, 1 ),
+"update": 1,
+"values": [ 13, 14 ]
 }
 
 [sub_resource type="Animation" id=6]
@@ -288,6 +308,7 @@ collision/layers = 8
 collision/mask = 1
 collision/margin = 0.08
 script/script = ExtResource( 1 )
+_score = 2000
 
 [node name="sound" type="SamplePlayer" parent="."]
 
@@ -312,7 +333,19 @@ transform/pos = Vector2( 1.50739, -3.4248 )
 texture = ExtResource( 4 )
 vframes = 5
 hframes = 4
-frame = 17
+frame = 15
+
+[node name="sprite_glow" type="Sprite" parent="sprite"]
+
+visibility/opacity = 0.0
+visibility/behind_parent = true
+visibility/blend_mode = 1
+transform/scale = Vector2( 1.1, 1.1 )
+texture = ExtResource( 4 )
+vframes = 5
+hframes = 4
+frame = 14
+modulate = Color( 1, 0, 0, 1 )
 
 [node name="anim" type="AnimationPlayer" parent="."]
 
@@ -342,7 +375,6 @@ gravity = 98.0
 linear_damp = 0.1
 angular_damp = 1.0
 monitoring = false
-monitorable = false
 collision/layers = 4096
 collision/mask = 2048
 

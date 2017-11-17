@@ -5,6 +5,7 @@ signal signal_dead
 onready var _node_parent = get_node("../")
 onready var _node_defensive_hitbox_area = get_node("defensive_hitbox_area")
 onready var _node_anim = get_node("anim")
+onready var _node_sound = get_node("sound")
 
 var _preload_bullet = preload("res://scenes/bullet.tscn")
 
@@ -163,7 +164,11 @@ func apply_forces(delta):
 			_velocity = n.slide(_velocity)
 		motion = move(motion)
 
+func reload_gun():
+	_node_sound.play("gun_reload")
+
 func shoot():
+	_node_sound.play("shot_01")
 	var bullet = _preload_bullet.instance()
 	bullet.set_pos(get_pos() + Vector2(-_current_left * 160, 10))
 	_node_parent.add_child(bullet)

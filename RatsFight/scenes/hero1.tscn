@@ -1,9 +1,10 @@
-[gd_scene load_steps=24 format=1]
+[gd_scene load_steps=25 format=1]
 
 [ext_resource path="res://scripts/hero1.gd" type="Script" id=1]
-[ext_resource path="res://assets/sound/punch_01.wav" type="Sample" id=2]
-[ext_resource path="res://assets/sound/punch_02.wav" type="Sample" id=3]
-[ext_resource path="res://assets/sprites/sprites_hero1.png" type="Texture" id=4]
+[ext_resource path="res://assets/sound/eat.wav" type="Sample" id=2]
+[ext_resource path="res://assets/sound/punch_01.wav" type="Sample" id=3]
+[ext_resource path="res://assets/sound/punch_02.wav" type="Sample" id=4]
+[ext_resource path="res://assets/sprites/sprites_hero1.png" type="Texture" id=5]
 
 [sub_resource type="RectangleShape2D" id=1]
 
@@ -40,17 +41,23 @@ func shake(magnitude, duration):
 
 [sub_resource type="SampleLibrary" id=3]
 
+samples/eat = {
+"db": 24.0,
+"pitch": 3.0,
+"priority": 0,
+"sample": ExtResource( 2 )
+}
 samples/punch_01 = {
 "db": 0.0,
 "pitch": 1.0,
 "priority": 0,
-"sample": ExtResource( 2 )
+"sample": ExtResource( 3 )
 }
 samples/punch_02 = {
 "db": 0.0,
 "pitch": 1.0,
 "priority": 0,
-"sample": ExtResource( 3 )
+"sample": ExtResource( 4 )
 }
 
 [sub_resource type="Animation" id=4]
@@ -455,7 +462,7 @@ default/chorus_send = 0.0
 
 [node name="sprite" type="Sprite" parent="."]
 
-texture = ExtResource( 4 )
+texture = ExtResource( 5 )
 flip_h = true
 vframes = 6
 hframes = 5

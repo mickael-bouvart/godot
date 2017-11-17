@@ -232,6 +232,7 @@ func check_items_to_consume():
 			var wkRef = _pickables[key]
 			if wkRef.get_ref() != null:
 				wkRef.get_ref().consume(self)
+				_node_sound.play("eat")
 				remove_pickable(key)
 				break
 
