@@ -139,6 +139,10 @@ func apply_forces(delta):
 		motion = move(motion)
 
 func get_hit(hero, power, knock_down):
+	# Prevent get_hit to be called simultaneously
+	# when one of them triggers a knock_down 
+	if hero != null && !get_node("defensive_hitbox_area").is_monitorable():
+		return
 	velocity = Vector2(0, 0)
 	life -= power
 	if (life <= 0):

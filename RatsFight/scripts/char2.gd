@@ -47,13 +47,15 @@ func pattern_hit_02(frame, duration):
 		_power = 5
 		_knock_down = true
 		state = STATE.HIT
+		get_node("sound").play("special_charge")
+		get_node("defensive_hitbox_area").set_monitorable(false)
 		get_node("anim").play("hit_02")
 
 func pattern_stand(frame, duration):
 	pass
 
 func pattern_follow(frame, duration):
-	var hero1 = utils.get_hero1()
+	var hero1 = utils.get_nearest_hero(get_pos())
 	var hero1_pos = hero1.get_pos().x
 	var self_pos = get_pos().x
 	var dist = abs(hero1_pos - self_pos)
@@ -85,7 +87,7 @@ func _fixed_process(delta):
 		get_node("offensive_hitbox_area").set_enable_monitoring(false)
 	
 	if state == STATE.IDLE || state == STATE.WALK:
-		var hero1 = utils.get_hero1()
+		var hero1 = utils.get_nearest_hero(get_pos())
 		var new_left = null
 		if (get_pos().x < hero1.get_pos().x):
 			new_left = -1
@@ -188,6 +190,7 @@ func hit_02_fall():
 	
 func hit_02_ground():
 	velocity.x = 0
+	get_node("defensive_hitbox_area").set_monitorable(true)
 	get_node("anim").play("stand")
 	state = STATE.IDLE
 

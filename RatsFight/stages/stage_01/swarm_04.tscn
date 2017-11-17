@@ -1,10 +1,9 @@
-[gd_scene load_steps=4 format=1]
+[gd_scene load_steps=5 format=1]
 
 [ext_resource path="res://scripts/swarm_common.gd" type="Script" id=1]
 [ext_resource path="res://scenes/char1.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/char2.tscn" type="PackedScene" id=3]
-
-
+[ext_resource path="res://scenes/item_acorn.tscn" type="PackedScene" id=4]
 
 [node name="swarm_04" type="Node"]
 
@@ -15,54 +14,62 @@ bgm = ""
 [node name="char1" parent="." instance=ExtResource( 2 )]
 
 transform/pos = Vector2( 4062.61, 171.283 )
+_ia = "basic"
 
 [node name="char3" parent="." instance=ExtResource( 2 )]
 
 transform/pos = Vector2( 2966.68, 191.831 )
+_ia = "basic"
 
 [node name="char5" parent="." instance=ExtResource( 2 )]
 
-transform/pos = Vector2( 3185.87, 181.557 )
+transform/pos = Vector2( 3182.45, 181.557 )
+_ia = "careful"
 
 [node name="char6" parent="." instance=ExtResource( 2 )]
 
 transform/pos = Vector2( 3435.88, 164.433 )
+_ia = "basic"
 
 [node name="char7" parent="." instance=ExtResource( 2 )]
 
 transform/pos = Vector2( 3737.26, 181.557 )
+_ia = "careful"
 
 [node name="char4" parent="." instance=ExtResource( 2 )]
 
 transform/pos = Vector2( 2411.8, 203.92 )
 walk_speed = 150
+_ia = "basic"
 
 [node name="char8" parent="." instance=ExtResource( 2 )]
 
 transform/pos = Vector2( -453.156, 349.937 )
 walk_speed = 140
+_ia = "coward"
 
 [node name="char10" parent="." instance=ExtResource( 2 )]
 
 transform/pos = Vector2( -206.571, 339.663 )
 walk_speed = 140
+_ia = "coward"
 
 [node name="char11" parent="." instance=ExtResource( 2 )]
 
 transform/pos = Vector2( -877.83, 356.787 )
 walk_speed = 140
-
-[node name="char12" parent="." instance=ExtResource( 2 )]
-
-transform/pos = Vector2( -1131.26, 356.787 )
-walk_speed = 140
-
-[node name="char9" parent="." instance=ExtResource( 2 )]
-
-transform/pos = Vector2( -652.041, 352.455 )
+_ia = "coward"
 
 [node name="char2" parent="." instance=ExtResource( 3 )]
 
 transform/pos = Vector2( 2572.01, 116.443 )
+
+[node name="item_acorn" parent="." instance=ExtResource( 4 )]
+
+transform/pos = Vector2( 1312.89, -60.2936 )
+
+[node name="item_acorn2" parent="." instance=ExtResource( 4 )]
+
+transform/pos = Vector2( 1695.76, -54.2642 )
 
 

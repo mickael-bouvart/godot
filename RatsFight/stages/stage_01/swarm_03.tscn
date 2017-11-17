@@ -12,28 +12,34 @@ bgm = ""
 [node name="char3" parent="." instance=ExtResource( 2 )]
 
 transform/pos = Vector2( 2966.68, 191.831 )
+_ia = "basic"
 
 [node name="char6" parent="." instance=ExtResource( 2 )]
 
 transform/pos = Vector2( 2727.34, 195.118 )
+_ia = "careful"
 
 [node name="char7" parent="." instance=ExtResource( 2 )]
 
 transform/pos = Vector2( 3243.52, 175.978 )
+_ia = "careful"
 
 [node name="char4" parent="." instance=ExtResource( 2 )]
 
 transform/pos = Vector2( 2411.8, 203.92 )
 walk_speed = 150
+_ia = "basic"
 
 [node name="char8" parent="." instance=ExtResource( 2 )]
 
 transform/pos = Vector2( -453.156, 349.937 )
 walk_speed = 140
+_ia = "basic"
 
 [node name="char10" parent="." instance=ExtResource( 2 )]
 
 transform/pos = Vector2( -206.571, 339.663 )
 walk_speed = 140
+_ia = "coward"
 
 

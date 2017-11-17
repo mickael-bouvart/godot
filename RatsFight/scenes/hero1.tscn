@@ -1,10 +1,11 @@
-[gd_scene load_steps=25 format=1]
+[gd_scene load_steps=27 format=1]
 
 [ext_resource path="res://scripts/hero1.gd" type="Script" id=1]
 [ext_resource path="res://assets/sound/eat.wav" type="Sample" id=2]
 [ext_resource path="res://assets/sound/punch_01.wav" type="Sample" id=3]
 [ext_resource path="res://assets/sound/punch_02.wav" type="Sample" id=4]
-[ext_resource path="res://assets/sprites/sprites_hero1.png" type="Texture" id=5]
+[ext_resource path="res://assets/sound/special_charge.wav" type="Sample" id=5]
+[ext_resource path="res://assets/sprites/sprites_hero1.png" type="Texture" id=6]
 
 [sub_resource type="RectangleShape2D" id=1]
 
@@ -58,6 +59,12 @@ samples/punch_02 = {
 "pitch": 1.0,
 "priority": 0,
 "sample": ExtResource( 4 )
+}
+samples/special_charge = {
+"db": 0.0,
+"pitch": 1.0,
+"priority": 0,
+"sample": ExtResource( 5 )
 }
 
 [sub_resource type="Animation" id=4]
@@ -350,6 +357,55 @@ tracks/1/keys = {
 "values": [ true, false ]
 }
 
+[sub_resource type="Animation" id=20]
+
+resource/name = "special_setup"
+length = 0.6
+loop = false
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("sprite:frame")
+tracks/0/interp = 1
+tracks/0/imported = false
+tracks/0/keys = {
+"times": FloatArray( 0 ),
+"transitions": FloatArray( 1 ),
+"update": 1,
+"values": [ 0 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("sprite/sprite_glow:frame")
+tracks/1/interp = 1
+tracks/1/imported = false
+tracks/1/keys = {
+"times": FloatArray( 0 ),
+"transitions": FloatArray( 1 ),
+"update": 1,
+"values": [ 0 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("sprite/sprite_glow:visibility/opacity")
+tracks/2/interp = 1
+tracks/2/imported = false
+tracks/2/keys = {
+"times": FloatArray( 0, 0.15, 0.3, 0.45, 0.6 ),
+"transitions": FloatArray( 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ 0.0, 1.0, 0.0, 1.0, 0.0 ]
+}
+tracks/3/type = "method"
+tracks/3/path = NodePath(".")
+tracks/3/interp = 1
+tracks/3/imported = false
+tracks/3/keys = {
+"times": FloatArray( 0.6 ),
+"transitions": FloatArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "special_setup_finished"
+} ]
+}
+
 [sub_resource type="Animation" id=14]
 
 length = 1.0
@@ -462,11 +518,22 @@ default/chorus_send = 0.0
 
 [node name="sprite" type="Sprite" parent="."]
 
-texture = ExtResource( 5 )
+texture = ExtResource( 6 )
 flip_h = true
 vframes = 6
 hframes = 5
-frame = 6
+
+[node name="sprite_glow" type="Sprite" parent="sprite"]
+
+visibility/opacity = 0.0
+visibility/behind_parent = true
+visibility/blend_mode = 1
+transform/scale = Vector2( 1.3, 1.3 )
+texture = ExtResource( 6 )
+flip_h = true
+vframes = 6
+hframes = 5
+modulate = Color( 0, 0.752941, 1, 1 )
 
 [node name="anim" type="AnimationPlayer" parent="."]
 
@@ -483,6 +550,7 @@ anims/knock_down = SubResource( 10 )
 anims/ko = SubResource( 11 )
 anims/run = SubResource( 12 )
 anims/special = SubResource( 13 )
+anims/special_setup = SubResource( 20 )
 anims/stand = SubResource( 14 )
 anims/walk = SubResource( 15 )
 playback/active = true
@@ -492,6 +560,7 @@ autoplay = ""
 
 [node name="world_collision" type="CollisionShape2D" parent="."]
 
+visibility/visible = false
 transform/pos = Vector2( 0, 30 )
 shape = SubResource( 1 )
 trigger = false
@@ -500,6 +569,7 @@ _update_shape_index = 0
 [node name="defensive_hitbox_area" type="Area2D" parent="."]
 
 editor/display_folded = true
+visibility/visible = false
 input/pickable = true
 shapes/0/shape = SubResource( 16 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, 0, 30 )
@@ -523,6 +593,7 @@ _update_shape_index = 0
 [node name="offensive_hitbox_area" type="Area2D" parent="."]
 
 editor/display_folded = true
+visibility/visible = false
 input/pickable = true
 shapes/0/shape = SubResource( 17 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, -67.3529, -22.2006 )
@@ -546,6 +617,7 @@ _update_shape_index = 0
 [node name="offensive_hitbox_area2" type="Area2D" parent="."]
 
 editor/display_folded = true
+visibility/visible = false
 input/pickable = true
 shapes/0/shape = SubResource( 18 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, -12, 10 )
@@ -569,6 +641,7 @@ _update_shape_index = 0
 [node name="offensive_hitbox_area3" type="Area2D" parent="."]
 
 editor/display_folded = true
+visibility/visible = false
 input/pickable = true
 shapes/0/shape = SubResource( 19 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, 15, 4 )

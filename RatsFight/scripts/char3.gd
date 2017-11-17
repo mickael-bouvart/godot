@@ -90,6 +90,7 @@ func update_current_left():
 
 func get_hit(hero, power, knock_down):
 	if _detached:
+		get_node("offensive_hitbox_area").set_enable_monitoring(false)
 		return
 	_detached = true
 	get_node("defensive_hitbox_area").set_monitorable(false)

@@ -3,8 +3,6 @@
 [ext_resource path="res://scripts/swarm_common.gd" type="Script" id=1]
 [ext_resource path="res://scenes/char1.tscn" type="PackedScene" id=2]
 
-
-
 [node name="swarm_02" type="Node"]
 
 script/script = ExtResource( 1 )
@@ -13,30 +11,36 @@ bgm = ""
 
 [node name="char1" parent="." instance=ExtResource( 2 )]
 
-transform/pos = Vector2( 2155.01, 208.955 )
+transform/pos = Vector2( 2151.92, 208.955 )
+_ia = "careful"
 
 [node name="char3" parent="." instance=ExtResource( 2 )]
 
 transform/pos = Vector2( 1913.32, 208.955 )
 walk_speed = 130
+_ia = "basic"
 
 [node name="char4" parent="." instance=ExtResource( 2 )]
 
 transform/pos = Vector2( 2411.8, 203.92 )
 walk_speed = 150
+_ia = "basic"
 
 [node name="char7" parent="." instance=ExtResource( 2 )]
 
 transform/pos = Vector2( -378.518, 350.141 )
 walk_speed = 200
+_ia = "basic"
 
 [node name="char8" parent="." instance=ExtResource( 2 )]
 
-transform/pos = Vector2( -453.156, 349.937 )
+transform/pos = Vector2( -456.247, 349.937 )
 walk_speed = 140
+_ia = "coward"
 
 [node name="char9" parent="." instance=ExtResource( 2 )]
 
 transform/pos = Vector2( -652.041, 352.455 )
+_ia = "basic"
 
 

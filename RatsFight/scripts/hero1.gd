@@ -23,7 +23,8 @@ enum STATE {
 	JUMP,
 	FALL,
 	JUMP_HIT,
-	SPECIAL
+	SPECIAL,
+	SPECIAL_SETUP
 }
 
 export var _player = "p1"
@@ -93,7 +94,7 @@ func _fixed_process(delta):
 	if _invicibility_cnt > 0:
 		_invicibility_cnt -= delta
 		if _invicibility_cnt < 0:
-			if _state != STATE.SPECIAL:
+			if ![STATE.SPECIAL, STATE.SPECIAL_SETUP].has(_state):
 				defensive_hitbox(true)
 			_invicibility_cnt = 0
 
@@ -104,7 +105,8 @@ func _fixed_process(delta):
 		_node_offensive_hitbox_area3.set_enable_monitoring(false)
 
 	# Check if item can be consumed
-	check_items_to_consume()
+	if ![STATE.KO, STATE.BEING_HIT].has(_state):
+		check_items_to_consume()
 
 	_combo_frame_count += 1
 	if (!action_hit):
@@ -117,16 +119,13 @@ func _fixed_process(delta):
 		_special_released = true
 	if (_special_released && action_special):
 		_special_released = false
-		if (![STATE.SPECIAL, STATE.KO].has(_state) && _special > 0):
+		if (![STATE.SPECIAL, STATE.KO, STATE.SPECIAL_SETUP].has(_state) && _special > 0):
 			_special -= 1
 			emit_signal("state_changed", self)
-			_power = 3
-			_knock_down = true
-			_state = STATE.SPECIAL
-			_speed = SPECIAL_SPEED
-			_node_timer.start()
+			_state = STATE.SPECIAL_SETUP
 			defensive_hitbox(false)
-			_node_anim.play("special")
+			_node_sound.play("special_charge")
+			_node_anim.play("special_setup")
 	if (_hit_released && action_hit):
 		_hit_released = false
 		if (_state == STATE.IDLE || _state == STATE.WALK):
@@ -212,7 +211,7 @@ func _fixed_process(delta):
 			_state = STATE.IDLE
 			_speed = WALK_SPEED
 			_velocity.x = 0
-		elif (_state == STATE.SPECIAL):
+		elif [STATE.SPECIAL].has(_state):
 			_velocity.x = 0
 		if _state == STATE.IDLE || _state == STATE.HIT || _state == STATE.BEING_HIT:
 			_velocity.x = 0
@@ -224,7 +223,8 @@ func _fixed_process(delta):
 		set_scale(Vector2(new_left, 1))
 		_current_left = new_left
 	
-	move_body(delta)
+	if _state != STATE.SPECIAL_SETUP:
+		move_body(delta)
 
 func check_items_to_consume():
 	if _pickables.size() > 0:
@@ -232,12 +232,12 @@ func check_items_to_consume():
 			var wkRef = _pickables[key]
 			if wkRef.get_ref() != null:
 				wkRef.get_ref().consume(self)
-				_node_sound.play("eat")
 				remove_pickable(key)
 				break
 
 func restore_hp(hp):
 	print("RESTORE %d HP" % hp)
+	_node_sound.play("eat")
 	_hp += hp
 	if (_hp > MAX_HP):
 		_hp = MAX_HP
@@ -245,6 +245,7 @@ func restore_hp(hp):
 
 func add_life(lives):
 	_life += lives
+	_node_sound.play("eat")
 	emit_signal("state_changed", self)
 
 func move_body(delta):
@@ -432,3 +433,16 @@ func add_pickable(pickable):
 
 func remove_pickable(id):
 	_pickables.erase(id)
+
+func special_setup_finished():
+	_power = 3
+	_knock_down = true
+	_speed = SPECIAL_SPEED
+	_node_timer.start()
+	_state = STATE.SPECIAL
+	_node_anim.play("special")
+
+func add_special(nb_specials):
+	_special += nb_specials
+	_node_sound.play("special_charge")
+	emit_signal("state_changed", self)

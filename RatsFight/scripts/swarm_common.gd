@@ -10,9 +10,11 @@ var _count_dead
 
 func _ready():
 	_count_dead = 0
-	_nb_enemies = get_children().size()
+	_nb_enemies = 0
 	for child in get_children():
-		child.connect_dead(self, "one_dead")
+		if child.is_in_group("simple_enemy") || child.is_in_group("boss"):
+			_nb_enemies += 1
+			child.connect_dead(self, "one_dead")
 
 func one_dead(char):
 	if char.is_in_group("spawned"):
