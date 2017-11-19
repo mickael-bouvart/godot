@@ -17,33 +17,48 @@ var _node_camera
 var plchar1 = preload("res://scenes/char1.tscn")
 var plchar2 = preload("res://scenes/char2.tscn")
 var plhero1 = preload("res://scenes/hero1.tscn")
-	
+
 func _ready():
+	init_stage()
+	get_node("stage_intro").connect("action", self, "action")
+
+func init_stage():
+	get_node("pause").set_freeze(true)
 	var hero1 = plhero1.instance()
-	hero1.set_pos(Vector2(200, 0))
+	hero1.set_pos(Vector2(200, -200))
 	hero1.set_player("p1")
 	hero1.set_control(globals.p1_control)
+	hero1.set_hp(hero1.get_max_hp())
+	hero1.set_specials(globals.INIT_SPECIALS)
 	get_node("heroes").add_child(hero1)
+	hero1.set_freeze(true)
 	if globals.nb_players > 1:
 		var hero2 = plhero1.instance()
-		hero2.set_pos(Vector2(100, 0))
+		hero2.set_pos(Vector2(100, -200))
 		hero2.set_player("p2")
 		hero2.set_control(globals.p2_control)
+		hero2.set_hp(hero2.get_max_hp())
+		hero2.set_specials(globals.INIT_SPECIALS)
 		get_node("heroes").add_child(hero2)
+		hero2.set_freeze(true)
 	get_node("hud").init_hud()
 	_node_camera = hero1.get_node("camera")
 	_node_camera.make_current()
 	bgms.play(bgm)
+
+func action():
+	get_node("pause").set_freeze(false)
+	for hero in get_node("heroes").get_children():
+		hero.set_freeze(false)
 	_current_swarm = -1
 	_swarms = _node_swarms.get_children()
 	var bg_tex = get_node("background").get_texture()
 	var cam_margin_right = bg_tex.get_width()
 	var cam_margin_bottom = bg_tex.get_height()
-	#_camera_limit = _node_right_border.get_pos().x
-	#_node_camera.set_limit(MARGIN_RIGHT, _camera_limit)
 	_node_camera.set_limit(MARGIN_BOTTOM, cam_margin_bottom)
 	set_fixed_process(true)
 	next_step()
+
 
 func next_step():
 	print("NEXT STEP")

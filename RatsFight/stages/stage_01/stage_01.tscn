@@ -1,10 +1,11 @@
-[gd_scene load_steps=12 format=1]
+[gd_scene load_steps=13 format=1]
 
 [ext_resource path="res://scripts/stage_common.gd" type="Script" id=1]
-[ext_resource path="res://stages/stage_02/stage_02_intro.tscn" type="PackedScene" id=2]
+[ext_resource path="res://stages/stage_02/stage_02.tscn" type="PackedScene" id=2]
 [ext_resource path="res://assets/background/bg_cuisine.png" type="Texture" id=3]
 [ext_resource path="res://scenes/hud.tscn" type="PackedScene" id=4]
 [ext_resource path="res://scenes/pause.tscn" type="PackedScene" id=5]
+[ext_resource path="res://stages/stage_01/stage_01_intro.tscn" type="PackedScene" id=6]
 
 [sub_resource type="SegmentShape2D" id=1]
 
@@ -54,6 +55,8 @@ texture = ExtResource( 3 )
 centered = false
 
 [node name="borders" type="Node" parent="."]
+
+editor/display_folded = true
 
 [node name="down_border" type="StaticBody2D" parent="borders"]
 
@@ -233,5 +236,7 @@ camera_limit = 1960
 bgm = "boss"
 
 [node name="pause" parent="." instance=ExtResource( 5 )]
+
+[node name="stage_intro" parent="." instance=ExtResource( 6 )]
 
 

@@ -2,10 +2,8 @@ extends KinematicBody2D
 
 signal state_changed
 
-const GRAVITY = 1000.0
-const MAX_LIFE = 3
-const INIT_SPECIAL = 2
 const MAX_HP = 20
+const GRAVITY = 1000.0
 const WALK_SPEED = 200
 const RUN_SPEED = 400
 const SPECIAL_SPEED = 800
@@ -30,8 +28,10 @@ enum STATE {
 export var _player = "p1"
 export var _control = "keyboard"
 
-var _hp
-var _life
+var _attributes
+#var _hp
+#var _life
+#var _special
 var _current_left
 var _state
 var _hit_released
@@ -40,7 +40,6 @@ var _run_released
 var _special_released
 var _velocity
 var _speed
-var _special
 var _special_cnt
 var _touch_floor
 var _combo_count
@@ -50,6 +49,7 @@ var _power
 var _knock_down
 var _invicibility_cnt
 var _pickables
+var _freeze
 
 var preload_spark = preload("res://scenes/spark_hit.tscn")
 
@@ -62,12 +62,16 @@ onready var _node_sound = get_node("sound")
 onready var _node_timer = get_node("timer")
 onready var _node_camera = get_node("camera")
 
+func _init():
+	_attributes = globals.player_attributes[_player]
+
 func _ready():
 	set_fixed_process(true)
 	_invicibility_cnt = 0
-	_hp = MAX_HP
-	_special = INIT_SPECIAL
-	_life = MAX_LIFE
+#	_hp = MAX_HP
+#	_special = INIT_SPECIAL
+#	_life = MAX_LIFE
+	_freeze = false
 	_speed = WALK_SPEED
 	_hit_released = true
 	_current_left = -1
@@ -83,6 +87,9 @@ func _ready():
 	_pickables = {}
 
 func _fixed_process(delta):
+	if _freeze:
+		return
+	
 	var action_hit = utils.is_input_action_pressed(_control, "hit")
 	var action_special = utils.is_input_action_pressed(_control, "special")
 	var walk_left = utils.is_input_action_pressed(_control, "left")
@@ -119,8 +126,8 @@ func _fixed_process(delta):
 		_special_released = true
 	if (_special_released && action_special):
 		_special_released = false
-		if (![STATE.SPECIAL, STATE.KO, STATE.SPECIAL_SETUP].has(_state) && _special > 0):
-			_special -= 1
+		if (![STATE.SPECIAL, STATE.KO, STATE.SPECIAL_SETUP].has(_state) && _attributes.specials > 0):
+			_attributes.specials -= 1
 			emit_signal("state_changed", self)
 			_state = STATE.SPECIAL_SETUP
 			defensive_hitbox(false)
@@ -238,13 +245,13 @@ func check_items_to_consume():
 func restore_hp(hp):
 	print("RESTORE %d HP" % hp)
 	_node_sound.play("eat")
-	_hp += hp
-	if (_hp > MAX_HP):
-		_hp = MAX_HP
+	_attributes.hp += hp
+	if (_attributes.hp > MAX_HP):
+		_attributes.hp = MAX_HP
 	emit_signal("state_changed", self)
 
 func add_life(lives):
-	_life += lives
+	_attributes.lives += lives
 	_node_sound.play("eat")
 	emit_signal("state_changed", self)
 
@@ -309,9 +316,9 @@ func end_hit():
 func get_hit(power, knock_down):
 	_speed = WALK_SPEED
 	_velocity.x = 0
-	print(str(_hp) + " - " + str(power))
-	_hp -= power
-	if _hp <= 0:
+	#print(str(_attributes.hp) + " - " + str(power))
+	_attributes.hp -= power
+	if _attributes.hp <= 0:
 		_node_camera.shake(globals.DEFAULT_SHAKE_MAGNITUDE, globals.DEFAULT_SHAKE_DURATION)
 		defensive_hitbox(false)
 		_velocity = Vector2(_current_left * _speed, -200)
@@ -342,31 +349,27 @@ func get_up():
 	_node_anim.play("stand")
 	_state = STATE.IDLE
 
-func get_life():
-	return _life
+func get_lives():
+	return _attributes.lives
 
 func get_hp():
-	return _hp
-
-func get_max_life():
-	return MAX_LIFE
+	return _attributes.hp
 
 func get_max_hp():
 	return MAX_HP
 	
 func dead():
-	_life -= 1
-	if _life == 0:
+	_attributes.lives -= 1
+	if _attributes.lives == 0:
 		#TODO: Game Over
 		emit_signal("state_changed", self)
 		bgms.play("game_over")
-		pass
 	else:
 		respawn()
 
 func respawn():
-	_hp = MAX_HP
-	_special = INIT_SPECIAL
+	_attributes.hp = MAX_HP
+	_attributes.specials = globals.INIT_SPECIALS
 	_state = STATE.FALL
 	_node_anim.play("fall")
 	_touch_floor = false
@@ -388,8 +391,8 @@ func jump():
 func fall():
 	_node_anim.play("fall")
 
-func get_special():
-	return _special
+func get_specials():
+	return _attributes.specials
 
 func last_hit_connected():
 	_last_hit_connect = true
@@ -412,10 +415,10 @@ func get_player():
 	return _player
 
 func get_score():
-	return globals.get_score(_player)
+	return _attributes.score
 
 func add_score(value):
-	globals.add_score(_player, value)
+	_attributes.score += value
 	emit_signal("state_changed", self)
 
 func set_player(player):
@@ -443,6 +446,15 @@ func special_setup_finished():
 	_node_anim.play("special")
 
 func add_special(nb_specials):
-	_special += nb_specials
+	_attributes.specials += nb_specials
 	_node_sound.play("special_charge")
 	emit_signal("state_changed", self)
+
+func set_hp(hp):
+	_attributes.hp = hp
+
+func set_freeze(freeze):
+	_freeze = freeze
+
+func set_specials(specials):
+	_attributes.specials = specials

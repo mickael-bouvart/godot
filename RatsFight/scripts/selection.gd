@@ -64,7 +64,7 @@ func validate(control):
 
 func game_start():
 	bgms.stop()
-	scene_manager.change_scene("res://stages/stage_01/stage_01_intro.tscn")
+	scene_manager.change_scene("res://stages/stage_01/stage_01.tscn")
 
 func add_player(control):
 	var nb_player = globals.get_nb_players() + 1

@@ -1,9 +1,14 @@
 extends Node
 
-export (PackedScene) var _stage = null
+signal action
 
 func _ready():
 	pass
 
 func _on_timer_timeout():
-	scene_manager.change_scene(_stage.get_path())
+	get_node("anim").play("transition")
+	get_node("anim").connect("finished", self, "action")
+
+func action():
+	emit_signal("action")
+	queue_free()

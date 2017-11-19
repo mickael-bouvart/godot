@@ -1,5 +1,7 @@
 extends Node
 
+const INIT_SPECIALS = 2
+const INIT_LIVES = 3
 const INPUT_HIT = "hit"
 const INPUT_LEFT = "ui_left"
 const INPUT_RIGHT = "ui_right"
@@ -29,10 +31,48 @@ enum STATE {
 	FALL
 }
 
-var score =  {
-	"p1": 0,
-	"p2": 0
+class PlayerAttributes:
+	var score setget set_score, get_score
+	var lives setget set_lives, get_lives
+	var hp setget set_hp, get_hp
+	var specials setget set_specials, get_specials
+	
+	func _init():
+		lives = INIT_LIVES
+		specials = INIT_SPECIALS
+		score = 0
+		hp = 0
+		
+	func set_score(val):
+		score = val
+	
+	func get_score():
+		return score
+	
+	func set_lives(val):
+		lives = val
+	
+	func get_lives():
+		return lives
+	
+	func set_hp(val):
+		hp = val
+	
+	func get_hp():
+		return hp
+	
+	func set_specials(val):
+		specials = val
+	
+	func get_specials():
+		return specials
+
+
+var player_attributes =  {
+	"p1": PlayerAttributes.new(),
+	"p2": PlayerAttributes.new()
 }
+
 
 var p1_control = "keyboard" setget set_p1_control, get_p1_control
 var p2_control = "joypad" setget set_p2_control, get_p2_control
@@ -57,10 +97,10 @@ func get_p2_control():
 	return p2_control
 
 func add_score(p, value):
-	score[p] += value
+	player_attributes[p].score += value
 
 func get_score(p):
-	return score[p]
+	return player_attributes[p].score
 
 func _ready():
 #	AudioServer.set_stream_global_volume_scale(0)
