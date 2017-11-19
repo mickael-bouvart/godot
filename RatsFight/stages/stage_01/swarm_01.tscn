@@ -15,7 +15,7 @@ transform/pos = Vector2( 1427.21, 218.837 )
 
 [node name="char5" parent="." instance=ExtResource( 2 )]
 
-transform/pos = Vector2( 926.29, 224.703 )
+transform/pos = Vector2( 1186.29, 214.703 )
 walk_speed = 110
 
 [node name="char6" parent="." instance=ExtResource( 2 )]

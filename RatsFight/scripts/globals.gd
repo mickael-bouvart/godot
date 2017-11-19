@@ -63,4 +63,6 @@ func get_score(p):
 	return score[p]
 
 func _ready():
+#	AudioServer.set_stream_global_volume_scale(0)
+#	AudioServer.set_fx_global_volume_scale(0)
 	pass

@@ -63,7 +63,7 @@ func validate(control):
 		_start_timer = 1.5
 
 func game_start():
-	scene_manager.change_scene("res://stages/stage_01/stage_01.tscn")
+	scene_manager.change_scene("res://stages/stage_01/stage_01_intro.tscn")
 
 func add_player(control):
 	var nb_player = globals.get_nb_players() + 1
