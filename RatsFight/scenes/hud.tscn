@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=1]
+[gd_scene load_steps=6 format=1]
 
 [ext_resource path="res://scripts/hud.gd" type="Script" id=1]
 [ext_resource path="res://assets/fonts/arcadeclassic.fnt" type="BitmapFont" id=2]
 [ext_resource path="res://assets/sprites/life_bar02.png" type="Texture" id=3]
 [ext_resource path="res://assets/sprites/life_bar01.png" type="Texture" id=4]
+[ext_resource path="res://assets/sprites/Super.png" type="Texture" id=5]
 
 [node name="hud" type="Node"]
 
@@ -88,12 +89,12 @@ focus/ignore_mouse = true
 focus/stop_mouse = true
 size_flags/horizontal = 2
 size_flags/vertical = 0
-margin/left = 393.0
+margin/left = 400.0
 margin/top = 20.0
-margin/right = 418.0
+margin/right = 425.0
 margin/bottom = 39.0
 custom_fonts/font = ExtResource( 2 )
-text = "S  x"
+text = "x"
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
@@ -149,9 +150,9 @@ focus/ignore_mouse = true
 focus/stop_mouse = true
 size_flags/horizontal = 2
 size_flags/vertical = 0
-margin/left = 426.0
+margin/left = 416.0
 margin/top = 20.0
-margin/right = 466.0
+margin/right = 456.0
 margin/bottom = 39.0
 custom_fonts/font = ExtResource( 2 )
 percent_visible = 1.0
@@ -173,6 +174,20 @@ align = 2
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
+
+[node name="tex_special" type="TextureFrame" parent="CanvasLayer/Panel/p1"]
+
+rect/scale = Vector2( 0.3, 0.3 )
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 375.0
+margin/top = 14.0
+margin/right = 434.0
+margin/bottom = 77.0
+texture = ExtResource( 5 )
+stretch_mode = 0
 
 [node name="p2" type="Control" parent="CanvasLayer/Panel"]
 
@@ -268,12 +283,12 @@ focus/ignore_mouse = true
 focus/stop_mouse = true
 size_flags/horizontal = 2
 size_flags/vertical = 0
-margin/left = 393.0
+margin/left = 400.0
 margin/top = 20.0
-margin/right = 418.0
+margin/right = 425.0
 margin/bottom = 39.0
 custom_fonts/font = ExtResource( 2 )
-text = "S  x"
+text = "x"
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
@@ -284,9 +299,9 @@ focus/ignore_mouse = true
 focus/stop_mouse = true
 size_flags/horizontal = 2
 size_flags/vertical = 0
-margin/left = 426.0
+margin/left = 416.0
 margin/top = 20.0
-margin/right = 466.0
+margin/right = 456.0
 margin/bottom = 39.0
 custom_fonts/font = ExtResource( 2 )
 percent_visible = 1.0
@@ -308,5 +323,19 @@ align = 2
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
+
+[node name="tex_special1" type="TextureFrame" parent="CanvasLayer/Panel/p2"]
+
+rect/scale = Vector2( 0.3, 0.3 )
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 375.0
+margin/top = 14.0
+margin/right = 434.0
+margin/bottom = 77.0
+texture = ExtResource( 5 )
+stretch_mode = 0
 
 

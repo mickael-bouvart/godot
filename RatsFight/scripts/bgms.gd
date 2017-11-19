@@ -1,10 +1,15 @@
 extends Node
 
 const FADE_OUT_SPEED = 0.01
+
 var _current_bgm
+var _fade_out_volume
+var _next_bgm
 
 func _ready():
 	_current_bgm = null
+	_fade_out_volume = null
+	_next_bgm = null
 	set_fixed_process(true)
 
 func play(music):
@@ -18,8 +23,9 @@ func play(music):
 		print("VOLUME: " + str(_fade_out_volume))
 		_next_bgm = music
 
-var _fade_out_volume = null
-var _next_bgm = null
+func stop():
+	_fade_out_volume = get_node(_current_bgm).get_volume()
+	_next_bgm = null
 
 func _fixed_process(delta):
 	if _fade_out_volume != null && _fade_out_volume > 0:
@@ -28,5 +34,6 @@ func _fixed_process(delta):
 	if _fade_out_volume != null && _fade_out_volume <= 0:
 		_fade_out_volume = null
 		_current_bgm = _next_bgm
-		get_node(_current_bgm).play()
-		get_node(_current_bgm).set_volume(1)
+		if _current_bgm != null && _current_bgm != "":
+			get_node(_current_bgm).play()
+			get_node(_current_bgm).set_volume(1)
