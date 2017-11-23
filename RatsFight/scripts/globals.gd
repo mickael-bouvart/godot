@@ -76,7 +76,7 @@ var player_attributes =  {
 
 var p1_control = "keyboard" setget set_p1_control, get_p1_control
 var p2_control = "joypad" setget set_p2_control, get_p2_control
-var nb_players = 2 setget set_nb_players, get_nb_players
+var nb_players = 1 setget set_nb_players, get_nb_players
 
 func set_nb_players(value):
 	nb_players = value

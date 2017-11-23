@@ -4,8 +4,8 @@ signal state_changed
 
 const MAX_HP = 20
 const GRAVITY = 1000.0
-const WALK_SPEED = 200
-const RUN_SPEED = 400
+const WALK_SPEED = 250
+const RUN_SPEED = 600
 const SPECIAL_SPEED = 800
 const JUMP_FORCE = 600
 const INVINCIBILITY_TIME = 0.5
@@ -29,9 +29,6 @@ export var _player = "p1"
 export var _control = "keyboard"
 
 var _attributes
-#var _hp
-#var _life
-#var _special
 var _current_left
 var _state
 var _hit_released
@@ -50,6 +47,7 @@ var _knock_down
 var _invicibility_cnt
 var _pickables
 var _freeze
+var _states
 
 var preload_spark = preload("res://scenes/spark_hit.tscn")
 
@@ -62,8 +60,33 @@ onready var _node_sound = get_node("sound")
 onready var _node_timer = get_node("timer")
 onready var _node_camera = get_node("camera")
 
+func switch_state(new_state):
+	_states[_state].end()
+	_state = new_state
+	_states[_state].start()
+
+class StandState:
+	var _parent
+
+	func _init(parent):
+		_parent = parent
+
+	func start():
+		_parent._node_anim.play("stand")
+		_parent._velocity.x = 0
+
+	func update(delta):
+		_parent.move_body(delta)
+
+	func end():
+		pass
+
+
 func _init():
 	_attributes = globals.player_attributes[_player]
+	_states = {
+		globals.STATE.IDLE: StandState.new(self)
+	}
 
 func _ready():
 	set_fixed_process(true)
@@ -85,11 +108,17 @@ func _ready():
 	_last_hit_connect = false
 	_combo_frame_count = 0
 	_pickables = {}
+	_state = globals.STATE.IDLE
+	_states[_state].start()
 
 func _fixed_process(delta):
+	if _freeze:
+		return
 	print(get_pos())
-	print(get_node("sprite").is_visible())
-	print(get_node("sprite").get_frame())
+	_state = globals.STATE.IDLE
+	_states[_state].update(delta)
+
+func _fixed_process_(delta):
 	if _freeze:
 		return
 	
@@ -461,3 +490,4 @@ func set_freeze(freeze):
 
 func set_specials(specials):
 	_attributes.specials = specials
+

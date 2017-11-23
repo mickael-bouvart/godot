@@ -522,7 +522,7 @@ texture = ExtResource( 6 )
 flip_h = true
 vframes = 6
 hframes = 5
-frame = 13
+frame = 11
 
 [node name="sprite_glow" type="Sprite" parent="sprite"]
 

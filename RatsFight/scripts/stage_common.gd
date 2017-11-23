@@ -25,7 +25,7 @@ func _ready():
 
 func init_stage():
 	get_node("pause").set_freeze(true)
-	var hero1 = plhero1.instance()
+	var hero1 = plhero2.instance()
 	hero1.set_pos(Vector2(200, -200))
 	hero1.set_player("p1")
 	hero1.set_control(globals.p1_control)
