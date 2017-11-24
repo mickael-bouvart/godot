@@ -30,6 +30,7 @@ export var _control = "keyboard"
 
 var _attributes
 var _current_left
+var _new_left
 var _state
 var _hit_released
 var _jump_released
@@ -60,8 +61,9 @@ onready var _node_sound = get_node("sound")
 onready var _node_timer = get_node("timer")
 onready var _node_camera = get_node("camera")
 
-func switch_state(new_state):
-	_states[_state].end()
+func change_state(new_state):
+	if _state != null:
+		_states[_state].end()
 	_state = new_state
 	_states[_state].start()
 
@@ -73,19 +75,93 @@ class StandState:
 
 	func start():
 		_parent._node_anim.play("stand")
-		_parent._velocity.x = 0
 
 	func update(delta):
 		_parent.move_body(delta)
+		_parent._velocity.x = 0
+		var walk_right = utils.is_input_action_pressed(_parent._control, "right")
+		var run = utils.is_input_action_pressed(_parent._control, "run")
+		var walk_left = utils.is_input_action_pressed(_parent._control, "left")
+		#Switch to walk
+		if walk_right || walk_left:
+			_parent._new_left = -1 if walk_right else 1
+			if run:
+				_parent.change_state(globals.STATE.RUN)
+			else:
+				_parent.change_state(globals.STATE.WALK)
 
 	func end():
 		pass
 
+class WalkState:
+	var _parent
+
+	func _init(parent):
+		_parent = parent
+
+	func start():
+		_parent._node_anim.play("walk")
+		if _parent._new_left != _parent._current_left:
+			_parent._current_left = _parent._new_left
+			_parent.set_scale(Vector2(_parent._current_left, 1))
+
+	func update(delta):
+		_parent._velocity.x = -WALK_SPEED * _parent._current_left
+		_parent.move_body(delta)
+		var walk_right = utils.is_input_action_pressed(_parent._control, "right")
+		var walk_left = utils.is_input_action_pressed(_parent._control, "left")
+		var run = utils.is_input_action_pressed(_parent._control, "run")
+		#Switch to idle
+		if		(_parent._current_left == -1 && !walk_right)	\
+			||	(_parent._current_left == 1 && !walk_left):
+			_parent.change_state(globals.STATE.IDLE)
+		elif	((_parent._current_left == -1 && walk_left)	\
+			||	(_parent._current_left == 1 && walk_right))	\
+			&& walk_left != walk_right:
+				_parent._new_left = 1 if walk_left else -1
+				_parent.change_state(globals.STATE.WALK)
+		elif run:
+			_parent._new_left = 1 if walk_left else -1
+			_parent.change_state(globals.STATE.RUN)
+
+	func end():
+		pass
+
+class RunState:
+	var _parent
+
+	func _init(parent):
+		_parent = parent
+
+	func start():
+		_parent._node_anim.play("run")
+		if _parent._new_left != _parent._current_left:
+			_parent._current_left = _parent._new_left
+			_parent.set_scale(Vector2(_parent._current_left, 1))
+
+	func update(delta):
+		_parent._velocity.x = -RUN_SPEED * _parent._current_left
+		_parent.move_body(delta)
+	#	Switch to idle
+		var walk_right = utils.is_input_action_pressed(_parent._control, "right")
+		var walk_left = utils.is_input_action_pressed(_parent._control, "left")
+		var run = utils.is_input_action_pressed(_parent._control, "run")
+		if		(_parent._current_left == -1 && !walk_right)	\
+			||	(_parent._current_left == 1 && !walk_left):
+			_parent.change_state(globals.STATE.IDLE)
+		elif !run:
+			_parent._new_left = 1 if walk_left else -1
+			_parent.change_state(globals.STATE.WALK)
+
+	func end():
+		pass
 
 func _init():
 	_attributes = globals.player_attributes[_player]
 	_states = {
-		globals.STATE.IDLE: StandState.new(self)
+		globals.STATE.IDLE: StandState.new(self),
+		globals.STATE.WALK: WalkState.new(self),
+		globals.STATE.RUN: RunState.new(self)
 	}
 
 func _ready():
@@ -114,8 +190,7 @@ func _ready():
 func _fixed_process(delta):
 	if _freeze:
 		return
-	print(get_pos())
-	_state = globals.STATE.IDLE
+	#print(get_pos())
 	_states[_state].update(delta)
 
 func _fixed_process_(delta):
