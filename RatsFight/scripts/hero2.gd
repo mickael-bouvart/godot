@@ -48,7 +48,20 @@ var _knock_down
 var _invicibility_cnt
 var _pickables
 var _freeze
+
 var _states
+var _hitting
+var _jump_cnt
+
+var _input_walk_right
+var _input_walk_left
+var _input_run
+var _input_jump_prev
+var _input_jump
+var _input_hit_prev
+var _input_hit
+var _input_special_prev
+var _input_special
 
 var preload_spark = preload("res://scenes/spark_hit.tscn")
 
@@ -67,6 +80,14 @@ func change_state(new_state):
 	_state = new_state
 	_states[_state].start()
 
+class FreezeState:
+	func start():
+		pass
+	func update(delta):
+		pass
+	func end():
+		pass
+
 class StandState:
 	var _parent
 
@@ -74,22 +95,28 @@ class StandState:
 		_parent = parent
 
 	func start():
+		_parent._speed = WALK_SPEED
 		_parent._node_anim.play("stand")
 
 	func update(delta):
 		_parent.move_body(delta)
 		_parent._velocity.x = 0
-		var walk_right = utils.is_input_action_pressed(_parent._control, "right")
-		var run = utils.is_input_action_pressed(_parent._control, "run")
-		var walk_left = utils.is_input_action_pressed(_parent._control, "left")
-		#Switch to walk
-		if walk_right || walk_left:
-			_parent._new_left = -1 if walk_right else 1
-			if run:
+		
+		# Switch to WALK or RUN
+		if _parent._input_walk_right || _parent._input_walk_left:
+			_parent._new_left = -1 if _parent._input_walk_right else 1
+			if _parent._input_run:
 				_parent.change_state(globals.STATE.RUN)
 			else:
 				_parent.change_state(globals.STATE.WALK)
-
+		# Switch to JUMP
+		elif _parent.input_jump_just_pressed():
+			_parent._jump_cnt = 1
+			_parent.change_state(globals.STATE.JUMP)
+		# Switch to HIT
+		elif _parent.input_hit_just_pressed():
+			_parent.change_state(globals.STATE.HIT)
+			
 	func end():
 		pass
 
@@ -100,29 +127,30 @@ class WalkState:
 		_parent = parent
 
 	func start():
+		_parent._speed = WALK_SPEED
 		_parent._node_anim.play("walk")
 		if _parent._new_left != _parent._current_left:
 			_parent._current_left = _parent._new_left
 			_parent.set_scale(Vector2(_parent._current_left, 1))
 
 	func update(delta):
-		_parent._velocity.x = -WALK_SPEED * _parent._current_left
+		_parent._velocity.x = -_parent._speed * _parent._current_left
 		_parent.move_body(delta)
-		var walk_right = utils.is_input_action_pressed(_parent._control, "right")
-		var walk_left = utils.is_input_action_pressed(_parent._control, "left")
-		var run = utils.is_input_action_pressed(_parent._control, "run")
-		#Switch to idle
-		if		(_parent._current_left == -1 && !walk_right)	\
-			||	(_parent._current_left == 1 && !walk_left):
+		# Switch to idle
+		if		(_parent._current_left == -1 && !_parent._input_walk_right)	\
+			||	(_parent._current_left == 1 && !_parent._input_walk_left):
 			_parent.change_state(globals.STATE.IDLE)
-		elif	((_parent._current_left == -1 && walk_left)	\
-			||	(_parent._current_left == 1 && walk_right))	\
-			&& walk_left != walk_right:
-				_parent._new_left = 1 if walk_left else -1
-				_parent.change_state(globals.STATE.WALK)
-		elif run:
-			_parent._new_left = 1 if walk_left else -1
+		# Switch to RUN
+		elif _parent._input_run:
+			_parent._new_left = 1 if _parent._input_walk_left else -1
 			_parent.change_state(globals.STATE.RUN)
+		# Switch to JUMP
+		elif _parent.input_jump_just_pressed():
+			_parent._jump_cnt = 1
+			_parent.change_state(globals.STATE.JUMP)
+		# Switch to HIT
+		elif _parent.input_hit_just_pressed():
+			_parent.change_state(globals.STATE.HIT)
 
 	func end():
 		pass
@@ -134,24 +162,152 @@ class RunState:
 		_parent = parent
 
 	func start():
+		_parent._speed = RUN_SPEED
 		_parent._node_anim.play("run")
 		if _parent._new_left != _parent._current_left:
 			_parent._current_left = _parent._new_left
 			_parent.set_scale(Vector2(_parent._current_left, 1))
 
 	func update(delta):
-		_parent._velocity.x = -RUN_SPEED * _parent._current_left
+		_parent._velocity.x = -_parent._speed * _parent._current_left
 		_parent.move_body(delta)
-	#	Switch to idle
-		var walk_right = utils.is_input_action_pressed(_parent._control, "right")
-		var walk_left = utils.is_input_action_pressed(_parent._control, "left")
-		var run = utils.is_input_action_pressed(_parent._control, "run")
-		if		(_parent._current_left == -1 && !walk_right)	\
-			||	(_parent._current_left == 1 && !walk_left):
+		# Switch to IDLE
+		if		(_parent._current_left == -1 && !_parent._input_walk_right)	\
+			||	(_parent._current_left == 1 && !_parent._input_walk_left):
 			_parent.change_state(globals.STATE.IDLE)
-		elif !run:
-			_parent._new_left = 1 if walk_left else -1
+		# Switch to WALK
+		elif !_parent._input_run:
+			_parent._new_left = 1 if _parent._input_walk_left else -1
 			_parent.change_state(globals.STATE.WALK)
+		# Switch to JUMP
+		elif _parent.input_jump_just_pressed():
+			_parent._jump_cnt = 1
+			_parent.change_state(globals.STATE.JUMP)
+		# Switch to HIT
+		elif _parent.input_hit_just_pressed():
+			_parent.change_state(globals.STATE.HIT)
+
+	func end():
+		pass
+
+class HitState:
+	var _parent
+
+	func _init(parent):
+		_parent = parent
+
+	func start():
+		_parent._velocity.x = 0
+		_parent._hitting = true
+		_parent._node_anim.play("hit_01")
+
+	func update(delta):
+		_parent.move_body(delta)
+		# Switch to IDLE
+		if !_parent._hitting:
+			_parent.change_state(globals.STATE.IDLE)
+
+	func end():
+		pass
+
+class JumpState:
+	var _parent
+
+	func _init(parent):
+		_parent = parent
+
+	func start():
+		_parent._node_anim.play("jump")
+		_parent._velocity.y = -JUMP_FORCE
+		_parent._touch_floor = false
+
+	func update(delta):
+		# Moving left and right mid-air
+		if (_parent._current_left == 1 && _parent._input_walk_right && !_parent._input_walk_left) \
+			|| (_parent._current_left == -1 && _parent._input_walk_left && !_parent._input_walk_right):
+			_parent._current_left *= -1
+			_parent._velocity.x *= -1
+			_parent.set_scale(Vector2(_parent._current_left, 1))
+		if (_parent._input_walk_right || _parent._input_walk_left) && _parent._velocity.x == 0:
+				_parent._velocity.x = -_parent._speed * _parent._current_left
+		_parent.move_body(delta)
+		if _parent.input_jump_just_pressed():
+			if _parent._jump_cnt == 1:
+				# Switch to JUMP (double jump)
+				_parent._jump_cnt += 1
+				_parent.change_state(globals.STATE.JUMP)
+			elif _parent._jump_cnt == 2:
+				# Switch to GLIDE
+				pass
+		# Switch to JUMP_HIT
+		elif _parent.input_hit_just_pressed():
+			_parent.change_state(globals.STATE.JUMP_HIT)
+		# Switch to FALL
+		elif _parent._velocity.y > 0:
+			_parent.change_state(globals.STATE.FALL)
+
+	func end():
+		pass
+
+class FallState:
+	var _parent
+
+	func _init(parent):
+		_parent = parent
+
+	func start():
+		_parent._node_anim.play("fall")
+
+	func update(delta):
+		# Moving left and right mid-air
+		if (_parent._current_left == 1 && _parent._input_walk_right && !_parent._input_walk_left) \
+			|| (_parent._current_left == -1 && _parent._input_walk_left && !_parent._input_walk_right):
+			_parent._current_left *= -1
+			_parent._velocity.x *= -1
+			_parent.set_scale(Vector2(_parent._current_left, 1))
+		if (_parent._input_walk_right || _parent._input_walk_left) && _parent._velocity.x == 0:
+				_parent._velocity.x = -_parent._speed * _parent._current_left
+		_parent.move_body(delta)
+		# Switch to IDLE
+		if _parent._touch_floor:
+			_parent.change_state(globals.STATE.IDLE)
+		elif _parent.input_jump_just_pressed():
+			if _parent._jump_cnt == 1:
+				# Switch to JUMP (double jump)
+				_parent._jump_cnt += 1
+				_parent.change_state(globals.STATE.JUMP)
+			elif _parent._jump_cnt == 2:
+				# Switch to GLIDE
+				pass
+		# Switch to JUMP_HIT
+		elif _parent.input_hit_just_pressed():
+			_parent.change_state(globals.STATE.JUMP_HIT)
+
+	func end():
+		pass
+
+class JumpHitState:
+	var _parent
+
+	func _init(parent):
+		_parent = parent
+
+	func start():
+		_parent._node_anim.play("jump_hit")
+
+	func update(delta):
+		_parent.move_body(delta)
+		# Switch to IDLE
+		if _parent._touch_floor:
+			_parent.change_state(globals.STATE.IDLE)
+		elif _parent.input_jump_just_pressed():
+			if _parent._jump_cnt == 1:
+				# Switch to JUMP (double jump)
+				_parent._jump_cnt += 1
+				_parent.change_state(globals.STATE.JUMP)
+			elif _parent._jump_cnt == 2:
+				# Switch to GLIDE
+				pass
 
 	func end():
 		pass
@@ -159,9 +315,14 @@ class RunState:
 func _init():
 	_attributes = globals.player_attributes[_player]
 	_states = {
+		globals.STATE.FREEZE: FreezeState.new(),
 		globals.STATE.IDLE: StandState.new(self),
 		globals.STATE.WALK: WalkState.new(self),
-		globals.STATE.RUN: RunState.new(self)
+		globals.STATE.RUN: RunState.new(self),
+		globals.STATE.HIT: HitState.new(self),
+		globals.STATE.JUMP: JumpState.new(self),
+		globals.STATE.FALL: FallState.new(self),
+		globals.STATE.JUMP_HIT: JumpHitState.new(self)
 	}
 
 func _ready():
@@ -184,14 +345,32 @@ func _ready():
 	_last_hit_connect = false
 	_combo_frame_count = 0
 	_pickables = {}
-	_state = globals.STATE.IDLE
+	_state = globals.STATE.FALL
 	_states[_state].start()
 
 func _fixed_process(delta):
-	if _freeze:
-		return
-	#print(get_pos())
+	check_inputs()
 	_states[_state].update(delta)
+
+func check_inputs():
+	_input_jump_prev = _input_jump
+	_input_hit_prev = _input_hit
+	_input_special_prev = _input_special
+	_input_walk_left = utils.is_input_action_pressed(_control, "left")
+	_input_walk_right = utils.is_input_action_pressed(_control, "right")
+	_input_run = utils.is_input_action_pressed(_control, "run")
+	_input_jump = utils.is_input_action_pressed(_control, "jump")
+	_input_hit = utils.is_input_action_pressed(_control, "hit")
+	_input_special = utils.is_input_action_pressed(_control, "special")
+
+func input_jump_just_pressed():
+	return _input_jump && !_input_jump_prev
+
+func input_hit_just_pressed():
+	return _input_hit && !_input_hit_prev
+
+func input_special_just_pressed():
+	return _input_special && !_input_special_prev
 
 func _fixed_process_(delta):
 	if _freeze:
@@ -379,21 +558,9 @@ func move_body(delta):
 		#print(n)
 		if (rad2deg(acos(n.dot(Vector2(0, -1)))) < globals.FLOOR_ANGLE_TOLERANCE):
 			new_touch_floor = true
-			if (_state == STATE.JUMP_HIT):
-				_node_offensive_hitbox_area3.set_enable_monitoring(false)
-			if ([STATE.JUMP, STATE.FALL, STATE.JUMP_HIT].has(_state)):
-				_state = STATE.IDLE
-				_node_anim.play("stand")
-				_velocity.x = 0
-				_speed = WALK_SPEED
-		if (![STATE.BEING_HIT, STATE.KO].has(_state) || !new_touch_floor):
-			motion = n.slide(motion)
-			_velocity = n.slide(_velocity)
+		motion = n.slide(motion)
+		_velocity = n.slide(_velocity)
 		motion = move(motion)
-	else:
-		if _velocity.y > 0 && _state == STATE.JUMP:
-			_state = STATE.FALL
-			_node_anim.play("fall")
 	if new_touch_floor != null:
 		_touch_floor = new_touch_floor
 
@@ -417,8 +584,9 @@ func _on_offensive_hitbox_area_area_enter( area ):
 	get_node("../../").add_child(spark)
 
 func end_hit():
-	_state = STATE.IDLE
-	_node_anim.play("stand")
+	_hitting = false
+	#_state = STATE.IDLE
+	#_node_anim.play("stand")
 	
 func get_hit(power, knock_down):
 	_speed = WALK_SPEED
@@ -561,7 +729,11 @@ func set_hp(hp):
 	_attributes.hp = hp
 
 func set_freeze(freeze):
-	_freeze = freeze
+	if freeze:
+		_freeze = _state
+		change_state(globals.STATE.FREEZE)
+	else:
+		change_state(_freeze)
 
 func set_specials(specials):
 	_attributes.specials = specials

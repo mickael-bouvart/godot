@@ -18,6 +18,7 @@ const FLOOR_ANGLE_TOLERANCE = 40
 const GRAVITY = 500.0
 
 enum STATE {
+	FREEZE,
 	IDLE,
 	WALK,
 	RUN,
