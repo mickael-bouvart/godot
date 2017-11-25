@@ -80,10 +80,9 @@ var player_attributes =  {
 	"p2": PlayerAttributes.new()
 }
 
-
 var p1_control = "keyboard" setget set_p1_control, get_p1_control
 var p2_control = "joypad" setget set_p2_control, get_p2_control
-var nb_players = 1 setget set_nb_players, get_nb_players
+var nb_players = 2 setget set_nb_players, get_nb_players
 
 func set_nb_players(value):
 	nb_players = value
@@ -110,6 +109,6 @@ func get_score(p):
 	return player_attributes[p].score
 
 func _ready():
-	AudioServer.set_stream_global_volume_scale(0)
-	AudioServer.set_fx_global_volume_scale(0)
+	#AudioServer.set_stream_global_volume_scale(0)
+	#AudioServer.set_fx_global_volume_scale(0)
 	pass

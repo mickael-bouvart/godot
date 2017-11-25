@@ -2,7 +2,7 @@ extends KinematicBody2D
 
 signal state_changed
 
-const MAX_HP = 20
+const MAX_HP = 30
 const GRAVITY = 1000.0
 const WALK_SPEED = 200
 const RUN_SPEED = 400
@@ -313,7 +313,7 @@ func end_hit():
 	_state = STATE.IDLE
 	_node_anim.play("stand")
 	
-func get_hit(power, knock_down):
+func get_hit(hitter, power, knock_down):
 	_speed = WALK_SPEED
 	_velocity.x = 0
 	#print(str(_attributes.hp) + " - " + str(power))
@@ -423,6 +423,7 @@ func add_score(value):
 
 func set_player(player):
 	_player = player
+	_attributes = globals.player_attributes[_player]
 
 func set_control(control):
 	_control = control

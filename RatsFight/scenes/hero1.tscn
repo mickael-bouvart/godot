@@ -13,7 +13,7 @@
 custom_solver_bias = 0.0
 extents = Vector2( 60, 100 )
 
-[sub_resource type="SampleLibrary" id=3]
+[sub_resource type="SampleLibrary" id=2]
 
 samples/eat = {
 "db": 24.0,
@@ -40,7 +40,7 @@ samples/special_charge = {
 "sample": ExtResource( 6 )
 }
 
-[sub_resource type="Animation" id=4]
+[sub_resource type="Animation" id=3]
 
 length = 0.3
 loop = false
@@ -68,7 +68,7 @@ tracks/1/keys = {
 } ]
 }
 
-[sub_resource type="Animation" id=5]
+[sub_resource type="Animation" id=4]
 
 length = 1.0
 loop = false
@@ -84,7 +84,7 @@ tracks/0/keys = {
 "values": [ 16 ]
 }
 
-[sub_resource type="Animation" id=6]
+[sub_resource type="Animation" id=5]
 
 length = 0.3
 loop = false
@@ -122,7 +122,7 @@ tracks/2/keys = {
 } ]
 }
 
-[sub_resource type="Animation" id=7]
+[sub_resource type="Animation" id=6]
 
 length = 0.6
 loop = false
@@ -160,7 +160,7 @@ tracks/2/keys = {
 } ]
 }
 
-[sub_resource type="Animation" id=8]
+[sub_resource type="Animation" id=7]
 
 length = 1.0
 loop = false
@@ -176,7 +176,7 @@ tracks/0/keys = {
 "values": [ 14, 15 ]
 }
 
-[sub_resource type="Animation" id=9]
+[sub_resource type="Animation" id=8]
 
 length = 1.0
 loop = false
@@ -202,7 +202,7 @@ tracks/1/keys = {
 "values": [ true ]
 }
 
-[sub_resource type="Animation" id=10]
+[sub_resource type="Animation" id=9]
 
 length = 2.0
 loop = false
@@ -240,7 +240,7 @@ tracks/2/keys = {
 } ]
 }
 
-[sub_resource type="Animation" id=11]
+[sub_resource type="Animation" id=10]
 
 length = 2.0
 loop = false
@@ -288,7 +288,7 @@ tracks/3/keys = {
 } ]
 }
 
-[sub_resource type="Animation" id=12]
+[sub_resource type="Animation" id=11]
 
 length = 0.2
 loop = true
@@ -304,7 +304,7 @@ tracks/0/keys = {
 "values": [ 19, 20 ]
 }
 
-[sub_resource type="Animation" id=13]
+[sub_resource type="Animation" id=12]
 
 length = 0.5
 loop = true
@@ -330,7 +330,7 @@ tracks/1/keys = {
 "values": [ true, false ]
 }
 
-[sub_resource type="Animation" id=14]
+[sub_resource type="Animation" id=13]
 
 resource/name = "special_setup"
 length = 0.6
@@ -379,7 +379,7 @@ tracks/3/keys = {
 } ]
 }
 
-[sub_resource type="Animation" id=15]
+[sub_resource type="Animation" id=14]
 
 length = 1.0
 loop = true
@@ -395,7 +395,7 @@ tracks/0/keys = {
 "values": [ 0, 1, 2, 3, 2, 3, 4, 3, 2, 1, 0 ]
 }
 
-[sub_resource type="Animation" id=16]
+[sub_resource type="Animation" id=15]
 
 length = 1.0
 loop = true
@@ -411,22 +411,22 @@ tracks/0/keys = {
 "values": [ 5, 6, 7, 6 ]
 }
 
-[sub_resource type="RectangleShape2D" id=17]
+[sub_resource type="RectangleShape2D" id=16]
 
 custom_solver_bias = 0.0
 extents = Vector2( 89.0413, 20 )
 
-[sub_resource type="RectangleShape2D" id=18]
+[sub_resource type="RectangleShape2D" id=17]
 
 custom_solver_bias = 0.0
 extents = Vector2( 172, 160 )
 
-[sub_resource type="RectangleShape2D" id=19]
+[sub_resource type="RectangleShape2D" id=18]
 
 custom_solver_bias = 0.0
 extents = Vector2( 102.144, 58.6099 )
 
-[sub_resource type="RectangleShape2D" id=20]
+[sub_resource type="RectangleShape2D" id=19]
 
 custom_solver_bias = 0.0
 extents = Vector2( 60, 100 )
@@ -474,7 +474,7 @@ script/script = ExtResource( 2 )
 [node name="sound" type="SamplePlayer" parent="."]
 
 config/polyphony = 1
-config/samples = SubResource( 3 )
+config/samples = SubResource( 2 )
 default/volume_db = 0.0
 default/pitch_scale = 1.0
 default/pan = 0.0
@@ -495,6 +495,7 @@ texture = ExtResource( 7 )
 flip_h = true
 vframes = 6
 hframes = 5
+frame = 11
 
 [node name="sprite_glow" type="Sprite" parent="sprite"]
 
@@ -513,19 +514,19 @@ modulate = Color( 0, 0.752941, 1, 1 )
 playback/process_mode = 1
 playback/default_blend_time = 0.0
 root/root = NodePath("..")
-anims/being_hit = SubResource( 4 )
-anims/fall = SubResource( 5 )
-anims/hit_01 = SubResource( 6 )
-anims/hit_02 = SubResource( 7 )
-anims/jump = SubResource( 8 )
-anims/jump_hit = SubResource( 9 )
-anims/knock_down = SubResource( 10 )
-anims/ko = SubResource( 11 )
-anims/run = SubResource( 12 )
-anims/special = SubResource( 13 )
-anims/special_setup = SubResource( 14 )
-anims/stand = SubResource( 15 )
-anims/walk = SubResource( 16 )
+anims/being_hit = SubResource( 3 )
+anims/fall = SubResource( 4 )
+anims/hit_01 = SubResource( 5 )
+anims/hit_02 = SubResource( 6 )
+anims/jump = SubResource( 7 )
+anims/jump_hit = SubResource( 8 )
+anims/knock_down = SubResource( 9 )
+anims/ko = SubResource( 10 )
+anims/run = SubResource( 11 )
+anims/special = SubResource( 12 )
+anims/special_setup = SubResource( 13 )
+anims/stand = SubResource( 14 )
+anims/walk = SubResource( 15 )
 playback/active = true
 playback/speed = 1.0
 blend_times = [  ]
@@ -533,6 +534,7 @@ autoplay = ""
 
 [node name="world_collision" type="CollisionShape2D" parent="."]
 
+visibility/visible = false
 transform/pos = Vector2( 0, 30 )
 shape = SubResource( 1 )
 trigger = false
@@ -545,7 +547,7 @@ _update_shape_index = 0
 editor/display_folded = true
 visibility/visible = false
 input/pickable = true
-shapes/0/shape = SubResource( 17 )
+shapes/0/shape = SubResource( 16 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, -67.3529, -22.2006 )
 shapes/0/trigger = true
 gravity_vec = Vector2( 0, 1 )
@@ -560,16 +562,15 @@ collision/mask = 4096
 [node name="offensive_hitbox_collision" type="CollisionShape2D" parent="offensive_hitbox_areas/1"]
 
 transform/pos = Vector2( -67.3529, -22.2006 )
-shape = SubResource( 17 )
+shape = SubResource( 16 )
 trigger = true
 _update_shape_index = 0
 
 [node name="2" type="Area2D" parent="offensive_hitbox_areas"]
 
 editor/display_folded = true
-visibility/visible = false
 input/pickable = true
-shapes/0/shape = SubResource( 18 )
+shapes/0/shape = SubResource( 17 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, -12, 10 )
 shapes/0/trigger = true
 gravity_vec = Vector2( 0, 1 )
@@ -584,16 +585,14 @@ collision/mask = 4096
 [node name="offensive_hitbox_collision" type="CollisionShape2D" parent="offensive_hitbox_areas/2"]
 
 transform/pos = Vector2( -12, 10 )
-shape = SubResource( 18 )
+shape = SubResource( 17 )
 trigger = true
 _update_shape_index = 0
 
 [node name="3" type="Area2D" parent="offensive_hitbox_areas"]
 
-editor/display_folded = true
-visibility/visible = false
 input/pickable = true
-shapes/0/shape = SubResource( 19 )
+shapes/0/shape = SubResource( 18 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, 15, 4 )
 shapes/0/trigger = true
 gravity_vec = Vector2( 0, 1 )
@@ -608,7 +607,7 @@ collision/mask = 4096
 [node name="offensive_hitbox_collision" type="CollisionShape2D" parent="offensive_hitbox_areas/3"]
 
 transform/pos = Vector2( 15, 4 )
-shape = SubResource( 19 )
+shape = SubResource( 18 )
 trigger = true
 _update_shape_index = 0
 
@@ -617,7 +616,7 @@ _update_shape_index = 0
 [node name="1" type="Area2D" parent="defensive_hitbox_areas"]
 
 input/pickable = true
-shapes/0/shape = SubResource( 20 )
+shapes/0/shape = SubResource( 19 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, 0, 30 )
 shapes/0/trigger = true
 gravity_vec = Vector2( 0, 1 )
@@ -632,7 +631,7 @@ collision/mask = 8192
 [node name="defensive_hitbox_collision" type="CollisionShape2D" parent="defensive_hitbox_areas/1"]
 
 transform/pos = Vector2( 0, 30 )
-shape = SubResource( 20 )
+shape = SubResource( 19 )
 trigger = true
 _update_shape_index = 0
 

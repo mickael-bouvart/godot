@@ -19,8 +19,8 @@ func init_hud():
 		get_node("CanvasLayer/Panel/p2").hide()
 
 func _on_hero_state_changed(hero):
-	print("_on_hero_state_changed")
 	var p = hero.get_player()
+	print("_on_hero_state_changed " + p)
 	var hp_ratio = float(hero.get_hp()) / float(hero.get_max_hp())
 	get_node("CanvasLayer/Panel/" + p + "/current_hp_bar").set_size(Vector2(hp_ratio * _hp_bar_initial_width, get_node("CanvasLayer/Panel/" + p + "/current_hp_bar").get_size().y))
 	get_node("CanvasLayer/Panel/" + p + "/label_lives").set_text(str(hero.get_lives()))

@@ -275,6 +275,8 @@ class WalkState:
 		# Switch to HIT
 		elif _parent.input_hit_just_pressed():
 			_parent.change_state(globals.STATE.HIT)
+		elif _parent.input_special_just_pressed():
+			_parent.change_state(globals.STATE.SPECIAL_SETUP)
 
 	func end():
 		pass
@@ -315,6 +317,8 @@ class RunState:
 		# Switch to HIT
 		elif _parent.input_hit_just_pressed():
 			_parent.change_state(globals.STATE.HIT)
+		elif _parent.input_special_just_pressed():
+			_parent.change_state(globals.STATE.SPECIAL_SETUP)
 
 	func end():
 		pass
@@ -998,6 +1002,7 @@ func add_score(value):
 
 func set_player(player):
 	_player = player
+	_attributes = globals.player_attributes[_player]
 
 func set_control(control):
 	_control = control
@@ -1030,7 +1035,7 @@ func set_hp(hp):
 	_attributes.hp = hp
 
 func lose_hp(hp):
-	#_attributes.hp -= hp
+	_attributes.hp -= hp
 	if _attributes.hp < 0:
 		_attributes.hp = 0
 
