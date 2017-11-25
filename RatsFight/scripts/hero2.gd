@@ -28,10 +28,6 @@ enum STATE {
 export var _player = "p1"
 export var _control = "keyboard"
 
-var _attributes
-var _current_left
-var _new_left
-var _state
 var _hit_released
 var _jump_released
 var _run_released
@@ -39,7 +35,6 @@ var _special_released
 var _velocity
 var _speed
 var _special_cnt
-var _touch_floor
 var _combo_count
 var _last_hit_connect
 var _combo_frame_count
@@ -49,9 +44,16 @@ var _invicibility_cnt
 var _pickables
 var _freeze
 
+var _attributes
 var _states
+var _state
+var _current_left
+var _new_left
 var _hitting
 var _jump_cnt
+var _touch_floor
+var _hits_received
+var _recovered_hit
 
 var _input_walk_right
 var _input_walk_left
@@ -80,11 +82,55 @@ func change_state(new_state):
 	_state = new_state
 	_states[_state].start()
 
+func check_hits_received():
+	if _hits_received.size() == 0:
+		return null
+	var next_hit = _hits_received.front()
+	var hitter = next_hit[0]
+	var power = next_hit[1]
+	var knock_down = next_hit[2]
+	if power > _attributes.hp:
+		return globals.STATE.KO
+	elif knock_down == true:
+		return globals.STATE.KNOCKED_DOWN
+	else:
+		return globals.STATE.BEING_HIT
+
 class FreezeState:
 	func start():
 		pass
 	func update(delta):
 		pass
+	func end():
+		pass
+
+class BeingHitState:
+	var _parent
+	
+	func _init(parent):
+		_parent = parent
+
+	func start():
+		var next_hit = _parent._hits_received.front()
+		_parent._hits_received.pop_front()
+		_parent._attributes.hp -= next_hit[1]
+		_parent.signal_state_changed()
+		_parent._recovered_hit = false
+		_parent._node_anim.play("being_hit")
+
+	func update(delta):
+		_parent.move_body(delta)
+		# Switch to BEING_HIT again (ouch...)
+		var get_hit_state = _parent.check_hits_received()
+		if get_hit_state != null:
+			_parent.change_state(get_hit_state)
+		# Switch to IDLE or FALL
+		elif _parent._recovered_hit:
+			if _parent._touch_floor:
+				_parent.change_state(globals.STATE.IDLE)
+			else:
+				_parent.change_state(globals.STATE.FALL)
+
 	func end():
 		pass
 
@@ -102,8 +148,12 @@ class StandState:
 		_parent.move_body(delta)
 		_parent._velocity.x = 0
 		
+		# Switch to BEING_HIT
+		var get_hit_state = _parent.check_hits_received()
+		if get_hit_state != null:
+			_parent.change_state(get_hit_state)
 		# Switch to WALK or RUN
-		if _parent._input_walk_right || _parent._input_walk_left:
+		elif _parent._input_walk_right || _parent._input_walk_left:
 			_parent._new_left = -1 if _parent._input_walk_right else 1
 			if _parent._input_run:
 				_parent.change_state(globals.STATE.RUN)
@@ -234,11 +284,11 @@ class JumpState:
 		if _parent.input_jump_just_pressed():
 			if _parent._jump_cnt == 1:
 				# Switch to JUMP (double jump)
-				_parent._jump_cnt += 1
 				_parent.change_state(globals.STATE.JUMP)
 			elif _parent._jump_cnt == 2:
 				# Switch to GLIDE
-				pass
+				_parent.change_state(globals.STATE.GLIDE)
+			_parent._jump_cnt += 1
 		# Switch to JUMP_HIT
 		elif _parent.input_hit_just_pressed():
 			_parent.change_state(globals.STATE.JUMP_HIT)
@@ -248,6 +298,32 @@ class JumpState:
 
 	func end():
 		pass
+
+class GlideState:
+	var _parent
+
+	func _init(parent):
+		_parent = parent
+
+	func start():
+		_parent._node_anim.play("glide")
+
+	func update(delta):
+		_parent._velocity.y = 50
+		_parent.move_body(delta)
+		# Switch to IDLE when touching floor
+		if _parent._touch_floor:
+			_parent.change_state(globals.STATE.IDLE)
+		# Switch to FALL
+		elif !_parent._input_jump:
+			_parent.change_state(globals.STATE.FALL)
+		# Switch to JUMP_HIT
+		elif _parent.input_hit_just_pressed():
+			_parent.change_state(globals.STATE.JUMP_HIT)
+
+	func end():
+		pass
+
 
 class FallState:
 	var _parent
@@ -274,11 +350,11 @@ class FallState:
 		elif _parent.input_jump_just_pressed():
 			if _parent._jump_cnt == 1:
 				# Switch to JUMP (double jump)
-				_parent._jump_cnt += 1
 				_parent.change_state(globals.STATE.JUMP)
 			elif _parent._jump_cnt == 2:
 				# Switch to GLIDE
-				pass
+				_parent.change_state(globals.STATE.GLIDE)
+			_parent._jump_cnt += 1
 		# Switch to JUMP_HIT
 		elif _parent.input_hit_just_pressed():
 			_parent.change_state(globals.STATE.JUMP_HIT)
@@ -303,11 +379,11 @@ class JumpHitState:
 		elif _parent.input_jump_just_pressed():
 			if _parent._jump_cnt == 1:
 				# Switch to JUMP (double jump)
-				_parent._jump_cnt += 1
 				_parent.change_state(globals.STATE.JUMP)
 			elif _parent._jump_cnt == 2:
 				# Switch to GLIDE
-				pass
+				_parent.change_state(globals.STATE.GLIDE)
+			_parent._jump_cnt += 1
 
 	func end():
 		pass
@@ -322,7 +398,9 @@ func _init():
 		globals.STATE.HIT: HitState.new(self),
 		globals.STATE.JUMP: JumpState.new(self),
 		globals.STATE.FALL: FallState.new(self),
-		globals.STATE.JUMP_HIT: JumpHitState.new(self)
+		globals.STATE.JUMP_HIT: JumpHitState.new(self),
+		globals.STATE.GLIDE: GlideState.new(self),
+		globals.STATE.BEING_HIT: BeingHitState.new(self)
 	}
 
 func _ready():
@@ -345,6 +423,7 @@ func _ready():
 	_last_hit_connect = false
 	_combo_frame_count = 0
 	_pickables = {}
+	_hits_received = []
 	_state = globals.STATE.FALL
 	_states[_state].start()
 
@@ -528,6 +607,9 @@ func check_items_to_consume():
 				remove_pickable(key)
 				break
 
+func signal_state_changed():
+	emit_signal("state_changed", self)
+
 func restore_hp(hp):
 	print("RESTORE %d HP" % hp)
 	_node_sound.play("eat")
@@ -588,7 +670,10 @@ func end_hit():
 	#_state = STATE.IDLE
 	#_node_anim.play("stand")
 	
-func get_hit(power, knock_down):
+func get_hit(hitter, power, knock_down):
+	_hits_received.push_back([hitter, power, knock_down])
+
+func get_hit_old(hitter, power, knock_down):
 	_speed = WALK_SPEED
 	_velocity.x = 0
 	#print(str(_attributes.hp) + " - " + str(power))
@@ -611,13 +696,14 @@ func get_hit(power, knock_down):
 	emit_signal("state_changed", self)
 
 func recovered_hit():
-	defensive_hitbox(true)
-	if _touch_floor:
-		_node_anim.play("stand")
-		_state = STATE.IDLE
-	else:
-		_node_anim.play("fall")
-		_state = STATE.FALL
+	_recovered_hit = true
+#	defensive_hitbox(true)
+#	if _touch_floor:
+#		_node_anim.play("stand")
+#		_state = STATE.IDLE
+#	else:
+#		_node_anim.play("fall")
+#		_state = STATE.FALL
 
 func get_up():
 	_invicibility_cnt = INVINCIBILITY_TIME
@@ -684,7 +770,8 @@ func _on_timer_timeout():
 	defensive_hitbox(true)
 
 func defensive_hitbox(active):
-	_node_defensive_hitbox_area.set_monitorable(active)
+	if _node_defensive_hitbox_area:
+		_node_defensive_hitbox_area.set_monitorable(active)
 
 func get_player():
 	return _player

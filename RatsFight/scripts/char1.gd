@@ -185,8 +185,8 @@ func dead():
 	queue_free()
 
 func _on_offensive_hitbox_area_area_enter( area ):
-	var player = area.get_node("../")
-	player.get_hit(_power, _knock_down)
+	var player = area.get_node("../../")
+	player.get_hit(self, _power, _knock_down)
 	get_node("sound").play("punch_01")
 
 func end_hit():

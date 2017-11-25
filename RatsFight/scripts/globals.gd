@@ -29,7 +29,8 @@ enum STATE {
 	KO,
 	JUMP,
 	JUMP_HIT
-	FALL
+	FALL,
+	GLIDE
 }
 
 class PlayerAttributes:
@@ -104,6 +105,6 @@ func get_score(p):
 	return player_attributes[p].score
 
 func _ready():
-#	AudioServer.set_stream_global_volume_scale(0)
-#	AudioServer.set_fx_global_volume_scale(0)
+	AudioServer.set_stream_global_volume_scale(0)
+	AudioServer.set_fx_global_volume_scale(0)
 	pass
