@@ -35,11 +35,6 @@ var _special_released
 var _velocity
 var _speed
 var _special_cnt
-var _combo_count
-var _last_hit_connect
-var _combo_frame_count
-var _power
-var _knock_down
 var _invicibility_cnt
 var _pickables
 var _freeze
@@ -54,6 +49,12 @@ var _jump_cnt
 var _touch_floor
 var _hits_received
 var _recovered_hit
+var _got_up
+var _power
+var _knock_down
+var _combo_count
+var _last_hit_connect
+var _combo_frame_count
 
 var _input_walk_right
 var _input_walk_left
@@ -68,10 +69,10 @@ var _input_special
 var preload_spark = preload("res://scenes/spark_hit.tscn")
 
 onready var _node_anim = get_node("anim")
-onready var _node_defensive_hitbox_area = get_node("defensive_hitbox_area")
-onready var _node_offensive_hitbox_area = get_node("offensive_hitbox_area")
-onready var _node_offensive_hitbox_area2 = get_node("offensive_hitbox_area2")
-onready var _node_offensive_hitbox_area3 = get_node("offensive_hitbox_area3")
+onready var _node_defensive_hitbox_area = get_node("defensive_hitbox_areas/1")
+onready var _node_offensive_hitbox_area1 = get_node("offensive_hitbox_areas/1")
+onready var _node_offensive_hitbox_area2 = get_node("offensive_hitbox_areas/2")
+onready var _node_offensive_hitbox_area3 = get_node("offensive_hitbox_areas/3")
 onready var _node_sound = get_node("sound")
 onready var _node_timer = get_node("timer")
 onready var _node_camera = get_node("camera")
@@ -89,10 +90,8 @@ func check_hits_received():
 	var hitter = next_hit[0]
 	var power = next_hit[1]
 	var knock_down = next_hit[2]
-	if power > _attributes.hp:
-		return globals.STATE.KO
-	elif knock_down == true:
-		return globals.STATE.KNOCKED_DOWN
+	if power > _attributes.hp || knock_down:
+		return globals.STATE.KNOCKED_UP
 	else:
 		return globals.STATE.BEING_HIT
 
@@ -104,6 +103,68 @@ class FreezeState:
 	func end():
 		pass
 
+class KnockedUpState:
+	var _parent
+	
+	func _init(parent):
+		_parent = parent
+
+	func start():
+		var next_hit = _parent._hits_received.front()
+		_parent._hits_received.pop_front()
+		_parent.lose_hp(next_hit[1])
+		_parent.signal_state_changed()
+		_parent._node_defensive_hitbox_area.set_monitorable(false)
+		_parent._touch_floor = false
+		_parent._velocity = Vector2(_parent._current_left * 500, -400)
+		_parent._node_anim.play("knock_up")
+	
+	func update(delta):
+		_parent.move_body(delta)
+		# Switch to KNOCKED_DOWN or KO
+		if _parent._touch_floor:
+			if _parent._attributes.hp > 0:
+				_parent.change_state(globals.STATE.KNOCKED_DOWN)
+			else:
+				_parent.change_state(globals.STATE.KO)
+	func end():
+		pass
+
+class KnockedDownState:
+	var _parent
+	
+	func _init(parent):
+		_parent = parent
+
+	func start():
+		_parent._got_up = false
+		_parent._node_anim.play("knock_down")
+	
+	func update(delta):
+		_parent._velocity.x = 0
+		_parent.move_body(delta)
+		# Switch to IDLE
+		if _parent._got_up:
+			_parent.change_state(globals.STATE.IDLE)
+	
+	func end():
+		_parent._node_defensive_hitbox_area.set_monitorable(true)
+
+class KOState:
+	var _parent
+	
+	func _init(parent):
+		_parent = parent
+
+	func start():
+		_parent._node_anim.play("ko")
+	
+	func update(delta):
+		_parent._velocity.x = 0
+	
+	func end():
+		_parent._node_defensive_hitbox_area.set_monitorable(true)
+
 class BeingHitState:
 	var _parent
 	
@@ -113,10 +174,11 @@ class BeingHitState:
 	func start():
 		var next_hit = _parent._hits_received.front()
 		_parent._hits_received.pop_front()
-		_parent._attributes.hp -= next_hit[1]
+		_parent.lose_hp(next_hit[1])
 		_parent.signal_state_changed()
 		_parent._recovered_hit = false
 		_parent._node_anim.play("being_hit")
+		_parent._velocity.x = 0
 
 	func update(delta):
 		_parent.move_body(delta)
@@ -186,8 +248,12 @@ class WalkState:
 	func update(delta):
 		_parent._velocity.x = -_parent._speed * _parent._current_left
 		_parent.move_body(delta)
-		# Switch to idle
-		if		(_parent._current_left == -1 && !_parent._input_walk_right)	\
+		# Switch to BEING_HIT
+		var get_hit_state = _parent.check_hits_received()
+		if get_hit_state != null:
+			_parent.change_state(get_hit_state)
+		# Switch to IDLE
+		elif	(_parent._current_left == -1 && !_parent._input_walk_right)	\
 			||	(_parent._current_left == 1 && !_parent._input_walk_left):
 			_parent.change_state(globals.STATE.IDLE)
 		# Switch to RUN
@@ -221,6 +287,10 @@ class RunState:
 	func update(delta):
 		_parent._velocity.x = -_parent._speed * _parent._current_left
 		_parent.move_body(delta)
+		# Switch to BEING_HIT
+		var get_hit_state = _parent.check_hits_received()
+		if get_hit_state != null:
+			_parent.change_state(get_hit_state)
 		# Switch to IDLE
 		if		(_parent._current_left == -1 && !_parent._input_walk_right)	\
 			||	(_parent._current_left == 1 && !_parent._input_walk_left):
@@ -247,18 +317,38 @@ class HitState:
 		_parent = parent
 
 	func start():
+		if _parent._combo_count == 2:
+			_parent._last_hit_connect = false
+			_parent._combo_count = 0
+		if _parent._last_hit_connect:
+			_parent._combo_count += 1
+			_parent._last_hit_connect = false
+
 		_parent._velocity.x = 0
 		_parent._hitting = true
-		_parent._node_anim.play("hit_01")
+		
+		if _parent._combo_count == 2:
+			_parent._node_anim.play("hit_02")
+			_parent._power = 2
+			_parent._knock_down = true
+		else:
+			_parent._node_anim.play("hit_01")
+			_parent._power = 1
+			_parent._knock_down = false
 
 	func update(delta):
 		_parent.move_body(delta)
+		# Switch to BEING_HIT
+		var get_hit_state = _parent.check_hits_received()
+		if get_hit_state != null:
+			_parent.change_state(get_hit_state)
 		# Switch to IDLE
-		if !_parent._hitting:
+		elif !_parent._hitting:
 			_parent.change_state(globals.STATE.IDLE)
 
 	func end():
-		pass
+		_parent._node_offensive_hitbox_area1.set_enable_monitoring(false)
+		_parent._node_offensive_hitbox_area2.set_enable_monitoring(false)
 
 class JumpState:
 	var _parent
@@ -281,7 +371,11 @@ class JumpState:
 		if (_parent._input_walk_right || _parent._input_walk_left) && _parent._velocity.x == 0:
 				_parent._velocity.x = -_parent._speed * _parent._current_left
 		_parent.move_body(delta)
-		if _parent.input_jump_just_pressed():
+		# Switch to BEING_HIT
+		var get_hit_state = _parent.check_hits_received()
+		if get_hit_state != null:
+			_parent.change_state(get_hit_state)
+		elif _parent.input_jump_just_pressed():
 			if _parent._jump_cnt == 1:
 				# Switch to JUMP (double jump)
 				_parent.change_state(globals.STATE.JUMP)
@@ -311,8 +405,12 @@ class GlideState:
 	func update(delta):
 		_parent._velocity.y = 50
 		_parent.move_body(delta)
+		# Switch to BEING_HIT
+		var get_hit_state = _parent.check_hits_received()
+		if get_hit_state != null:
+			_parent.change_state(get_hit_state)
 		# Switch to IDLE when touching floor
-		if _parent._touch_floor:
+		elif _parent._touch_floor:
 			_parent.change_state(globals.STATE.IDLE)
 		# Switch to FALL
 		elif !_parent._input_jump:
@@ -369,12 +467,19 @@ class JumpHitState:
 		_parent = parent
 
 	func start():
+		_parent._power = 1
+		_parent._knock_down = false
+		_parent._node_offensive_hitbox_area3.set_enable_monitoring(true)
 		_parent._node_anim.play("jump_hit")
 
 	func update(delta):
 		_parent.move_body(delta)
+		# Switch to BEING_HIT
+		var get_hit_state = _parent.check_hits_received()
+		if get_hit_state != null:
+			_parent.change_state(get_hit_state)
 		# Switch to IDLE
-		if _parent._touch_floor:
+		elif _parent._touch_floor:
 			_parent.change_state(globals.STATE.IDLE)
 		elif _parent.input_jump_just_pressed():
 			if _parent._jump_cnt == 1:
@@ -386,7 +491,7 @@ class JumpHitState:
 			_parent._jump_cnt += 1
 
 	func end():
-		pass
+		_parent._node_offensive_hitbox_area3.set_enable_monitoring(false)
 
 func _init():
 	_attributes = globals.player_attributes[_player]
@@ -400,7 +505,10 @@ func _init():
 		globals.STATE.FALL: FallState.new(self),
 		globals.STATE.JUMP_HIT: JumpHitState.new(self),
 		globals.STATE.GLIDE: GlideState.new(self),
-		globals.STATE.BEING_HIT: BeingHitState.new(self)
+		globals.STATE.BEING_HIT: BeingHitState.new(self),
+		globals.STATE.KNOCKED_UP: KnockedUpState.new(self),
+		globals.STATE.KNOCKED_DOWN: KnockedDownState.new(self),
+		globals.STATE.KO: KOState.new(self)
 	}
 
 func _ready():
@@ -426,6 +534,8 @@ func _ready():
 	_hits_received = []
 	_state = globals.STATE.FALL
 	_states[_state].start()
+	_jump_cnt = 9999
+	reset_offensive_hitboxes()
 
 func _fixed_process(delta):
 	check_inputs()
@@ -451,6 +561,10 @@ func input_hit_just_pressed():
 func input_special_just_pressed():
 	return _input_special && !_input_special_prev
 
+func reset_offensive_hitboxes():
+	for child in get_node("offensive_hitbox_areas").get_children():
+		child.set_enable_monitoring(false)
+
 func _fixed_process_(delta):
 	if _freeze:
 		return
@@ -471,8 +585,8 @@ func _fixed_process_(delta):
 			_invicibility_cnt = 0
 
 	# disable offensive hitbox area in case animation got interrupted
-	if (![STATE.HIT].has(_state) && _node_offensive_hitbox_area.is_monitoring_enabled()):
-		_node_offensive_hitbox_area.set_enable_monitoring(false)
+	if (![STATE.HIT].has(_state) && _node_offensive_hitbox_area1.is_monitoring_enabled()):
+		_node_offensive_hitbox_area1.set_enable_monitoring(false)
 	if (![STATE.JUMP_HIT].has(_state) && _node_offensive_hitbox_area3.is_monitoring_enabled()):
 		_node_offensive_hitbox_area3.set_enable_monitoring(false)
 
@@ -659,8 +773,8 @@ func _on_offensive_hitbox_area_area_enter( area ):
 		spark = preload_spark.instance()
 		_node_sound.play("punch_01")
 	var pos = Vector2()
-	pos.x = (area.get_global_pos().x + _node_offensive_hitbox_area.get_global_pos().x) / 2
-	pos.y = (area.get_global_pos().y + _node_offensive_hitbox_area.get_global_pos().y) / 2
+	pos.x = (area.get_global_pos().x + _node_offensive_hitbox_area1.get_global_pos().x) / 2
+	pos.y = (area.get_global_pos().y + _node_offensive_hitbox_area1.get_global_pos().y) / 2
 	spark.set_pos(pos)
 	spark.set_scale(Vector2(_current_left, 1))
 	get_node("../../").add_child(spark)
@@ -706,9 +820,11 @@ func recovered_hit():
 #		_state = STATE.FALL
 
 func get_up():
-	_invicibility_cnt = INVINCIBILITY_TIME
-	_node_anim.play("stand")
-	_state = STATE.IDLE
+	_got_up = true
+	# TODO: INVICIBILITY_TIME
+	#_invicibility_cnt = INVINCIBILITY_TIME
+	#_node_anim.play("stand")
+	#_state = STATE.IDLE
 
 func get_lives():
 	return _attributes.lives
@@ -723,7 +839,7 @@ func dead():
 	_attributes.lives -= 1
 	if _attributes.lives == 0:
 		#TODO: Game Over
-		emit_signal("state_changed", self)
+		signal_state_changed()
 		bgms.play("game_over")
 	else:
 		respawn()
@@ -731,16 +847,14 @@ func dead():
 func respawn():
 	_attributes.hp = MAX_HP
 	_attributes.specials = globals.INIT_SPECIALS
-	_state = STATE.FALL
-	_node_anim.play("fall")
 	_touch_floor = false
+	change_state(globals.STATE.FALL)
 	_current_left = -1
 	_velocity = Vector2(0, 0)
 	set_scale(Vector2(_current_left, 1))
-	defensive_hitbox(false)
 	_invicibility_cnt = RESPAWN_INVINCIBILITY_TIME
-	set_pos(Vector2(get_pos().x, 0))
-	emit_signal("state_changed", self)
+	set_pos(Vector2(get_pos().x, -200))
+	signal_state_changed()
 
 func jump():
 	if _state != STATE.SPECIAL:
@@ -815,6 +929,11 @@ func add_special(nb_specials):
 func set_hp(hp):
 	_attributes.hp = hp
 
+func lose_hp(hp):
+	#_attributes.hp -= hp
+	if _attributes.hp < 0:
+		_attributes.hp = 0
+
 func set_freeze(freeze):
 	if freeze:
 		_freeze = _state
@@ -825,3 +944,31 @@ func set_freeze(freeze):
 func set_specials(specials):
 	_attributes.specials = specials
 
+
+func add_spark(area):
+	var spark = preload_spark.instance()
+	var pos = Vector2()
+	pos.x = (area.get_global_pos().x + _node_offensive_hitbox_area1.get_global_pos().x) / 2
+	pos.y = (area.get_global_pos().y + _node_offensive_hitbox_area1.get_global_pos().y) / 2
+	spark.set_pos(pos)
+	spark.set_scale(Vector2(_current_left, 1))
+	get_node("../../").add_child(spark)
+
+func hit_enemy(area):
+	var enemy = area.get_node("../")
+	enemy.get_hit(self, _power, _knock_down)
+	_last_hit_connect = true
+	if _knock_down:
+		_node_sound.play("punch_02")
+	else:
+		_node_sound.play("punch_01")
+	add_spark(area)
+
+func _on_1_area_enter( area ):
+	hit_enemy(area)
+
+func _on_2_area_enter( area ):
+	hit_enemy(area)
+
+func _on_3_area_enter( area ):
+	hit_enemy(area)

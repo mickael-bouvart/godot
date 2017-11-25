@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=1]
+[gd_scene load_steps=30 format=1]
 
 [ext_resource path="res://scripts/hero2.gd" type="Script" id=1]
 [ext_resource path="res://assets/sprites/Tamias sprite sheet final indexé.png" type="Texture" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://assets/sound/punch_01.wav" type="Sample" id=4]
 [ext_resource path="res://assets/sound/punch_02.wav" type="Sample" id=5]
 [ext_resource path="res://assets/sound/special_charge.wav" type="Sample" id=6]
+[ext_resource path="res://scripts/camera.gd" type="Script" id=7]
 
 [sub_resource type="RectangleShape2D" id=1]
 
@@ -80,7 +81,7 @@ tracks/0/keys = {
 resource/name = "hit_01"
 length = 0.2
 loop = false
-step = 0.1
+step = 0.05
 tracks/0/type = "value"
 tracks/0/path = NodePath("sprite:frame")
 tracks/0/interp = 1
@@ -91,11 +92,21 @@ tracks/0/keys = {
 "update": 1,
 "values": [ 21, 22, 21 ]
 }
-tracks/1/type = "method"
-tracks/1/path = NodePath(".")
+tracks/1/type = "value"
+tracks/1/path = NodePath("offensive_hitbox_areas/1:monitoring")
 tracks/1/interp = 1
 tracks/1/imported = false
 tracks/1/keys = {
+"times": FloatArray( 0.05, 0.15 ),
+"transitions": FloatArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/2/type = "method"
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/imported = false
+tracks/2/keys = {
 "times": FloatArray( 0.2 ),
 "transitions": FloatArray( 1 ),
 "values": [ {
@@ -107,7 +118,7 @@ tracks/1/keys = {
 [sub_resource type="Animation" id=6]
 
 resource/name = "hit_02"
-length = 1.0
+length = 0.6
 loop = false
 step = 0.1
 tracks/0/type = "value"
@@ -119,6 +130,28 @@ tracks/0/keys = {
 "transitions": FloatArray( 1, 1 ),
 "update": 1,
 "values": [ 24, 25 ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/imported = false
+tracks/1/keys = {
+"times": FloatArray( 0.6 ),
+"transitions": FloatArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "end_hit"
+} ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("offensive_hitbox_areas/2:monitoring")
+tracks/2/interp = 1
+tracks/2/imported = false
+tracks/2/keys = {
+"times": FloatArray( 0.2, 0.3 ),
+"transitions": FloatArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
 }
 
 [sub_resource type="Animation" id=7]
@@ -156,7 +189,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id=9]
 
-length = 2.0
+length = 1.0
 loop = false
 step = 0.1
 tracks/0/type = "value"
@@ -164,15 +197,28 @@ tracks/0/path = NodePath("sprite:frame")
 tracks/0/interp = 1
 tracks/0/imported = false
 tracks/0/keys = {
-"times": FloatArray( 0, 0.2, 0.4, 1.9, 2 ),
-"transitions": FloatArray( 1, 1, 1, 1, 1 ),
+"times": FloatArray( 0, 0.9, 1 ),
+"transitions": FloatArray( 1, 1, 1 ),
 "update": 1,
-"values": [ 18, 19, 20, 19, 18 ]
+"values": [ 20, 19, 18 ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/imported = false
+tracks/1/keys = {
+"times": FloatArray( 1 ),
+"transitions": FloatArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "get_up"
+} ]
 }
 
 [sub_resource type="Animation" id=10]
 
-length = 2.0
+resource/name = "knock_up"
+length = 1.0
 loop = false
 step = 0.1
 tracks/0/type = "value"
@@ -180,23 +226,51 @@ tracks/0/path = NodePath("sprite:frame")
 tracks/0/interp = 1
 tracks/0/imported = false
 tracks/0/keys = {
-"times": FloatArray( 0, 0.2, 0.4 ),
-"transitions": FloatArray( 1, 1, 1 ),
+"times": FloatArray( 0, 0.2 ),
+"transitions": FloatArray( 1, 1 ),
 "update": 1,
-"values": [ 18, 19, 20 ]
+"values": [ 18, 19 ]
+}
+
+[sub_resource type="Animation" id=11]
+
+length = 1.6
+loop = false
+step = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("sprite:frame")
+tracks/0/interp = 1
+tracks/0/imported = false
+tracks/0/keys = {
+"times": FloatArray( 0 ),
+"transitions": FloatArray( 1 ),
+"update": 1,
+"values": [ 20 ]
 }
 tracks/1/type = "value"
 tracks/1/path = NodePath("sprite:visibility/visible")
 tracks/1/interp = 1
 tracks/1/imported = false
 tracks/1/keys = {
-"times": FloatArray( 1, 1.2, 1.4, 1.6, 1.8, 2 ),
+"times": FloatArray( 0.6, 0.8, 1, 1.2, 1.4, 1.6 ),
 "transitions": FloatArray( 1, 1, 1, 1, 1, 1 ),
 "update": 1,
 "values": [ false, true, false, true, false, true ]
 }
+tracks/2/type = "method"
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/imported = false
+tracks/2/keys = {
+"times": FloatArray( 1.6 ),
+"transitions": FloatArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "dead"
+} ]
+}
 
-[sub_resource type="Animation" id=11]
+[sub_resource type="Animation" id=12]
 
 length = 0.32
 loop = true
@@ -212,9 +286,8 @@ tracks/0/keys = {
 "values": [ 12, 13, 14, 15 ]
 }
 
-[sub_resource type="Animation" id=12]
+[sub_resource type="Animation" id=13]
 
-resource/name = "special"
 length = 1.0
 loop = false
 step = 0.1
@@ -229,9 +302,8 @@ tracks/0/keys = {
 "values": [ 33, 34 ]
 }
 
-[sub_resource type="Animation" id=13]
+[sub_resource type="Animation" id=14]
 
-resource/name = "special2"
 length = 0.1
 loop = true
 step = 0.05
@@ -246,9 +318,8 @@ tracks/0/keys = {
 "values": [ 36, 37 ]
 }
 
-[sub_resource type="Animation" id=14]
+[sub_resource type="Animation" id=15]
 
-resource/name = "special_setup"
 length = 0.6
 loop = false
 step = 0.05
@@ -295,7 +366,7 @@ tracks/3/keys = {
 } ]
 }
 
-[sub_resource type="Animation" id=15]
+[sub_resource type="Animation" id=16]
 
 length = 0.6
 loop = true
@@ -311,7 +382,7 @@ tracks/0/keys = {
 "values": [ 0, 1, 2, 3, 4, 5 ]
 }
 
-[sub_resource type="Animation" id=16]
+[sub_resource type="Animation" id=17]
 
 length = 0.5
 loop = true
@@ -327,7 +398,7 @@ tracks/0/keys = {
 "values": [ 6, 7, 8, 9, 10 ]
 }
 
-[sub_resource type="SampleLibrary" id=17]
+[sub_resource type="SampleLibrary" id=18]
 
 samples/eat = {
 "db": 0.0,
@@ -354,10 +425,25 @@ samples/special_charge = {
 "sample": ExtResource( 6 )
 }
 
-[sub_resource type="RectangleShape2D" id=18]
+[sub_resource type="RectangleShape2D" id=19]
 
 custom_solver_bias = 0.0
-extents = Vector2( 50, 80 )
+extents = Vector2( 60, 30 )
+
+[sub_resource type="RectangleShape2D" id=22]
+
+custom_solver_bias = 0.0
+extents = Vector2( 63.1603, 134.042 )
+
+[sub_resource type="RectangleShape2D" id=20]
+
+custom_solver_bias = 0.0
+extents = Vector2( 103.698, 38.1493 )
+
+[sub_resource type="RectangleShape2D" id=21]
+
+custom_solver_bias = 0.0
+extents = Vector2( 56.8357, 80 )
 
 [node name="hero2" type="KinematicBody2D"]
 
@@ -378,7 +464,7 @@ texture = ExtResource( 2 )
 flip_h = true
 vframes = 7
 hframes = 6
-frame = 18
+frame = 25
 
 [node name="sprite_glow" type="Sprite" parent="sprite"]
 
@@ -389,7 +475,6 @@ texture = ExtResource( 2 )
 flip_h = true
 vframes = 7
 hframes = 6
-frame = 33
 modulate = Color( 0, 1, 0.929688, 1 )
 
 [node name="anim" type="AnimationPlayer" parent="."]
@@ -405,13 +490,14 @@ anims/hit_02 = SubResource( 6 )
 anims/jump = SubResource( 7 )
 anims/jump_hit = SubResource( 8 )
 anims/knock_down = SubResource( 9 )
-anims/ko = SubResource( 10 )
-anims/run = SubResource( 11 )
-anims/special = SubResource( 12 )
-anims/special2 = SubResource( 13 )
-anims/special_setup = SubResource( 14 )
-anims/stand = SubResource( 15 )
-anims/walk = SubResource( 16 )
+anims/knock_up = SubResource( 10 )
+anims/ko = SubResource( 11 )
+anims/run = SubResource( 12 )
+anims/special = SubResource( 13 )
+anims/special2 = SubResource( 14 )
+anims/special_setup = SubResource( 15 )
+anims/stand = SubResource( 16 )
+anims/walk = SubResource( 17 )
 playback/active = true
 playback/speed = 1.0
 blend_times = [  ]
@@ -427,7 +513,7 @@ autostart = false
 [node name="sound" type="SamplePlayer" parent="."]
 
 config/polyphony = 1
-config/samples = SubResource( 17 )
+config/samples = SubResource( 18 )
 default/volume_db = 0.0
 default/pitch_scale = 1.0
 default/pan = 0.0
@@ -459,9 +545,11 @@ drag_margin/left = 0.2
 drag_margin/top = 0.2
 drag_margin/right = 0.2
 drag_margin/bottom = 0.2
+script/script = ExtResource( 7 )
 
 [node name="world_collision" type="CollisionShape2D" parent="."]
 
+visibility/visible = false
 transform/pos = Vector2( 0.419899, 7.29763 )
 shape = SubResource( 1 )
 trigger = false
@@ -469,15 +557,92 @@ _update_shape_index = 0
 
 [node name="offensive_hitbox_areas" type="Node2D" parent="."]
 
+[node name="1" type="Area2D" parent="offensive_hitbox_areas"]
+
+visibility/visible = false
+input/pickable = true
+shapes/0/shape = SubResource( 19 )
+shapes/0/transform = Matrix32( 1, 0, 0, 1, -64.5964, 0 )
+shapes/0/trigger = false
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+monitoring = false
+collision/layers = 2048
+collision/mask = 4096
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="collision" type="CollisionShape2D" parent="offensive_hitbox_areas/1"]
+
+transform/pos = Vector2( -64.5964, 0 )
+shape = SubResource( 19 )
+trigger = false
+_update_shape_index = 0
+
+[node name="2" type="Area2D" parent="offensive_hitbox_areas"]
+
+visibility/visible = false
+input/pickable = true
+shapes/0/shape = SubResource( 22 )
+shapes/0/transform = Matrix32( 1, 0, 0, 1, -82.3305, 13.9668 )
+shapes/0/trigger = false
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+monitoring = false
+collision/layers = 2048
+collision/mask = 4096
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="collision" type="CollisionShape2D" parent="offensive_hitbox_areas/2"]
+
+transform/pos = Vector2( -82.3305, 13.9668 )
+shape = SubResource( 22 )
+trigger = false
+_update_shape_index = 0
+
+[node name="3" type="Area2D" parent="offensive_hitbox_areas"]
+
+visibility/visible = false
+input/pickable = true
+shapes/0/shape = SubResource( 20 )
+shapes/0/transform = Matrix32( 1, 0, 0, 1, -59.9801, 10.8072 )
+shapes/0/trigger = false
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+collision/layers = 2048
+collision/mask = 4096
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="collision" type="CollisionShape2D" parent="offensive_hitbox_areas/3"]
+
+transform/pos = Vector2( -59.9801, 10.8072 )
+shape = SubResource( 20 )
+trigger = false
+_update_shape_index = 0
+
 [node name="defensive_hitbox_areas" type="Node2D" parent="."]
 
-editor/display_folded = true
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="1" type="Area2D" parent="defensive_hitbox_areas"]
 
+visibility/visible = false
 input/pickable = true
-shapes/0/shape = SubResource( 18 )
-shapes/0/transform = Matrix32( 1, 0, 0, 1, 10, 20 )
+shapes/0/shape = SubResource( 21 )
+shapes/0/transform = Matrix32( 1, 0, 0, 1, 7.05963, 20 )
 shapes/0/trigger = false
 gravity_vec = Vector2( 0, 1 )
 gravity = 98.0
@@ -488,11 +653,17 @@ collision/mask = 8192
 
 [node name="collision" type="CollisionShape2D" parent="defensive_hitbox_areas/1"]
 
-transform/pos = Vector2( 10, 20 )
-shape = SubResource( 18 )
+transform/pos = Vector2( 7.05963, 20 )
+shape = SubResource( 21 )
 trigger = false
 _update_shape_index = 0
 
 [connection signal="timeout" from="timer" to="." method="_on_timer_timeout"]
+
+[connection signal="area_enter" from="offensive_hitbox_areas/1" to="." method="_on_1_area_enter"]
+
+[connection signal="area_enter" from="offensive_hitbox_areas/2" to="." method="_on_2_area_enter"]
+
+[connection signal="area_enter" from="offensive_hitbox_areas/3" to="." method="_on_3_area_enter"]
 
 
