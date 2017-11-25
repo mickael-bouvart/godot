@@ -38,6 +38,7 @@ var _special_cnt
 var _invicibility_cnt
 var _pickables
 var _freeze
+var _combo_frame_count
 
 var _attributes
 var _states
@@ -54,7 +55,7 @@ var _power
 var _knock_down
 var _combo_count
 var _last_hit_connect
-var _combo_frame_count
+var _combo_expired
 
 var _input_walk_right
 var _input_walk_left
@@ -75,6 +76,7 @@ onready var _node_offensive_hitbox_area2 = get_node("offensive_hitbox_areas/2")
 onready var _node_offensive_hitbox_area3 = get_node("offensive_hitbox_areas/3")
 onready var _node_sound = get_node("sound")
 onready var _node_timer = get_node("timer")
+onready var _node_timer_combo = get_node("timer_combo")
 onready var _node_camera = get_node("camera")
 
 func change_state(new_state):
@@ -207,8 +209,9 @@ class StandState:
 		_parent._node_anim.play("stand")
 
 	func update(delta):
-		_parent.move_body(delta)
 		_parent._velocity.x = 0
+		_parent.move_body(delta)
+		_parent.check_items_to_consume()
 		
 		# Switch to BEING_HIT
 		var get_hit_state = _parent.check_hits_received()
@@ -248,6 +251,7 @@ class WalkState:
 	func update(delta):
 		_parent._velocity.x = -_parent._speed * _parent._current_left
 		_parent.move_body(delta)
+		_parent.check_items_to_consume()
 		# Switch to BEING_HIT
 		var get_hit_state = _parent.check_hits_received()
 		if get_hit_state != null:
@@ -287,6 +291,7 @@ class RunState:
 	func update(delta):
 		_parent._velocity.x = -_parent._speed * _parent._current_left
 		_parent.move_body(delta)
+		_parent.check_items_to_consume()
 		# Switch to BEING_HIT
 		var get_hit_state = _parent.check_hits_received()
 		if get_hit_state != null:
@@ -317,13 +322,16 @@ class HitState:
 		_parent = parent
 
 	func start():
+		if _parent._combo_expired:
+			_parent._last_hit_connect = false
 		if _parent._combo_count == 2:
 			_parent._last_hit_connect = false
-			_parent._combo_count = 0
 		if _parent._last_hit_connect:
 			_parent._combo_count += 1
 			_parent._last_hit_connect = false
-
+		else:
+			_parent._combo_count = 0
+		
 		_parent._velocity.x = 0
 		_parent._hitting = true
 		
@@ -332,6 +340,9 @@ class HitState:
 			_parent._power = 2
 			_parent._knock_down = true
 		else:
+			_parent._node_timer_combo.stop()
+			_parent._combo_expired = false
+			_parent._node_timer_combo.start()
 			_parent._node_anim.play("hit_01")
 			_parent._power = 1
 			_parent._knock_down = false
@@ -371,6 +382,7 @@ class JumpState:
 		if (_parent._input_walk_right || _parent._input_walk_left) && _parent._velocity.x == 0:
 				_parent._velocity.x = -_parent._speed * _parent._current_left
 		_parent.move_body(delta)
+		_parent.check_items_to_consume()
 		# Switch to BEING_HIT
 		var get_hit_state = _parent.check_hits_received()
 		if get_hit_state != null:
@@ -405,6 +417,7 @@ class GlideState:
 	func update(delta):
 		_parent._velocity.y = 50
 		_parent.move_body(delta)
+		_parent.check_items_to_consume()
 		# Switch to BEING_HIT
 		var get_hit_state = _parent.check_hits_received()
 		if get_hit_state != null:
@@ -442,6 +455,7 @@ class FallState:
 		if (_parent._input_walk_right || _parent._input_walk_left) && _parent._velocity.x == 0:
 				_parent._velocity.x = -_parent._speed * _parent._current_left
 		_parent.move_body(delta)
+		_parent.check_items_to_consume()
 		# Switch to IDLE
 		if _parent._touch_floor:
 			_parent.change_state(globals.STATE.IDLE)
@@ -474,6 +488,7 @@ class JumpHitState:
 
 	func update(delta):
 		_parent.move_body(delta)
+		_parent.check_items_to_consume()
 		# Switch to BEING_HIT
 		var get_hit_state = _parent.check_hits_received()
 		if get_hit_state != null:
@@ -972,3 +987,6 @@ func _on_2_area_enter( area ):
 
 func _on_3_area_enter( area ):
 	hit_enemy(area)
+
+func _on_timer_combo_timeout():
+	_combo_expired = true

@@ -430,17 +430,17 @@ samples/special_charge = {
 custom_solver_bias = 0.0
 extents = Vector2( 60, 30 )
 
-[sub_resource type="RectangleShape2D" id=22]
+[sub_resource type="RectangleShape2D" id=20]
 
 custom_solver_bias = 0.0
 extents = Vector2( 63.1603, 134.042 )
 
-[sub_resource type="RectangleShape2D" id=20]
+[sub_resource type="RectangleShape2D" id=21]
 
 custom_solver_bias = 0.0
 extents = Vector2( 103.698, 38.1493 )
 
-[sub_resource type="RectangleShape2D" id=21]
+[sub_resource type="RectangleShape2D" id=22]
 
 custom_solver_bias = 0.0
 extents = Vector2( 56.8357, 80 )
@@ -502,6 +502,13 @@ playback/active = true
 playback/speed = 1.0
 blend_times = [  ]
 autoplay = ""
+
+[node name="timer_combo" type="Timer" parent="."]
+
+process_mode = 1
+wait_time = 0.5
+one_shot = true
+autostart = false
 
 [node name="timer" type="Timer" parent="."]
 
@@ -586,7 +593,7 @@ _update_shape_index = 0
 
 visibility/visible = false
 input/pickable = true
-shapes/0/shape = SubResource( 22 )
+shapes/0/shape = SubResource( 20 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, -82.3305, 13.9668 )
 shapes/0/trigger = false
 gravity_vec = Vector2( 0, 1 )
@@ -603,7 +610,7 @@ __meta__ = {
 [node name="collision" type="CollisionShape2D" parent="offensive_hitbox_areas/2"]
 
 transform/pos = Vector2( -82.3305, 13.9668 )
-shape = SubResource( 22 )
+shape = SubResource( 20 )
 trigger = false
 _update_shape_index = 0
 
@@ -611,7 +618,7 @@ _update_shape_index = 0
 
 visibility/visible = false
 input/pickable = true
-shapes/0/shape = SubResource( 20 )
+shapes/0/shape = SubResource( 21 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, -59.9801, 10.8072 )
 shapes/0/trigger = false
 gravity_vec = Vector2( 0, 1 )
@@ -627,7 +634,7 @@ __meta__ = {
 [node name="collision" type="CollisionShape2D" parent="offensive_hitbox_areas/3"]
 
 transform/pos = Vector2( -59.9801, 10.8072 )
-shape = SubResource( 20 )
+shape = SubResource( 21 )
 trigger = false
 _update_shape_index = 0
 
@@ -641,7 +648,7 @@ __meta__ = {
 
 visibility/visible = false
 input/pickable = true
-shapes/0/shape = SubResource( 21 )
+shapes/0/shape = SubResource( 22 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, 7.05963, 20 )
 shapes/0/trigger = false
 gravity_vec = Vector2( 0, 1 )
@@ -654,9 +661,11 @@ collision/mask = 8192
 [node name="collision" type="CollisionShape2D" parent="defensive_hitbox_areas/1"]
 
 transform/pos = Vector2( 7.05963, 20 )
-shape = SubResource( 21 )
+shape = SubResource( 22 )
 trigger = false
 _update_shape_index = 0
+
+[connection signal="timeout" from="timer_combo" to="." method="_on_timer_combo_timeout"]
 
 [connection signal="timeout" from="timer" to="." method="_on_timer_timeout"]
 
