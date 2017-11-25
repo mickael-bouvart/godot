@@ -56,6 +56,7 @@ var _knock_down
 var _combo_count
 var _last_hit_connect
 var _combo_expired
+var _special_setup
 
 var _input_walk_right
 var _input_walk_left
@@ -74,6 +75,7 @@ onready var _node_defensive_hitbox_area = get_node("defensive_hitbox_areas/1")
 onready var _node_offensive_hitbox_area1 = get_node("offensive_hitbox_areas/1")
 onready var _node_offensive_hitbox_area2 = get_node("offensive_hitbox_areas/2")
 onready var _node_offensive_hitbox_area3 = get_node("offensive_hitbox_areas/3")
+onready var _node_offensive_hitbox_area4 = get_node("offensive_hitbox_areas/4")
 onready var _node_sound = get_node("sound")
 onready var _node_timer = get_node("timer")
 onready var _node_timer_combo = get_node("timer_combo")
@@ -231,6 +233,8 @@ class StandState:
 		# Switch to HIT
 		elif _parent.input_hit_just_pressed():
 			_parent.change_state(globals.STATE.HIT)
+		elif _parent.input_special_just_pressed():
+			_parent.change_state(globals.STATE.SPECIAL_SETUP)
 			
 	func end():
 		pass
@@ -508,6 +512,82 @@ class JumpHitState:
 	func end():
 		_parent._node_offensive_hitbox_area3.set_enable_monitoring(false)
 
+class SpecialSetupState:
+	var _parent
+
+	func _init(parent):
+		_parent = parent
+
+	func start():
+		_parent._special_setup = false
+		_parent._node_defensive_hitbox_area.set_monitorable(false)
+		_parent._node_anim.play("special_setup")
+
+	func update(delta):
+		if _parent._special_setup:
+			_parent.change_state(globals.STATE.SPECIAL_STEP_ONE)
+
+	func end():
+		pass
+
+class SpecialStepOneState:
+	var _parent
+
+	func _init(parent):
+		_parent = parent
+
+	func start():
+		_parent._touch_floor = false
+		_parent._node_anim.play("special_step_1")
+
+	func update(delta):
+		_parent._velocity.y = -1500
+		_parent.move_body(delta)
+		if _parent.get_pos().y < -400:
+			_parent.change_state(globals.STATE.SPECIAL_STEP_TWO)
+		pass
+
+	func end():
+		pass
+
+class SpecialStepTwoState:
+	var _parent
+
+	func _init(parent):
+		_parent = parent
+
+	func start():
+		_parent._node_anim.play("special_step_2")
+		_parent._velocity.y = 1500
+
+	func update(delta):
+		_parent.move_body(delta)
+		if _parent._touch_floor:
+			_parent.change_state(globals.STATE.SPECIAL_STEP_THREE)
+
+	func end():
+		pass
+
+class SpecialStepThreeState:
+	var _parent
+
+	func _init(parent):
+		_parent = parent
+
+	func start():
+		_parent._power = 6
+		_parent._knock_down = true
+		_parent._hitting = true
+		_parent._node_anim.play("special_step_3")
+
+	func update(delta):
+		if !_parent._hitting:
+			_parent.change_state(globals.STATE.IDLE)
+
+	func end():
+		_parent._node_offensive_hitbox_area4.set_enable_monitoring(false)
+		_parent._node_defensive_hitbox_area.set_monitorable(true)
+
 func _init():
 	_attributes = globals.player_attributes[_player]
 	_states = {
@@ -523,7 +603,11 @@ func _init():
 		globals.STATE.BEING_HIT: BeingHitState.new(self),
 		globals.STATE.KNOCKED_UP: KnockedUpState.new(self),
 		globals.STATE.KNOCKED_DOWN: KnockedDownState.new(self),
-		globals.STATE.KO: KOState.new(self)
+		globals.STATE.KO: KOState.new(self),
+		globals.STATE.SPECIAL_SETUP: SpecialSetupState.new(self),
+		globals.STATE.SPECIAL_STEP_ONE: SpecialStepOneState.new(self),
+		globals.STATE.SPECIAL_STEP_TWO: SpecialStepTwoState.new(self),
+		globals.STATE.SPECIAL_STEP_THREE: SpecialStepThreeState.new(self)
 	}
 
 func _ready():
@@ -929,12 +1013,13 @@ func remove_pickable(id):
 	_pickables.erase(id)
 
 func special_setup_finished():
-	_power = 3
-	_knock_down = true
-	_speed = SPECIAL_SPEED
-	_node_timer.start()
-	_state = STATE.SPECIAL
-	_node_anim.play("special")
+	_special_setup = true
+	#_power = 3
+	#_knock_down = true
+	#_speed = SPECIAL_SPEED
+	#_node_timer.start()
+	#_state = STATE.SPECIAL
+	#_node_anim.play("special")
 
 func add_special(nb_specials):
 	_attributes.specials += nb_specials
@@ -986,6 +1071,9 @@ func _on_2_area_enter( area ):
 	hit_enemy(area)
 
 func _on_3_area_enter( area ):
+	hit_enemy(area)
+
+func _on_4_area_enter( area ):
 	hit_enemy(area)
 
 func _on_timer_combo_timeout():

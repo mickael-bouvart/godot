@@ -1,12 +1,13 @@
-[gd_scene load_steps=30 format=1]
+[gd_scene load_steps=33 format=1]
 
 [ext_resource path="res://scripts/hero2.gd" type="Script" id=1]
 [ext_resource path="res://assets/sprites/Tamias sprite sheet final indexé.png" type="Texture" id=2]
-[ext_resource path="res://assets/sound/eat.wav" type="Sample" id=3]
-[ext_resource path="res://assets/sound/punch_01.wav" type="Sample" id=4]
-[ext_resource path="res://assets/sound/punch_02.wav" type="Sample" id=5]
-[ext_resource path="res://assets/sound/special_charge.wav" type="Sample" id=6]
-[ext_resource path="res://scripts/camera.gd" type="Script" id=7]
+[ext_resource path="res://assets/sprites/sprites_explosion.png" type="Texture" id=3]
+[ext_resource path="res://assets/sound/eat.wav" type="Sample" id=4]
+[ext_resource path="res://assets/sound/punch_01.wav" type="Sample" id=5]
+[ext_resource path="res://assets/sound/punch_02.wav" type="Sample" id=6]
+[ext_resource path="res://assets/sound/special_charge.wav" type="Sample" id=7]
+[ext_resource path="res://scripts/camera.gd" type="Script" id=8]
 
 [sub_resource type="RectangleShape2D" id=1]
 
@@ -286,38 +287,6 @@ tracks/0/keys = {
 "values": [ 12, 13, 14, 15 ]
 }
 
-[sub_resource type="Animation" id=13]
-
-length = 1.0
-loop = false
-step = 0.1
-tracks/0/type = "value"
-tracks/0/path = NodePath("sprite:frame")
-tracks/0/interp = 1
-tracks/0/imported = false
-tracks/0/keys = {
-"times": FloatArray( 0, 0.3 ),
-"transitions": FloatArray( 1, 1 ),
-"update": 1,
-"values": [ 33, 34 ]
-}
-
-[sub_resource type="Animation" id=14]
-
-length = 0.1
-loop = true
-step = 0.05
-tracks/0/type = "value"
-tracks/0/path = NodePath("sprite:frame")
-tracks/0/interp = 1
-tracks/0/imported = false
-tracks/0/keys = {
-"times": FloatArray( 0, 0.05 ),
-"transitions": FloatArray( 1, 1 ),
-"update": 1,
-"values": [ 36, 37 ]
-}
-
 [sub_resource type="Animation" id=15]
 
 length = 0.6
@@ -366,6 +335,109 @@ tracks/3/keys = {
 } ]
 }
 
+[sub_resource type="Animation" id=13]
+
+resource/name = "special_step_1"
+length = 1.0
+loop = false
+step = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("sprite:frame")
+tracks/0/interp = 1
+tracks/0/imported = false
+tracks/0/keys = {
+"times": FloatArray( 0, 0.1 ),
+"transitions": FloatArray( 1, 1 ),
+"update": 1,
+"values": [ 33, 34 ]
+}
+
+[sub_resource type="Animation" id=14]
+
+resource/name = "special_step_2"
+length = 0.1
+loop = true
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("sprite:frame")
+tracks/0/interp = 1
+tracks/0/imported = false
+tracks/0/keys = {
+"times": FloatArray( 0, 0.05 ),
+"transitions": FloatArray( 1, 1 ),
+"update": 1,
+"values": [ 36, 37 ]
+}
+
+[sub_resource type="Animation" id=23]
+
+resource/name = "special_step_3"
+length = 1.0
+loop = false
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("sprite:frame")
+tracks/0/interp = 1
+tracks/0/imported = false
+tracks/0/keys = {
+"times": FloatArray( 0 ),
+"transitions": FloatArray( 1 ),
+"update": 1,
+"values": [ 26 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("sprite_explosion:visibility/visible")
+tracks/1/interp = 1
+tracks/1/imported = false
+tracks/1/keys = {
+"times": FloatArray( 0, 1 ),
+"transitions": FloatArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("sprite_explosion:frame")
+tracks/2/interp = 1
+tracks/2/imported = false
+tracks/2/keys = {
+"times": FloatArray( 0, 0.05, 0.1, 0.15, 0.3, 0.4, 0.5, 0.6, 0.7 ),
+"transitions": FloatArray( 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("offensive_hitbox_areas/4:monitoring")
+tracks/3/interp = 1
+tracks/3/imported = false
+tracks/3/keys = {
+"times": FloatArray( 0.15, 0.3 ),
+"transitions": FloatArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("sprite_explosion:visibility/opacity")
+tracks/4/interp = 1
+tracks/4/imported = false
+tracks/4/keys = {
+"times": FloatArray( 0, 0.7, 1 ),
+"transitions": FloatArray( 1, 4, 1 ),
+"update": 0,
+"values": [ 1.0, 1.0, 0.0 ]
+}
+tracks/5/type = "method"
+tracks/5/path = NodePath(".")
+tracks/5/interp = 1
+tracks/5/imported = false
+tracks/5/keys = {
+"times": FloatArray( 1 ),
+"transitions": FloatArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "end_hit"
+} ]
+}
+
 [sub_resource type="Animation" id=16]
 
 length = 0.6
@@ -404,25 +476,25 @@ samples/eat = {
 "db": 0.0,
 "pitch": 1.0,
 "priority": 0,
-"sample": ExtResource( 3 )
+"sample": ExtResource( 4 )
 }
 samples/punch_01 = {
 "db": 0.0,
 "pitch": 1.0,
 "priority": 0,
-"sample": ExtResource( 4 )
+"sample": ExtResource( 5 )
 }
 samples/punch_02 = {
 "db": 0.0,
 "pitch": 1.0,
 "priority": 0,
-"sample": ExtResource( 5 )
+"sample": ExtResource( 6 )
 }
 samples/special_charge = {
 "db": 0.0,
 "pitch": 1.0,
 "priority": 0,
-"sample": ExtResource( 6 )
+"sample": ExtResource( 7 )
 }
 
 [sub_resource type="RectangleShape2D" id=19]
@@ -439,6 +511,11 @@ extents = Vector2( 63.1603, 134.042 )
 
 custom_solver_bias = 0.0
 extents = Vector2( 103.698, 38.1493 )
+
+[sub_resource type="RectangleShape2D" id=24]
+
+custom_solver_bias = 0.0
+extents = Vector2( 207.32, 210.855 )
 
 [sub_resource type="RectangleShape2D" id=22]
 
@@ -464,7 +541,7 @@ texture = ExtResource( 2 )
 flip_h = true
 vframes = 7
 hframes = 6
-frame = 25
+frame = 26
 
 [node name="sprite_glow" type="Sprite" parent="sprite"]
 
@@ -475,7 +552,16 @@ texture = ExtResource( 2 )
 flip_h = true
 vframes = 7
 hframes = 6
+frame = 33
 modulate = Color( 0, 1, 0.929688, 1 )
+
+[node name="sprite_explosion" type="Sprite" parent="."]
+
+visibility/visible = false
+texture = ExtResource( 3 )
+vframes = 3
+hframes = 4
+frame = 4
 
 [node name="anim" type="AnimationPlayer" parent="."]
 
@@ -493,9 +579,10 @@ anims/knock_down = SubResource( 9 )
 anims/knock_up = SubResource( 10 )
 anims/ko = SubResource( 11 )
 anims/run = SubResource( 12 )
-anims/special = SubResource( 13 )
-anims/special2 = SubResource( 14 )
 anims/special_setup = SubResource( 15 )
+anims/special_step_1 = SubResource( 13 )
+anims/special_step_2 = SubResource( 14 )
+anims/special_step_3 = SubResource( 23 )
 anims/stand = SubResource( 16 )
 anims/walk = SubResource( 17 )
 playback/active = true
@@ -552,7 +639,7 @@ drag_margin/left = 0.2
 drag_margin/top = 0.2
 drag_margin/right = 0.2
 drag_margin/bottom = 0.2
-script/script = ExtResource( 7 )
+script/script = ExtResource( 8 )
 
 [node name="world_collision" type="CollisionShape2D" parent="."]
 
@@ -638,8 +725,31 @@ shape = SubResource( 21 )
 trigger = false
 _update_shape_index = 0
 
+[node name="4" type="Area2D" parent="offensive_hitbox_areas"]
+
+visibility/visible = false
+input/pickable = true
+shapes/0/shape = SubResource( 24 )
+shapes/0/transform = Matrix32( 1, 0, 0, 1, 15.0001, 35.0002 )
+shapes/0/trigger = false
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+monitoring = false
+collision/layers = 2048
+collision/mask = 4096
+
+[node name="collision" type="CollisionShape2D" parent="offensive_hitbox_areas/4"]
+
+transform/pos = Vector2( 15.0001, 35.0002 )
+shape = SubResource( 24 )
+trigger = false
+_update_shape_index = 0
+
 [node name="defensive_hitbox_areas" type="Node2D" parent="."]
 
+visibility/visible = false
 __meta__ = {
 "_edit_lock_": true
 }
@@ -674,5 +784,7 @@ _update_shape_index = 0
 [connection signal="area_enter" from="offensive_hitbox_areas/2" to="." method="_on_2_area_enter"]
 
 [connection signal="area_enter" from="offensive_hitbox_areas/3" to="." method="_on_3_area_enter"]
+
+[connection signal="area_enter" from="offensive_hitbox_areas/4" to="." method="_on_4_area_enter"]
 
 
