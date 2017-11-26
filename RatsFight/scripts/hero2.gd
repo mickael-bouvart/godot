@@ -196,6 +196,9 @@ class BeingHitState:
 				_parent.change_state(globals.STATE.IDLE)
 			else:
 				_parent.change_state(globals.STATE.FALL)
+		# Switch to SPECIAL (SPECIAL_SETUP)
+		elif _parent.input_special_just_pressed() && _parent.can_special():
+			_parent.change_state(globals.STATE.SPECIAL_SETUP)
 
 	func end():
 		pass
@@ -233,7 +236,8 @@ class StandState:
 		# Switch to HIT
 		elif _parent.input_hit_just_pressed():
 			_parent.change_state(globals.STATE.HIT)
-		elif _parent.input_special_just_pressed():
+		# Switch to SPECIAL (SPECIAL_SETUP)
+		elif _parent.input_special_just_pressed() && _parent.can_special():
 			_parent.change_state(globals.STATE.SPECIAL_SETUP)
 			
 	func end():
@@ -275,7 +279,8 @@ class WalkState:
 		# Switch to HIT
 		elif _parent.input_hit_just_pressed():
 			_parent.change_state(globals.STATE.HIT)
-		elif _parent.input_special_just_pressed():
+		# Switch to SPECIAL (SPECIAL_SETUP)
+		elif _parent.input_special_just_pressed() && _parent.can_special():
 			_parent.change_state(globals.STATE.SPECIAL_SETUP)
 
 	func end():
@@ -317,7 +322,8 @@ class RunState:
 		# Switch to HIT
 		elif _parent.input_hit_just_pressed():
 			_parent.change_state(globals.STATE.HIT)
-		elif _parent.input_special_just_pressed():
+		# Switch to SPECIAL (SPECIAL_SETUP)
+		elif _parent.input_special_just_pressed() && _parent.can_special():
 			_parent.change_state(globals.STATE.SPECIAL_SETUP)
 
 	func end():
@@ -364,6 +370,9 @@ class HitState:
 		# Switch to IDLE
 		elif !_parent._hitting:
 			_parent.change_state(globals.STATE.IDLE)
+		# Switch to SPECIAL (SPECIAL_SETUP)
+		elif _parent.input_special_just_pressed() && _parent.can_special():
+			_parent.change_state(globals.STATE.SPECIAL_SETUP)
 
 	func end():
 		_parent._node_offensive_hitbox_area1.set_enable_monitoring(false)
@@ -409,6 +418,9 @@ class JumpState:
 		# Switch to FALL
 		elif _parent._velocity.y > 0:
 			_parent.change_state(globals.STATE.FALL)
+		# Switch to SPECIAL (SPECIAL_SETUP)
+		elif _parent.input_special_just_pressed() && _parent.can_special():
+			_parent.change_state(globals.STATE.SPECIAL_SETUP)
 
 	func end():
 		pass
@@ -439,6 +451,9 @@ class GlideState:
 		# Switch to JUMP_HIT
 		elif _parent.input_hit_just_pressed():
 			_parent.change_state(globals.STATE.JUMP_HIT)
+		# Switch to SPECIAL (SPECIAL_SETUP)
+		elif _parent.input_special_just_pressed() && _parent.can_special():
+			_parent.change_state(globals.STATE.SPECIAL_SETUP)
 
 	func end():
 		pass
@@ -478,6 +493,9 @@ class FallState:
 		# Switch to JUMP_HIT
 		elif _parent.input_hit_just_pressed():
 			_parent.change_state(globals.STATE.JUMP_HIT)
+		# Switch to SPECIAL (SPECIAL_SETUP)
+		elif _parent.input_special_just_pressed() && _parent.can_special():
+			_parent.change_state(globals.STATE.SPECIAL_SETUP)
 
 	func end():
 		pass
@@ -512,6 +530,9 @@ class JumpHitState:
 				# Switch to GLIDE
 				_parent.change_state(globals.STATE.GLIDE)
 			_parent._jump_cnt += 1
+		# Switch to SPECIAL (SPECIAL_SETUP)
+		elif _parent.input_special_just_pressed() && _parent.can_special():
+			_parent.change_state(globals.STATE.SPECIAL_SETUP)
 
 	func end():
 		_parent._node_offensive_hitbox_area3.set_enable_monitoring(false)
@@ -523,6 +544,8 @@ class SpecialSetupState:
 		_parent = parent
 
 	func start():
+		_parent._attributes.specials -= 1
+		_parent.signal_state_changed()
 		_parent._special_setup = false
 		_parent._node_defensive_hitbox_area.set_monitorable(false)
 		_parent._node_anim.play("special_setup")
@@ -667,6 +690,9 @@ func input_special_just_pressed():
 func reset_offensive_hitboxes():
 	for child in get_node("offensive_hitbox_areas").get_children():
 		child.set_enable_monitoring(false)
+
+func can_special():
+	return _attributes.specials > 0
 
 func _fixed_process_(delta):
 	if _freeze:

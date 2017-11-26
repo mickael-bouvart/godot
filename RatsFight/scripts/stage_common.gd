@@ -16,8 +16,6 @@ var _node_camera
 
 var plchar1 = preload("res://scenes/char1.tscn")
 var plchar2 = preload("res://scenes/char2.tscn")
-var plhero1 = preload("res://scenes/hero1.tscn")
-var plhero2 = preload("res://scenes/hero2.tscn")
 
 func _ready():
 	init_stage()
@@ -25,7 +23,7 @@ func _ready():
 
 func init_stage():
 	get_node("pause").set_freeze(true)
-	var hero1 = plhero1.instance()
+	var hero1 = globals.get_p1_char().instance()
 	hero1.set_pos(Vector2(200, -200))
 	hero1.set_player("p1")
 	hero1.set_control(globals.p1_control)
@@ -34,7 +32,7 @@ func init_stage():
 	get_node("heroes").add_child(hero1)
 	hero1.set_freeze(true)
 	if globals.nb_players > 1:
-		var hero2 = plhero2.instance()
+		var hero2 = globals.get_p2_char().instance()
 		hero2.set_pos(Vector2(150, -200))
 		hero2.set_player("p2")
 		hero2.set_control(globals.p2_control)

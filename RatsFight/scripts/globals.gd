@@ -80,9 +80,25 @@ var player_attributes =  {
 	"p2": PlayerAttributes.new()
 }
 
+var nb_players = 2 setget set_nb_players, get_nb_players
 var p1_control = "keyboard" setget set_p1_control, get_p1_control
 var p2_control = "joypad" setget set_p2_control, get_p2_control
-var nb_players = 2 setget set_nb_players, get_nb_players
+var hero1_preload = preload("res://scenes/hero1.tscn")
+var hero2_preload = preload("res://scenes/hero2.tscn")
+var p1_char = hero2_preload setget set_p1_char, get_p1_char
+var p2_char = hero1_preload setget set_p2_char, get_p2_char
+
+func set_p1_char(value):
+	p1_char = value
+
+func get_p1_char():
+	return p1_char
+
+func set_p2_char(value):
+	p2_char = value
+
+func get_p2_char():
+	return p2_char
 
 func set_nb_players(value):
 	nb_players = value
