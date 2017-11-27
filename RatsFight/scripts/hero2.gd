@@ -11,39 +11,17 @@ const JUMP_FORCE = 600
 const INVINCIBILITY_TIME = 0.5
 const RESPAWN_INVINCIBILITY_TIME = 2
 
-enum STATE {
-	HIT,
-	WALK,
-	RUN,
-	BEING_HIT,
-	IDLE,
-	KO,
-	JUMP,
-	FALL,
-	JUMP_HIT,
-	SPECIAL,
-	SPECIAL_SETUP
-}
-
 export var _player = "p1"
 export var _control = "keyboard"
-
-var _hit_released
-var _jump_released
-var _run_released
-var _special_released
-var _velocity
-var _speed
-var _special_cnt
-var _pickables
-var _freeze
-var _combo_frame_count
 
 var _attributes
 var _states
 var _state
 var _current_left
 var _new_left
+var _velocity
+var _speed
+var _pickables
 var _hitting
 var _jump_cnt
 var _touch_floor
@@ -57,6 +35,7 @@ var _last_hit_connect
 var _combo_expired
 var _special_setup
 var _invincibility_cnt
+var _freeze_old_state
 
 var _input_walk_right
 var _input_walk_left
@@ -79,7 +58,6 @@ onready var _node_offensive_hitbox_area2 = get_node("offensive_hitbox_areas/2")
 onready var _node_offensive_hitbox_area3 = get_node("offensive_hitbox_areas/3")
 onready var _node_offensive_hitbox_area4 = get_node("offensive_hitbox_areas/4")
 onready var _node_sound = get_node("sound")
-onready var _node_timer = get_node("timer")
 onready var _node_timer_combo = get_node("timer_combo")
 onready var _node_camera = get_node("camera")
 
@@ -656,19 +634,16 @@ func _ready():
 #	_hp = MAX_HP
 #	_special = INIT_SPECIAL
 #	_life = MAX_LIFE
-	_freeze = false
+	_freeze_old_state = null
 	_speed = WALK_SPEED
-	_hit_released = true
 	_current_left = -1
 	defensive_hitbox(true)
-	_state = STATE.FALL
 	_velocity = Vector2(0, 0)
 	set_scale(Vector2(_current_left, 1))
 	_node_anim.play("fall")
 	_touch_floor = false
 	_combo_count = 0
 	_last_hit_connect = false
-	_combo_frame_count = 0
 	_pickables = {}
 	_hits_received = []
 	_state = globals.STATE.FALL
@@ -706,153 +681,6 @@ func reset_offensive_hitboxes():
 
 func can_special():
 	return _attributes.specials > 0
-
-func _fixed_process_(delta):
-	if _freeze:
-		return
-	
-	var action_hit = utils.is_input_action_pressed(_control, "hit")
-	var action_special = utils.is_input_action_pressed(_control, "special")
-	var walk_left = utils.is_input_action_pressed(_control, "left")
-	var walk_right = utils.is_input_action_pressed(_control, "right")
-	var action_jump = utils.is_input_action_pressed(_control, "jump")
-	var action_run = utils.is_input_action_pressed(_control, "run")
-	var new_left = null
-
-	if _invincibility_cnt > 0:
-		_invincibility_cnt -= delta
-		if _invincibility_cnt < 0:
-			if ![STATE.SPECIAL, STATE.SPECIAL_SETUP].has(_state):
-				defensive_hitbox(true)
-			_invincibility_cnt = 0
-
-	# disable offensive hitbox area in case animation got interrupted
-	if (![STATE.HIT].has(_state) && _node_offensive_hitbox_area1.is_monitoring_enabled()):
-		_node_offensive_hitbox_area1.set_enable_monitoring(false)
-	if (![STATE.JUMP_HIT].has(_state) && _node_offensive_hitbox_area3.is_monitoring_enabled()):
-		_node_offensive_hitbox_area3.set_enable_monitoring(false)
-
-	# Check if item can be consumed
-	if ![STATE.KO, STATE.BEING_HIT].has(_state):
-		check_items_to_consume()
-
-	_combo_frame_count += 1
-	if (!action_hit):
-		_hit_released = true
-	if (!action_jump):
-		_jump_released = true
-	if (!action_run):
-		_run_released = true
-	if !action_special:
-		_special_released = true
-	if (_special_released && action_special):
-		_special_released = false
-		if (![STATE.SPECIAL, STATE.KO, STATE.SPECIAL_SETUP].has(_state) && _attributes.specials > 0):
-			_attributes.specials -= 1
-			emit_signal("state_changed", self)
-			_state = STATE.SPECIAL_SETUP
-			defensive_hitbox(false)
-			_node_sound.play("special_charge")
-			_node_anim.play("special_setup")
-	if (_hit_released && action_hit):
-		_hit_released = false
-		if (_state == STATE.IDLE || _state == STATE.WALK):
-			_state = STATE.HIT
-			if _last_hit_connect:
-				_combo_count += 1
-				_last_hit_connect = false
-			else:
-				_combo_count = 0
-			if _combo_frame_count > 100:
-				_combo_count = 0
-			_combo_frame_count = 0
-			if _combo_count == 2:
-				_power = 2
-				_knock_down = true
-				_node_anim.play("hit_02")
-				_combo_count = -1
-			else:
-				_power = 1
-				_knock_down = false
-				_node_anim.play("hit_01")
-			_velocity.x = 0
-		elif ([STATE.JUMP, STATE.FALL].has(_state)):
-			_velocity.x += 150 * -_current_left
-			_velocity.y += 50
-			_power = 1
-			_knock_down = false
-			_node_anim.play("jump_hit")
-			_state = STATE.JUMP_HIT
-	if (_jump_released && action_jump):
-		_jump_released = false
-		if ([STATE.IDLE, STATE.WALK, STATE.RUN, STATE.SPECIAL].has(_state) && _touch_floor):
-			jump()
-	if (walk_right):
-		if (action_run && (_state == STATE.WALK || (_state == STATE.RUN && _current_left == 1))):
-			new_left = -1
-			_speed = RUN_SPEED
-			_velocity.x = _speed
-			_node_anim.play("run")
-			_state = STATE.RUN
-		if (_state == STATE.RUN && !action_run):
-			_speed = WALK_SPEED
-			new_left = -1
-			_velocity.x = _speed
-			_node_anim.play("walk")
-			_state = STATE.WALK
-		if ([STATE.JUMP, STATE.SPECIAL, STATE.IDLE, STATE.FALL].has(_state) || ([STATE.WALK, STATE.RUN].has(_state) && _current_left == 1)):
-			new_left = -1
-			_velocity.x = _speed
-			if (![STATE.JUMP, STATE.FALL, STATE.SPECIAL].has(_state)):
-				_speed = WALK_SPEED
-				_velocity.x = _speed
-				_node_anim.play("walk")
-				_state = STATE.WALK
-		if [STATE.WALK, STATE.RUN, STATE.SPECIAL].has(_state):
-			_velocity.x = _speed
-	elif walk_left:
-		if (action_run && (_state == STATE.WALK || (_state == STATE.RUN && _current_left == -1))):
-			new_left = 1
-			_speed = RUN_SPEED
-			_velocity.x = -_speed
-			_node_anim.play("run")
-			_state = STATE.RUN
-		if (_state == STATE.RUN && !action_run):
-			_speed = WALK_SPEED
-			new_left = 1
-			_velocity.x = -_speed
-			_node_anim.play("walk")
-			_state = STATE.WALK
-		if ([STATE.JUMP, STATE.SPECIAL, STATE.IDLE, STATE.FALL].has(_state) || (_state == STATE.WALK && _current_left == -1)):
-			new_left = 1
-			_velocity.x = -_speed
-			if (![STATE.JUMP, STATE.FALL, STATE.SPECIAL].has(_state)):
-				_speed = WALK_SPEED
-				_velocity.x = _speed
-				_node_anim.play("walk")
-				_state = STATE.WALK
-		if [STATE.WALK, STATE.RUN, STATE.SPECIAL].has(_state):
-			_velocity.x = -_speed
-	else:
-		if ([STATE.WALK, STATE.RUN].has(_state)):
-			_node_anim.play("stand")
-			_state = STATE.IDLE
-			_speed = WALK_SPEED
-			_velocity.x = 0
-		elif [STATE.SPECIAL].has(_state):
-			_velocity.x = 0
-		if _state == STATE.IDLE || _state == STATE.HIT || _state == STATE.BEING_HIT:
-			_velocity.x = 0
-	
-	#print("Is colliding: " + str(is_colliding()))
-	#print("Collision normal: " + str(get_collision_normal()))
-	
-	if (new_left != null && new_left != _current_left):
-		set_scale(Vector2(new_left, 1))
-		_current_left = new_left
-	
-	if _state != STATE.SPECIAL_SETUP:
-		move_body(delta)
 
 func check_items_to_consume():
 	if _pickables.size() > 0:
@@ -923,50 +751,15 @@ func _on_offensive_hitbox_area_area_enter( area ):
 
 func end_hit():
 	_hitting = false
-	#_state = STATE.IDLE
-	#_node_anim.play("stand")
 	
 func get_hit(hitter, power, knock_down):
 	_hits_received.push_back([hitter, power, knock_down])
 
-func get_hit_old(hitter, power, knock_down):
-	_speed = WALK_SPEED
-	_velocity.x = 0
-	#print(str(_attributes.hp) + " - " + str(power))
-	_attributes.hp -= power
-	if _attributes.hp <= 0:
-		_node_camera.shake(globals.DEFAULT_SHAKE_MAGNITUDE, globals.DEFAULT_SHAKE_DURATION)
-		defensive_hitbox(false)
-		_velocity = Vector2(_current_left * _speed, -200)
-		_node_anim.play("ko")
-		_state = STATE.KO
-	elif !knock_down:
-		_node_anim.play("being_hit")
-		_state = STATE.BEING_HIT
-	else:
-		_node_camera.shake(globals.DEFAULT_SHAKE_MAGNITUDE, globals.DEFAULT_SHAKE_DURATION)
-		defensive_hitbox(false)
-		_velocity = Vector2(_current_left * _speed, -200)
-		_node_anim.play("knock_down")
-		_state = STATE.BEING_HIT
-	emit_signal("state_changed", self)
-
 func recovered_hit():
 	_recovered_hit = true
-#	defensive_hitbox(true)
-#	if _touch_floor:
-#		_node_anim.play("stand")
-#		_state = STATE.IDLE
-#	else:
-#		_node_anim.play("fall")
-#		_state = STATE.FALL
 
 func get_up():
 	_got_up = true
-	# TODO: INVICIBILITY_TIME
-	#_invincibility_cnt = INVINCIBILITY_TIME
-	#_node_anim.play("stand")
-	#_state = STATE.IDLE
 
 func get_lives():
 	return _attributes.lives
@@ -995,37 +788,14 @@ func respawn():
 	_velocity = Vector2(0, 0)
 	set_scale(Vector2(_current_left, 1))
 	_invincibility_cnt = RESPAWN_INVINCIBILITY_TIME
+	_speed = WALK_SPEED
 	defensive_hitbox(false)
 	_node_anim_invincible.play("invincible")
 	set_pos(Vector2(get_pos().x, -200))
 	signal_state_changed()
 
-func jump():
-	if _state != STATE.SPECIAL:
-		_state = STATE.JUMP
-		_node_anim.play("jump")
-	_velocity.y = -JUMP_FORCE
-	_touch_floor = false
-	
-func fall():
-	_node_anim.play("fall")
-
 func get_specials():
 	return _attributes.specials
-
-func last_hit_connected():
-	_last_hit_connect = true
-
-func _on_timer_timeout():
-	if _touch_floor:
-		_state = STATE.IDLE
-		_node_anim.play("stand")
-	else:
-		_state = STATE.FALL
-		_node_anim.play("fall")
-	_speed = WALK_SPEED
-	_node_offensive_hitbox_area2.set_enable_monitoring(false)
-	defensive_hitbox(true)
 
 func check_invincible(delta):
 	if _invincibility_cnt > 0:
@@ -1069,12 +839,6 @@ func remove_pickable(id):
 
 func special_setup_finished():
 	_special_setup = true
-	#_power = 3
-	#_knock_down = true
-	#_speed = SPECIAL_SPEED
-	#_node_timer.start()
-	#_state = STATE.SPECIAL
-	#_node_anim.play("special")
 
 func add_special(nb_specials):
 	_attributes.specials += nb_specials
@@ -1091,14 +855,13 @@ func lose_hp(hp):
 
 func set_freeze(freeze):
 	if freeze:
-		_freeze = _state
+		_freeze_old_state = _state
 		change_state(globals.STATE.FREEZE)
-	else:
-		change_state(_freeze)
+	elif _freeze_old_state != null:
+		change_state(_freeze_old_state)
 
 func set_specials(specials):
 	_attributes.specials = specials
-
 
 func add_spark(area):
 	var spark = preload_spark.instance()
