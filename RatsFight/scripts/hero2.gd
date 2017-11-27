@@ -35,7 +35,6 @@ var _special_released
 var _velocity
 var _speed
 var _special_cnt
-var _invicibility_cnt
 var _pickables
 var _freeze
 var _combo_frame_count
@@ -57,6 +56,7 @@ var _combo_count
 var _last_hit_connect
 var _combo_expired
 var _special_setup
+var _invincibility_cnt
 
 var _input_walk_right
 var _input_walk_left
@@ -70,7 +70,9 @@ var _input_special
 
 var preload_spark = preload("res://scenes/spark_hit.tscn")
 
+onready var _node_sprite = get_node("sprite")
 onready var _node_anim = get_node("anim")
+onready var _node_anim_invincible = get_node("anim_invincible")
 onready var _node_defensive_hitbox_area = get_node("defensive_hitbox_areas/1")
 onready var _node_offensive_hitbox_area1 = get_node("offensive_hitbox_areas/1")
 onready var _node_offensive_hitbox_area2 = get_node("offensive_hitbox_areas/2")
@@ -118,7 +120,7 @@ class KnockedUpState:
 		_parent._hits_received.pop_front()
 		_parent.lose_hp(next_hit[1])
 		_parent.signal_state_changed()
-		_parent._node_defensive_hitbox_area.set_monitorable(false)
+		_parent.defensive_hitbox(false)
 		_parent._touch_floor = false
 		_parent._velocity = Vector2(_parent._current_left * 500, -400)
 		_parent._node_anim.play("knock_up")
@@ -152,7 +154,9 @@ class KnockedDownState:
 			_parent.change_state(globals.STATE.IDLE)
 	
 	func end():
-		_parent._node_defensive_hitbox_area.set_monitorable(true)
+		_parent._invincibility_cnt = INVINCIBILITY_TIME
+		_parent._node_anim_invincible.play("invincible")
+		#_parent._node_defensive_hitbox_area.set_monitorable(true)
 
 class KOState:
 	var _parent
@@ -214,6 +218,7 @@ class StandState:
 		_parent._node_anim.play("stand")
 
 	func update(delta):
+		_parent.check_invincible(delta)
 		_parent._velocity.x = 0
 		_parent.move_body(delta)
 		_parent.check_items_to_consume()
@@ -257,6 +262,7 @@ class WalkState:
 			_parent.set_scale(Vector2(_parent._current_left, 1))
 
 	func update(delta):
+		_parent.check_invincible(delta)
 		_parent._velocity.x = -_parent._speed * _parent._current_left
 		_parent.move_body(delta)
 		_parent.check_items_to_consume()
@@ -300,6 +306,7 @@ class RunState:
 			_parent.set_scale(Vector2(_parent._current_left, 1))
 
 	func update(delta):
+		_parent.check_invincible(delta)
 		_parent._velocity.x = -_parent._speed * _parent._current_left
 		_parent.move_body(delta)
 		_parent.check_items_to_consume()
@@ -362,6 +369,7 @@ class HitState:
 			_parent._knock_down = false
 
 	func update(delta):
+		_parent.check_invincible(delta)
 		_parent.move_body(delta)
 		# Switch to BEING_HIT
 		var get_hit_state = _parent.check_hits_received()
@@ -390,6 +398,7 @@ class JumpState:
 		_parent._touch_floor = false
 
 	func update(delta):
+		_parent.check_invincible(delta)
 		# Moving left and right mid-air
 		if (_parent._current_left == 1 && _parent._input_walk_right && !_parent._input_walk_left) \
 			|| (_parent._current_left == -1 && _parent._input_walk_left && !_parent._input_walk_right):
@@ -435,6 +444,7 @@ class GlideState:
 		_parent._node_anim.play("glide")
 
 	func update(delta):
+		_parent.check_invincible(delta)
 		_parent._velocity.y = 50
 		_parent.move_body(delta)
 		_parent.check_items_to_consume()
@@ -469,6 +479,7 @@ class FallState:
 		_parent._node_anim.play("fall")
 
 	func update(delta):
+		_parent.check_invincible(delta)
 		# Moving left and right mid-air
 		if (_parent._current_left == 1 && _parent._input_walk_right && !_parent._input_walk_left) \
 			|| (_parent._current_left == -1 && _parent._input_walk_left && !_parent._input_walk_right):
@@ -513,6 +524,7 @@ class JumpHitState:
 		_parent._node_anim.play("jump_hit")
 
 	func update(delta):
+		_parent.check_invincible(delta)
 		_parent.move_body(delta)
 		_parent.check_items_to_consume()
 		# Switch to BEING_HIT
@@ -544,10 +556,12 @@ class SpecialSetupState:
 		_parent = parent
 
 	func start():
+		# Disable invincibility to avoid conflict
+		_parent.check_invincible(9999)
 		_parent._attributes.specials -= 1
 		_parent.signal_state_changed()
 		_parent._special_setup = false
-		_parent._node_defensive_hitbox_area.set_monitorable(false)
+		_parent.defensive_hitbox(false)
 		_parent._node_anim.play("special_setup")
 
 	func update(delta):
@@ -572,7 +586,6 @@ class SpecialStepOneState:
 		_parent.move_body(delta)
 		if _parent.get_pos().y < -400:
 			_parent.change_state(globals.STATE.SPECIAL_STEP_TWO)
-		pass
 
 	func end():
 		pass
@@ -613,7 +626,7 @@ class SpecialStepThreeState:
 
 	func end():
 		_parent._node_offensive_hitbox_area4.set_enable_monitoring(false)
-		_parent._node_defensive_hitbox_area.set_monitorable(true)
+		_parent.defensive_hitbox(true)
 
 func _init():
 	_attributes = globals.player_attributes[_player]
@@ -639,7 +652,7 @@ func _init():
 
 func _ready():
 	set_fixed_process(true)
-	_invicibility_cnt = 0
+	_invincibility_cnt = 0
 #	_hp = MAX_HP
 #	_special = INIT_SPECIAL
 #	_life = MAX_LIFE
@@ -706,12 +719,12 @@ func _fixed_process_(delta):
 	var action_run = utils.is_input_action_pressed(_control, "run")
 	var new_left = null
 
-	if _invicibility_cnt > 0:
-		_invicibility_cnt -= delta
-		if _invicibility_cnt < 0:
+	if _invincibility_cnt > 0:
+		_invincibility_cnt -= delta
+		if _invincibility_cnt < 0:
 			if ![STATE.SPECIAL, STATE.SPECIAL_SETUP].has(_state):
 				defensive_hitbox(true)
-			_invicibility_cnt = 0
+			_invincibility_cnt = 0
 
 	# disable offensive hitbox area in case animation got interrupted
 	if (![STATE.HIT].has(_state) && _node_offensive_hitbox_area1.is_monitoring_enabled()):
@@ -951,7 +964,7 @@ func recovered_hit():
 func get_up():
 	_got_up = true
 	# TODO: INVICIBILITY_TIME
-	#_invicibility_cnt = INVINCIBILITY_TIME
+	#_invincibility_cnt = INVINCIBILITY_TIME
 	#_node_anim.play("stand")
 	#_state = STATE.IDLE
 
@@ -981,7 +994,9 @@ func respawn():
 	_current_left = -1
 	_velocity = Vector2(0, 0)
 	set_scale(Vector2(_current_left, 1))
-	_invicibility_cnt = RESPAWN_INVINCIBILITY_TIME
+	_invincibility_cnt = RESPAWN_INVINCIBILITY_TIME
+	defensive_hitbox(false)
+	_node_anim_invincible.play("invincible")
 	set_pos(Vector2(get_pos().x, -200))
 	signal_state_changed()
 
@@ -1012,8 +1027,17 @@ func _on_timer_timeout():
 	_node_offensive_hitbox_area2.set_enable_monitoring(false)
 	defensive_hitbox(true)
 
+func check_invincible(delta):
+	if _invincibility_cnt > 0:
+		_invincibility_cnt -= delta
+		if _invincibility_cnt <= 0:
+			_invincibility_cnt = 0
+			defensive_hitbox(true)
+			_node_anim_invincible.stop()
+			_node_sprite.set_opacity(1)
+
 func defensive_hitbox(active):
-	if _node_defensive_hitbox_area:
+	if !active || _invincibility_cnt == 0:
 		_node_defensive_hitbox_area.set_monitorable(active)
 
 func get_player():
