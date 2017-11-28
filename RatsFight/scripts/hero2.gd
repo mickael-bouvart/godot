@@ -1,3 +1,23 @@
+# Hero2: Squirrel
+# List of States:
+#	StandState
+#	WalkState
+#	RunState
+#	HitState
+#	JumpState
+#	FallState
+#	JumpHitState
+#	GlideState
+#	SpecialSetupState
+#	SpecialStepOneState
+#	SpecialStepTwoState
+#	SpecialStepThreeState
+#	BeingHitState
+#	KnockedUpState
+#	KnockedDownState
+#	KOState
+#	FreezeState
+
 extends KinematicBody2D
 
 signal state_changed

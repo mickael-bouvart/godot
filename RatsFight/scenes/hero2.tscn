@@ -671,11 +671,9 @@ _update_shape_index = 0
 
 [node name="offensive_hitbox_areas" type="Node2D" parent="."]
 
-editor/display_folded = true
-visibility/visible = false
-
 [node name="1" type="Area2D" parent="offensive_hitbox_areas"]
 
+editor/display_folded = true
 visibility/visible = false
 input/pickable = true
 shapes/0/shape = SubResource( 21 )
@@ -701,6 +699,7 @@ _update_shape_index = 0
 
 [node name="2" type="Area2D" parent="offensive_hitbox_areas"]
 
+editor/display_folded = true
 visibility/visible = false
 input/pickable = true
 shapes/0/shape = SubResource( 22 )
@@ -726,6 +725,8 @@ _update_shape_index = 0
 
 [node name="3" type="Area2D" parent="offensive_hitbox_areas"]
 
+editor/display_folded = true
+visibility/visible = false
 input/pickable = true
 shapes/0/shape = SubResource( 23 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, -59.9801, 10.8072 )
@@ -749,6 +750,7 @@ _update_shape_index = 0
 
 [node name="4" type="Area2D" parent="offensive_hitbox_areas"]
 
+editor/display_folded = true
 visibility/visible = false
 input/pickable = true
 shapes/0/shape = SubResource( 24 )
