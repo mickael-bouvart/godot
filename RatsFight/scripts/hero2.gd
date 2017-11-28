@@ -750,25 +750,6 @@ func move_body(delta):
 	if new_touch_floor != null:
 		_touch_floor = new_touch_floor
 
-func _on_offensive_hitbox_area_area_enter( area ):
-	#print("_on_offensive_hitbox_area_area_enter")
-	var enemy = area.get_node("../")
-	enemy.get_hit(self, _power, _knock_down)
-	_last_hit_connect = true
-	var spark
-	if _knock_down:
-		spark = preload_spark.instance()
-		_node_sound.play("punch_02")
-	else:
-		spark = preload_spark.instance()
-		_node_sound.play("punch_01")
-	var pos = Vector2()
-	pos.x = (area.get_global_pos().x + _node_offensive_hitbox_area1.get_global_pos().x) / 2
-	pos.y = (area.get_global_pos().y + _node_offensive_hitbox_area1.get_global_pos().y) / 2
-	spark.set_pos(pos)
-	spark.set_scale(Vector2(_current_left, 1))
-	get_node("../../").add_child(spark)
-
 func end_hit():
 	_hitting = false
 	
