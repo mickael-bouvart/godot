@@ -54,9 +54,12 @@ var _special_setup
 var _special_finished
 var _invincibility_cnt
 var _freeze_old_state
+var _can_run
 
 var _input_walk_right
+var _input_walk_right_prev
 var _input_walk_left
+var _input_walk_left_prev
 var _input_run
 var _input_jump_prev
 var _input_jump
@@ -76,13 +79,47 @@ onready var _node_offensive_hitbox_area2 = get_node("offensive_hitbox_areas/2")
 onready var _node_offensive_hitbox_area3 = get_node("offensive_hitbox_areas/3")
 onready var _node_offensive_hitbox_area4 = get_node("offensive_hitbox_areas/4")
 onready var _node_sound = get_node("sound")
-onready var _node_timer_combo = get_node("timer_combo")
-onready var _node_timer_special = get_node("timer_special")
+onready var _node_timer_combo = get_node("timers/timer_combo")
+onready var _node_timer_special = get_node("timers/timer_special")
+onready var _node_timer_run = get_node("timers/timer_run")
 onready var _node_camera = get_node("camera")
+
+class SlideState:
+	var _parent
+
+	func _init(parent):
+		_parent = parent
+
+	func start():
+		_parent._power = 2
+		_parent._knock_down = true
+		_parent._velocity.x += -100 * _parent._current_left
+		_parent._node_offensive_hitbox_area3.set_enable_monitoring(true)
+		_parent._node_anim.play("jump_hit")
+
+	func update(delta):
+		_parent._velocity.x += 10 * _parent._current_left
+		if abs(_parent._velocity.x) < 5:
+			_parent._velocity.x = 0
+		_parent.check_invincible(delta)
+		_parent.move_body(delta)
+		_parent.check_items_to_consume()
+		# Switch to BEING_HIT
+		var get_hit_state = _parent.check_hits_received()
+		if get_hit_state != null:
+			_parent.change_state(get_hit_state)
+		# Switch to IDLE
+		elif _parent._velocity.x == 0:
+			_parent.change_state(globals.STATE.IDLE)
+
+	func end():
+		_parent._node_offensive_hitbox_area3.set_enable_monitoring(false)
+
 
 class FreezeState:
 	func start():
 		pass
+		
 	func update(delta):
 		pass
 	func end():
@@ -209,7 +246,7 @@ class StandState:
 		# Switch to WALK or RUN
 		elif _parent._input_walk_right || _parent._input_walk_left:
 			_parent._new_left = -1 if _parent._input_walk_right else 1
-			if _parent._input_run:
+			if (_parent._can_run >= 2 && _parent._new_left == _parent._current_left):# || _parent._input_run:
 				_parent.change_state(globals.STATE.RUN)
 			else:
 				_parent.change_state(globals.STATE.WALK)
@@ -253,10 +290,10 @@ class WalkState:
 		elif	(_parent._current_left == -1 && !_parent._input_walk_right)	\
 			||	(_parent._current_left == 1 && !_parent._input_walk_left):
 			_parent.change_state(globals.STATE.IDLE)
-		# Switch to RUN
-		elif _parent._input_run:
-			_parent._new_left = 1 if _parent._input_walk_left else -1
-			_parent.change_state(globals.STATE.RUN)
+#		# Switch to RUN
+#		elif _parent._input_run:
+#			_parent._new_left = 1 if _parent._input_walk_left else -1
+#			_parent.change_state(globals.STATE.RUN)
 		# Switch to JUMP
 		elif _parent.input_jump_just_pressed():
 			_parent._jump_cnt = 1
@@ -297,17 +334,17 @@ class RunState:
 		if		(_parent._current_left == -1 && !_parent._input_walk_right)	\
 			||	(_parent._current_left == 1 && !_parent._input_walk_left):
 			_parent.change_state(globals.STATE.IDLE)
-		# Switch to WALK
-		elif !_parent._input_run:
-			_parent._new_left = 1 if _parent._input_walk_left else -1
-			_parent.change_state(globals.STATE.WALK)
+#		# Switch to WALK
+#		elif !_parent._input_run:
+#			_parent._new_left = 1 if _parent._input_walk_left else -1
+#			_parent.change_state(globals.STATE.WALK)
 		# Switch to JUMP
 		elif _parent.input_jump_just_pressed():
 			_parent._jump_cnt = 1
 			_parent.change_state(globals.STATE.JUMP)
-		# Switch to HIT
+		# Switch to SLIDE
 		elif _parent.input_hit_just_pressed():
-			_parent.change_state(globals.STATE.HIT)
+			_parent.change_state(globals.STATE.SLIDE)
 		# Switch to SPECIAL (SPECIAL_SETUP)
 		elif _parent.input_special_just_pressed() && _parent.can_special():
 			_parent.change_state(globals.STATE.SPECIAL_SETUP)
@@ -569,7 +606,8 @@ func _init():
 		globals.STATE.KNOCKED_DOWN: KnockedDownState.new(self),
 		globals.STATE.KO: KOState.new(self),
 		globals.STATE.SPECIAL_SETUP: SpecialSetupState.new(self),
-		globals.STATE.SPECIAL_STEP_ONE: SpecialStepOneState.new(self)
+		globals.STATE.SPECIAL_STEP_ONE: SpecialStepOneState.new(self),
+		globals.STATE.SLIDE: SlideState.new(self)
 	}
 
 func _ready():
@@ -581,6 +619,7 @@ func _ready():
 	_freeze_old_state = null
 	_speed = WALK_SPEED
 	_current_left = -1
+	_can_run = false
 	defensive_hitbox(true)
 	_velocity = Vector2(0, 0)
 	set_scale(Vector2(_current_left, 1))
@@ -603,13 +642,18 @@ func check_inputs():
 	_input_jump_prev = _input_jump
 	_input_hit_prev = _input_hit
 	_input_special_prev = _input_special
+	_input_walk_left_prev = _input_walk_left
+	_input_walk_right_prev = _input_walk_right
 	_input_walk_left = utils.is_input_action_pressed(_control, "left")
 	_input_walk_right = utils.is_input_action_pressed(_control, "right")
 	_input_run = utils.is_input_action_pressed(_control, "run")
 	_input_jump = utils.is_input_action_pressed(_control, "jump")
 	_input_hit = utils.is_input_action_pressed(_control, "hit")
 	_input_special = utils.is_input_action_pressed(_control, "special")
-
+	if input_walk_left_just_pressed() || input_walk_right_just_pressed():
+		_can_run += 1
+		_node_timer_run.stop()
+		_node_timer_run.start()
 func input_jump_just_pressed():
 	return _input_jump && !_input_jump_prev
 
@@ -618,6 +662,12 @@ func input_hit_just_pressed():
 
 func input_special_just_pressed():
 	return _input_special && !_input_special_prev
+
+func input_walk_left_just_pressed():
+	return _input_walk_left && !_input_walk_left_prev
+
+func input_walk_right_just_pressed():
+	return _input_walk_right && !_input_walk_right_prev
 
 func reset_offensive_hitboxes():
 	for child in get_node("offensive_hitbox_areas").get_children():
@@ -824,3 +874,6 @@ func _on_timer_combo_timeout():
 
 func _on_timer_special_timeout():
 	_special_finished = true
+
+func _on_timer_run_timeout():
+	_can_run = 0

@@ -423,12 +423,12 @@ extents = Vector2( 89.0413, 46.5346 )
 custom_solver_bias = 0.0
 extents = Vector2( 49.4786, 88.9947 )
 
-[sub_resource type="RectangleShape2D" id=21]
+[sub_resource type="RectangleShape2D" id=20]
 
 custom_solver_bias = 0.0
 extents = Vector2( 102.144, 58.6099 )
 
-[sub_resource type="RectangleShape2D" id=20]
+[sub_resource type="RectangleShape2D" id=21]
 
 custom_solver_bias = 0.0
 extents = Vector2( 172, 160 )
@@ -507,14 +507,23 @@ playback/speed = 1.0
 blend_times = [  ]
 autoplay = ""
 
-[node name="timer_special" type="Timer" parent="."]
+[node name="timers" type="Node" parent="."]
+
+[node name="timer_special" type="Timer" parent="timers"]
 
 process_mode = 1
 wait_time = 2.5
 one_shot = true
 autostart = false
 
-[node name="timer_combo" type="Timer" parent="."]
+[node name="timer_combo" type="Timer" parent="timers"]
+
+process_mode = 1
+wait_time = 0.5
+one_shot = true
+autostart = false
+
+[node name="timer_run" type="Timer" parent="timers"]
 
 process_mode = 1
 wait_time = 0.5
@@ -570,6 +579,7 @@ _update_shape_index = 0
 
 [node name="1" type="Area2D" parent="offensive_hitbox_areas"]
 
+visibility/visible = false
 input/pickable = true
 shapes/0/shape = SubResource( 18 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, -66.5384, 1.41995 )
@@ -592,6 +602,7 @@ _update_shape_index = 0
 
 [node name="2" type="Area2D" parent="offensive_hitbox_areas"]
 
+visibility/visible = false
 input/pickable = true
 shapes/0/shape = SubResource( 19 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, -58.6888, 14.3778 )
@@ -614,8 +625,9 @@ _update_shape_index = 0
 
 [node name="3" type="Area2D" parent="offensive_hitbox_areas"]
 
+visibility/visible = false
 input/pickable = true
-shapes/0/shape = SubResource( 21 )
+shapes/0/shape = SubResource( 20 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, 15, 4 )
 shapes/0/trigger = true
 gravity_vec = Vector2( 0, 1 )
@@ -630,14 +642,15 @@ collision/mask = 4096
 [node name="collision" type="CollisionShape2D" parent="offensive_hitbox_areas/3"]
 
 transform/pos = Vector2( 15, 4 )
-shape = SubResource( 21 )
+shape = SubResource( 20 )
 trigger = true
 _update_shape_index = 0
 
 [node name="4" type="Area2D" parent="offensive_hitbox_areas"]
 
+visibility/visible = false
 input/pickable = true
-shapes/0/shape = SubResource( 20 )
+shapes/0/shape = SubResource( 21 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, -12, 10 )
 shapes/0/trigger = true
 gravity_vec = Vector2( 0, 1 )
@@ -652,7 +665,7 @@ collision/mask = 4096
 [node name="collision" type="CollisionShape2D" parent="offensive_hitbox_areas/4"]
 
 transform/pos = Vector2( -12, 10 )
-shape = SubResource( 20 )
+shape = SubResource( 21 )
 trigger = true
 _update_shape_index = 0
 
@@ -683,9 +696,11 @@ shape = SubResource( 22 )
 trigger = true
 _update_shape_index = 0
 
-[connection signal="timeout" from="timer_special" to="." method="_on_timer_special_timeout"]
+[connection signal="timeout" from="timers/timer_special" to="." method="_on_timer_special_timeout"]
 
-[connection signal="timeout" from="timer_combo" to="." method="_on_timer_combo_timeout"]
+[connection signal="timeout" from="timers/timer_combo" to="." method="_on_timer_combo_timeout"]
+
+[connection signal="timeout" from="timers/timer_run" to="." method="_on_timer_run_timeout"]
 
 [connection signal="area_enter" from="offensive_hitbox_areas/1" to="." method="_on_1_area_enter"]
 
