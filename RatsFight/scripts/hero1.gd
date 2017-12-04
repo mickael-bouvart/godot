@@ -626,6 +626,7 @@ func _ready():
 	_node_anim.play("fall")
 	_touch_floor = false
 	_combo_count = 0
+	_combo_expired = true
 	_last_hit_connect = false
 	_pickables = {}
 	_hits_received = []

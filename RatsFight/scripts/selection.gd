@@ -45,8 +45,9 @@ func _input(event):
 		elif !_joypad_ready:
 			_joypad_ready = true
 			validate("joypad")
-	elif _keyboard_start && (event.is_action_pressed("joypad_left") || event.is_action_pressed("joypad_right")):
-		next_character("joypad")
+	elif _joypad_start && (event.is_action_pressed("joypad_left") || event.is_action_pressed("joypad_right")):
+		if (event.type == InputEvent.JOYSTICK_MOTION && abs(event.value) >= 1) || event.type != InputEvent.JOYSTICK_MOTION:
+			next_character("joypad")
 	elif event.is_action_pressed("joypad2_start"):
 		if !_joypad2_start:
 			_joypad2_start = true
@@ -54,8 +55,9 @@ func _input(event):
 		elif !_joypad2_ready:
 			_joypad2_ready = true
 			validate("joypad2")
-	elif _keyboard_start && (event.is_action_pressed("joypad2_left") || event.is_action_pressed("joypad2_right")):
-		next_character("joypad2")
+	elif _joypad2_start && (event.is_action_pressed("joypad2_left") || event.is_action_pressed("joypad2_right")):
+		if (event.type == InputEvent.JOYSTICK_MOTION && abs(event.value) >= 1) || event.type != InputEvent.JOYSTICK_MOTION:
+			next_character("joypad2")
 
 func validate(control):
 	_validated += 1
