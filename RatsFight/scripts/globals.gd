@@ -81,13 +81,19 @@ var player_attributes =  {
 	"p2": PlayerAttributes.new()
 }
 
-var nb_players = 1 setget set_nb_players, get_nb_players
+var nb_players = 2 setget set_nb_players, get_nb_players
 var p1_control = "keyboard" setget set_p1_control, get_p1_control
 var p2_control = "joypad" setget set_p2_control, get_p2_control
-var hero1_preload = preload("res://scenes/hero1.tscn")
-var hero2_preload = preload("res://scenes/hero2.tscn")
-var p1_char = hero1_preload setget set_p1_char, get_p1_char
+var hero1_preload = preload("res://scenes/hero1.tscn") setget , get_hero1_preload
+var hero2_preload = preload("res://scenes/hero2.tscn") setget , get_hero2_preload
+var p1_char = hero2_preload setget set_p1_char, get_p1_char
 var p2_char = hero1_preload setget set_p2_char, get_p2_char
+
+func get_hero1_preload():
+	return hero1_preload
+
+func get_hero2_preload():
+	return hero2_preload
 
 func set_p1_char(value):
 	p1_char = value
@@ -126,6 +132,6 @@ func get_score(p):
 	return player_attributes[p].score
 
 func _ready():
-	#AudioServer.set_stream_global_volume_scale(0)
-	#AudioServer.set_fx_global_volume_scale(0)
+	AudioServer.set_stream_global_volume_scale(0)
+	AudioServer.set_fx_global_volume_scale(0)
 	pass

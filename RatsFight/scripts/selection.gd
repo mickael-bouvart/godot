@@ -10,10 +10,9 @@ var _validated = 0
 var _start_timer = 0
 
 var _control_to_player = {}
+var _player_hero = { 1: 1, 2: 2 }
 
 func _ready():
-	get_node("sprite_p1").hide()
-	get_node("sprite_p2").hide()
 	bgms.play("rock_intro")
 	globals.set_nb_players(0)
 	get_node("lbl_p1_info").set_text("PRESS START")
@@ -37,6 +36,8 @@ func _input(event):
 		elif !_keyboard_ready:
 			_keyboard_ready = true
 			validate("keyboard")
+	elif _keyboard_start && (event.is_action_pressed("keyboard_left") || event.is_action_pressed("keyboard_right")):
+		next_character("keyboard")
 	elif event.is_action_pressed("joypad_start"):
 		if !_joypad_start:
 			_joypad_start = true
@@ -44,6 +45,8 @@ func _input(event):
 		elif !_joypad_ready:
 			_joypad_ready = true
 			validate("joypad")
+	elif _keyboard_start && (event.is_action_pressed("joypad_left") || event.is_action_pressed("joypad_right")):
+		next_character("joypad")
 	elif event.is_action_pressed("joypad2_start"):
 		if !_joypad2_start:
 			_joypad2_start = true
@@ -51,16 +54,34 @@ func _input(event):
 		elif !_joypad2_ready:
 			_joypad2_ready = true
 			validate("joypad2")
+	elif _keyboard_start && (event.is_action_pressed("joypad2_left") || event.is_action_pressed("joypad2_right")):
+		next_character("joypad2")
 
 func validate(control):
 	_validated += 1
 	var p = _control_to_player[control]
-	get_node("anim_p%d_sprite" % p).play("selected")
+	var hero = _player_hero[p]
+	if p == 1:
+		globals.p1_char = globals.hero1_preload if hero == 1 else globals.hero2_preload
+	else:
+		globals.p2_char = globals.hero1_preload if hero == 1 else globals.hero2_preload
+	get_node("anim_p%d_sprite" % p).play("selected_h%d" % hero)
 	get_node("p%d_anim" % p).play("flash_screen")
 	get_node("lbl_p%d_info" % p).hide()
 	get_node("sprite_select_p%d" % p).hide()
 	if globals.get_nb_players() == _validated:
-		_start_timer = 1.5
+		_start_timer = 2
+
+func next_character(control):
+	var p = _control_to_player[control]
+	var hero = _player_hero[p]
+	get_node("sprite_p%d_h%d" % [p, hero]).hide()
+	_player_hero[p] = (_player_hero[p] % 2) + 1
+	hero = _player_hero[p]
+	var pos = get_node("sprite_hero%d" % hero).get_pos()
+	get_node("sprite_select_p%d" % p).set_pos(pos)
+	get_node("sprite_p%d_h%d" % [p, hero]).show()
+	get_node("anim_p%d_sprite" % p).play("hovered_h%d" % hero)
 
 func game_start():
 	bgms.stop()
@@ -69,10 +90,13 @@ func game_start():
 func add_player(control):
 	var nb_player = globals.get_nb_players() + 1
 	globals.set_nb_players(nb_player)
+	var hero = _player_hero[nb_player]
 	get_node("lbl_p%d_info" % nb_player).set_text("CHOOSE CHARACTER")
+	get_node("sprite_select_p%d" % nb_player).set_pos(get_node("sprite_hero%d" % hero).get_pos())
 	get_node("sprite_select_p%d" % nb_player).show()
-	get_node("sprite_p%d" % nb_player).show()
-	get_node("anim_p%d_sprite" % nb_player).play("hovered")
+	get_node("sprite_p%d_h%d" % [nb_player, hero]).show()
+	get_node("anim_p%d_sprite" % nb_player).play("hovered_h%d" % hero)
+	
 	_control_to_player[control] = nb_player
 
 	if nb_player == 1:

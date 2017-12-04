@@ -460,7 +460,7 @@ class FallState:
 			_parent._velocity.x *= -1
 			_parent.set_scale(Vector2(_parent._current_left, 1))
 		if (_parent._input_walk_right || _parent._input_walk_left) && _parent._velocity.x == 0:
-				_parent._velocity.x = -_parent._speed * _parent._current_left
+			_parent._velocity.x = -_parent._speed * _parent._current_left
 		_parent.move_body(delta)
 		_parent.check_items_to_consume()
 		# Switch to IDLE

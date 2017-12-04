@@ -1,12 +1,14 @@
-[gd_scene load_steps=16 format=1]
+[gd_scene load_steps=22 format=1]
 
 [ext_resource path="res://scripts/selection.gd" type="Script" id=1]
 [ext_resource path="res://assets/background/bg_select.png" type="Texture" id=2]
 [ext_resource path="res://assets/fonts/arcadeclassic.fnt" type="BitmapFont" id=3]
 [ext_resource path="res://assets/sprites/sprite_select_hero1.png" type="Texture" id=4]
-[ext_resource path="res://assets/sprites/select_p1.png" type="Texture" id=5]
-[ext_resource path="res://assets/sprites/select_p2.png" type="Texture" id=6]
-[ext_resource path="res://assets/sprites/sprites_hero1.png" type="Texture" id=7]
+[ext_resource path="res://assets/sprites/sprite_select_hero2.png" type="Texture" id=5]
+[ext_resource path="res://assets/sprites/select_p1.png" type="Texture" id=6]
+[ext_resource path="res://assets/sprites/select_p2.png" type="Texture" id=7]
+[ext_resource path="res://assets/sprites/sprites_hero1.png" type="Texture" id=8]
+[ext_resource path="res://assets/sprites/Tamias sprite sheet final indexé.png" type="Texture" id=9]
 
 [sub_resource type="Animation" id=1]
 
@@ -78,12 +80,29 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id=5]
 
-resource/name = "hovered"
+resource/name = "hovered_h1"
 length = 1.0
 loop = true
 step = 0.05
 tracks/0/type = "value"
-tracks/0/path = NodePath("sprite_p1:frame")
+tracks/0/path = NodePath("sprite_p1_h1:frame")
+tracks/0/interp = 1
+tracks/0/imported = false
+tracks/0/keys = {
+"times": FloatArray( 0, 0.25, 0.5, 0.75 ),
+"transitions": FloatArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 5, 6, 7, 6 ]
+}
+
+[sub_resource type="Animation" id=9]
+
+resource/name = "hovered_h2"
+length = 1.0
+loop = true
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("sprite_p1_h2:frame")
 tracks/0/interp = 1
 tracks/0/imported = false
 tracks/0/keys = {
@@ -95,12 +114,12 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id=6]
 
-resource/name = "selected"
+resource/name = "selected_h1"
 length = 1.0
-loop = true
+loop = false
 step = 0.1
 tracks/0/type = "value"
-tracks/0/path = NodePath("sprite_p1:frame")
+tracks/0/path = NodePath("sprite_p1_h1:frame")
 tracks/0/interp = 1
 tracks/0/imported = false
 tracks/0/keys = {
@@ -110,14 +129,48 @@ tracks/0/keys = {
 "values": [ 0, 1, 2, 3, 2, 3, 4, 3, 2, 1, 0 ]
 }
 
+[sub_resource type="Animation" id=10]
+
+resource/name = "selected_h2"
+length = 2.0
+loop = false
+step = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("sprite_p1_h2:frame")
+tracks/0/interp = 1
+tracks/0/imported = false
+tracks/0/keys = {
+"times": FloatArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 0.9, 1, 1.1, 1.2, 1.3 ),
+"transitions": FloatArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 21, 22, 21, 22, 21, 24, 25, 0, 1, 2, 3, 4, 5 ]
+}
+
 [sub_resource type="Animation" id=7]
 
-resource/name = "hovered"
+resource/name = "hovered_h1"
 length = 1.0
 loop = true
 step = 0.05
 tracks/0/type = "value"
-tracks/0/path = NodePath("sprite_p2:frame")
+tracks/0/path = NodePath("sprite_p2_h1:frame")
+tracks/0/interp = 1
+tracks/0/imported = false
+tracks/0/keys = {
+"times": FloatArray( 0, 0.25, 0.5, 0.75 ),
+"transitions": FloatArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 5, 6, 7, 6 ]
+}
+
+[sub_resource type="Animation" id=11]
+
+resource/name = "hovered_h2"
+length = 1.0
+loop = true
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("sprite_p2_h2:frame")
 tracks/0/interp = 1
 tracks/0/imported = false
 tracks/0/keys = {
@@ -129,12 +182,12 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id=8]
 
-resource/name = "selected"
+resource/name = "selected_h1"
 length = 1.0
-loop = true
+loop = false
 step = 0.1
 tracks/0/type = "value"
-tracks/0/path = NodePath("sprite_p2:frame")
+tracks/0/path = NodePath("sprite_p2_h1:frame")
 tracks/0/interp = 1
 tracks/0/imported = false
 tracks/0/keys = {
@@ -142,6 +195,23 @@ tracks/0/keys = {
 "transitions": FloatArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
 "update": 1,
 "values": [ 0, 1, 2, 3, 2, 3, 4, 3, 2, 1, 0 ]
+}
+
+[sub_resource type="Animation" id=13]
+
+resource/name = "selected_h2"
+length = 2.0
+loop = false
+step = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("sprite_p2_h2:frame")
+tracks/0/interp = 1
+tracks/0/imported = false
+tracks/0/keys = {
+"times": FloatArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 0.9, 1, 1.1, 1.2, 1.3 ),
+"transitions": FloatArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 21, 22, 21, 22, 21, 24, 25, 0, 1, 2, 3, 4, 5 ]
 }
 
 [node name="selection" type="Node"]
@@ -223,24 +293,38 @@ autoplay = ""
 transform/pos = Vector2( 390, 190 )
 texture = ExtResource( 4 )
 
+[node name="sprite_hero2" type="Sprite" parent="."]
+
+transform/pos = Vector2( 600, 190 )
+texture = ExtResource( 5 )
+
 [node name="sprite_select_p1" type="Sprite" parent="."]
 
 visibility/visible = false
 transform/pos = Vector2( 388, 188 )
-texture = ExtResource( 5 )
+texture = ExtResource( 6 )
 
 [node name="sprite_select_p2" type="Sprite" parent="."]
 
 visibility/visible = false
 transform/pos = Vector2( 390, 190 )
-texture = ExtResource( 6 )
-
-[node name="sprite_p1" type="Sprite" parent="."]
-
-transform/pos = Vector2( 210, 400 )
 texture = ExtResource( 7 )
+
+[node name="sprite_p1_h1" type="Sprite" parent="."]
+
+visibility/visible = false
+transform/pos = Vector2( 210, 400 )
+texture = ExtResource( 8 )
 vframes = 6
 hframes = 5
+
+[node name="sprite_p1_h2" type="Sprite" parent="."]
+
+visibility/visible = false
+transform/pos = Vector2( 210, 400 )
+texture = ExtResource( 9 )
+vframes = 7
+hframes = 6
 frame = 5
 
 [node name="anim_p1_sprite" type="AnimationPlayer" parent="."]
@@ -248,29 +332,44 @@ frame = 5
 playback/process_mode = 1
 playback/default_blend_time = 0.0
 root/root = NodePath("..")
-anims/hovered = SubResource( 5 )
-anims/selected = SubResource( 6 )
+anims/hovered_h1 = SubResource( 5 )
+anims/hovered_h2 = SubResource( 9 )
+anims/selected_h1 = SubResource( 6 )
+anims/selected_h2 = SubResource( 10 )
 playback/active = true
 playback/speed = 1.0
 blend_times = [  ]
 autoplay = ""
 
-[node name="sprite_p2" type="Sprite" parent="."]
+[node name="sprite_p2_h1" type="Sprite" parent="."]
 
+visibility/visible = false
 transform/pos = Vector2( 810, 400 )
-texture = ExtResource( 7 )
+texture = ExtResource( 8 )
 flip_h = true
 vframes = 6
 hframes = 5
-frame = 6
+frame = 5
+
+[node name="sprite_p2_h2" type="Sprite" parent="."]
+
+visibility/visible = false
+transform/pos = Vector2( 810, 400 )
+texture = ExtResource( 9 )
+flip_h = true
+vframes = 7
+hframes = 6
+frame = 5
 
 [node name="anim_p2_sprite" type="AnimationPlayer" parent="."]
 
 playback/process_mode = 1
 playback/default_blend_time = 0.0
 root/root = NodePath("..")
-anims/hovered = SubResource( 7 )
-anims/selected = SubResource( 8 )
+anims/hovered_h1 = SubResource( 7 )
+anims/hovered_h2 = SubResource( 11 )
+anims/selected_h1 = SubResource( 8 )
+anims/selected_h2 = SubResource( 13 )
 playback/active = true
 playback/speed = 1.0
 blend_times = [  ]
