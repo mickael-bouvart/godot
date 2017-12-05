@@ -560,6 +560,7 @@ class SpecialSetupState:
 		_parent.signal_state_changed()
 		_parent._special_setup = false
 		_parent.defensive_hitbox(false)
+		_parent._node_sound.play("special_charge")
 		_parent._node_anim.play("special_setup")
 
 	func update(delta):

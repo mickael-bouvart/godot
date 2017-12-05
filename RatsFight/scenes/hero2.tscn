@@ -1,7 +1,7 @@
 [gd_scene load_steps=34 format=1]
 
 [ext_resource path="res://scripts/hero2.gd" type="Script" id=1]
-[ext_resource path="res://assets/sprites/Tamias sprite sheet final indexé.png" type="Texture" id=2]
+[ext_resource path="res://assets/sprites/sprites_hero2.png" type="Texture" id=2]
 [ext_resource path="res://assets/sprites/sprites_explosion.png" type="Texture" id=3]
 [ext_resource path="res://assets/sound/eat.wav" type="Sample" id=4]
 [ext_resource path="res://assets/sound/punch_01.wav" type="Sample" id=5]
@@ -552,7 +552,6 @@ _control = "keyboard"
 
 [node name="sprite" type="Sprite" parent="."]
 
-editor/display_folded = true
 texture = ExtResource( 2 )
 flip_h = true
 vframes = 7
