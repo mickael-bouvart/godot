@@ -60,7 +60,6 @@ var _input_walk_right
 var _input_walk_right_prev
 var _input_walk_left
 var _input_walk_left_prev
-var _input_run
 var _input_jump_prev
 var _input_jump
 var _input_hit_prev
@@ -246,7 +245,7 @@ class StandState:
 		# Switch to WALK or RUN
 		elif _parent._input_walk_right || _parent._input_walk_left:
 			_parent._new_left = -1 if _parent._input_walk_right else 1
-			if (_parent._can_run >= 2 && _parent._new_left == _parent._current_left):# || _parent._input_run:
+			if (_parent._can_run >= 2 && _parent._new_left == _parent._current_left):
 				_parent.change_state(globals.STATE.RUN)
 			else:
 				_parent.change_state(globals.STATE.WALK)
@@ -290,10 +289,6 @@ class WalkState:
 		elif	(_parent._current_left == -1 && !_parent._input_walk_right)	\
 			||	(_parent._current_left == 1 && !_parent._input_walk_left):
 			_parent.change_state(globals.STATE.IDLE)
-#		# Switch to RUN
-#		elif _parent._input_run:
-#			_parent._new_left = 1 if _parent._input_walk_left else -1
-#			_parent.change_state(globals.STATE.RUN)
 		# Switch to JUMP
 		elif _parent.input_jump_just_pressed():
 			_parent._jump_cnt = 1
@@ -331,13 +326,9 @@ class RunState:
 		if get_hit_state != null:
 			_parent.change_state(get_hit_state)
 		# Switch to IDLE
-		if		(_parent._current_left == -1 && !_parent._input_walk_right)	\
+		elif	(_parent._current_left == -1 && !_parent._input_walk_right)	\
 			||	(_parent._current_left == 1 && !_parent._input_walk_left):
 			_parent.change_state(globals.STATE.IDLE)
-#		# Switch to WALK
-#		elif !_parent._input_run:
-#			_parent._new_left = 1 if _parent._input_walk_left else -1
-#			_parent.change_state(globals.STATE.WALK)
 		# Switch to JUMP
 		elif _parent.input_jump_just_pressed():
 			_parent._jump_cnt = 1
@@ -648,7 +639,6 @@ func check_inputs():
 	_input_walk_right_prev = _input_walk_right
 	_input_walk_left = utils.is_input_action_pressed(_control, "left")
 	_input_walk_right = utils.is_input_action_pressed(_control, "right")
-	_input_run = utils.is_input_action_pressed(_control, "run")
 	_input_jump = utils.is_input_action_pressed(_control, "jump")
 	_input_hit = utils.is_input_action_pressed(_control, "hit")
 	_input_special = utils.is_input_action_pressed(_control, "special")

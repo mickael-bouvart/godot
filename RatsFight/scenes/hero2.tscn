@@ -616,7 +616,16 @@ playback/speed = 1.0
 blend_times = [  ]
 autoplay = ""
 
-[node name="timer_combo" type="Timer" parent="."]
+[node name="timers" type="Node" parent="."]
+
+[node name="timer_combo" type="Timer" parent="timers"]
+
+process_mode = 1
+wait_time = 0.5
+one_shot = true
+autostart = false
+
+[node name="timer_run" type="Timer" parent="timers"]
 
 process_mode = 1
 wait_time = 0.5
@@ -798,7 +807,9 @@ shape = SubResource( 25 )
 trigger = false
 _update_shape_index = 0
 
-[connection signal="timeout" from="timer_combo" to="." method="_on_timer_combo_timeout"]
+[connection signal="timeout" from="timers/timer_combo" to="." method="_on_timer_combo_timeout"]
+
+[connection signal="timeout" from="timers/timer_run" to="." method="_on_timer_run_timeout"]
 
 [connection signal="area_enter" from="offensive_hitbox_areas/1" to="." method="_on_1_area_enter"]
 
