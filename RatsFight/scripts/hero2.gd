@@ -542,7 +542,7 @@ class JumpHitState:
 	func end():
 		_parent._node_offensive_hitbox_area3.set_enable_monitoring(false)
 
-class SpecialSetupState:
+class SpecialStepOneState:
 	var _parent
 
 	func _init(parent):
@@ -560,12 +560,12 @@ class SpecialSetupState:
 
 	func update(delta):
 		if _parent._special_setup:
-			_parent.change_state(globals.STATE.SPECIAL_STEP_ONE)
+			_parent.change_state(globals.STATE.SPECIAL_STEP_TWO)
 
 	func end():
 		pass
 
-class SpecialStepOneState:
+class SpecialSetupState:
 	var _parent
 
 	func _init(parent):
@@ -578,8 +578,8 @@ class SpecialStepOneState:
 	func update(delta):
 		_parent._velocity.y = -1500
 		_parent.move_body(delta)
-		if _parent.get_pos().y < -400:
-			_parent.change_state(globals.STATE.SPECIAL_STEP_TWO)
+		if _parent.get_pos().y < 100:
+			_parent.change_state(globals.STATE.SPECIAL_STEP_ONE)
 
 	func end():
 		pass
