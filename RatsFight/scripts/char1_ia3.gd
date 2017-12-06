@@ -79,6 +79,7 @@ func check_behavior_switch(delta):
 		_behavior = (_behavior + 1) % 2
 
 func update(delta):
+	_char.check_get_hit()
 	update_hero_scan(delta)
 	check_behavior_switch(delta)
 	if _behavior == 0:

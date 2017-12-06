@@ -72,6 +72,7 @@ func is_hero_looking():
 	return false
 
 func update(delta):
+	_char.check_get_hit()
 	update_hero_scan(delta)
 	if is_near_hero():
 		hit_hero(delta)

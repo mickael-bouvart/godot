@@ -6,16 +6,9 @@ export var walk_speed = 100
 export var max_hp = 5
 export var _score = 50
 export var _ia = "basic"
+export var _knock_down_resist = 0
 
 const MIN_DISTANCE_FOLLOW = 200
-
-enum STATE {
-	HIT,
-	WALK,
-	BEING_HIT,
-	IDLE,
-	KO
-}
 
 var patterns = [
 	{ "key": "STAND", "func": funcref(self, "pattern_stand"), "duration": 50, "prob": 20 },
@@ -32,6 +25,8 @@ var current_pattern = null
 var pattern_duration_cnt = 0
 var _power
 var _knock_down
+var _touch_floor
+var _knock_up_hitter
 
 var _iapreloads = {
 	"basic": preload("res://scripts/char1_ia.gd"),
@@ -41,10 +36,10 @@ var _iapreloads = {
 var _ia_instance
 
 func pattern_hit(frame, duration):
-	if (state == STATE.IDLE):
+	if (state == globals.STATE.IDLE):
 		_power = 1
-		_knock_down = false
-		state = STATE.HIT
+		_knock_down = 0
+		state = globals.STATE.HIT
 		get_node("anim").play("hit")
 
 func pattern_stand(frame, duration):
@@ -57,23 +52,23 @@ func pattern_follow(frame, duration):
 	var dist = abs(hero1_pos - self_pos)
 	#print("Distance: " + str(dist))
 	if (dist > MIN_DISTANCE_FOLLOW):
-		if (state == STATE.IDLE || state == STATE.WALK):
+		if (state == globals.STATE.IDLE || state == globals.STATE.WALK):
 			velocity.x = -current_left * walk_speed
-			if (state == STATE.IDLE):
+			if (state == globals.STATE.IDLE):
 				get_node("anim").play("walk")
-				state = STATE.WALK
-	elif (state == STATE.WALK):
+				state = globals.STATE.WALK
+	elif (state == globals.STATE.WALK):
 		get_node("anim").play("stand")
-		state = STATE.IDLE
+		state = globals.STATE.IDLE
 		velocity.x = 0
 		pattern_duration_cnt = duration - 1
 		return
 		
 	#print(str(frame) + " / " + str(duration))
-	if (frame == duration - 1 && state == STATE.WALK):
+	if (frame == duration - 1 && state == globals.STATE.WALK):
 		velocity.x = 0
 		get_node("anim").play("stand")
-		state = STATE.IDLE
+		state = globals.STATE.IDLE
 
 func update_current_left(hero = null):
 	if hero == null:
@@ -90,7 +85,7 @@ func update_current_left(hero = null):
 
 func _fixed_process(delta):
 	# disable offensive hitbox area in case attack animation got interrupted
-	if (state != STATE.HIT && get_node("offensive_hitbox_area").is_monitoring_enabled()):
+	if (state != globals.STATE.HIT && get_node("offensive_hitbox_area").is_monitoring_enabled()):
 		get_node("offensive_hitbox_area").set_enable_monitoring(false)
 	
 	if _ia_instance:
@@ -98,7 +93,7 @@ func _fixed_process(delta):
 		apply_forces(delta)
 		return
 		
-	if state == STATE.IDLE || state == STATE.WALK:
+	if state == globals.STATE.IDLE || state == globals.STATE.WALK:
 		update_current_left()
 		
 	apply_forces(delta)
@@ -130,10 +125,11 @@ func apply_forces(delta):
 		var n = get_collision_normal()
 		# touch the floor
 		if (rad2deg(acos(n.dot(Vector2(0, -1)))) < globals.FLOOR_ANGLE_TOLERANCE):
-			if [STATE.BEING_HIT, STATE.KO, STATE.IDLE, STATE.HIT].has(state):
+			_touch_floor = true
+			if [globals.STATE.BEING_HIT, globals.STATE.KNOCKED_DOWN, globals.STATE.KO, globals.STATE.IDLE, globals.STATE.HIT].has(state):
 				motion.x = 0
 		
-		if ![STATE.IDLE, STATE.HIT, STATE.BEING_HIT, STATE.KO].has(state):
+		if ![globals.STATE.IDLE, globals.STATE.HIT, globals.STATE.BEING_HIT, globals.STATE.KNOCKED_DOWN, globals.STATE.KO].has(state):
 			motion = n.slide(motion)
 			velocity = n.slide(velocity)
 		motion = move(motion)
@@ -148,25 +144,38 @@ func get_hit(hero, power, knock_down):
 	if (life <= 0):
 		if hero:
 			hero.add_score(_score)
-		velocity = Vector2(current_left * walk_speed, -200)
-		get_node("anim").play("ko")
-		state = STATE.KO
-	elif !knock_down:
+#		velocity = Vector2(current_left * walk_speed, -200)
+#		get_node("anim").play("ko")
+#		state = globals.STATE.KO
+	if knock_down - _knock_down_resist <= 0:
 		get_node("anim").play("being_hit")
-		state = STATE.BEING_HIT
+		state = globals.STATE.BEING_HIT
+	# TODO: Make them hit other enemies
+	elif knock_down > 10:
+		_touch_floor = false
+		_knock_up_hitter = hero
+		get_node("defensive_hitbox_area").set_monitorable(false)
+		get_node("offensive_unfriendly_hitbox_area").set_enable_monitoring(true)
+		velocity = Vector2(current_left * walk_speed * 6, -150)
+		get_node("anim").play("knock_up")
+		state = globals.STATE.KNOCKED_UP_HIT_ALL
 	else:
+		_touch_floor = false
 		get_node("defensive_hitbox_area").set_monitorable(false)
 		velocity = Vector2(current_left * walk_speed, -200)
-		get_node("anim").play("knock_down")
-		state = STATE.BEING_HIT
+		get_node("anim").play("knock_up")
+		state = globals.STATE.KNOCKED_UP
 
 func _ready():
 	#_ia = null
 	_ia_instance = _iapreloads[_ia].new(self)
+	_touch_floor = true
+	_knock_up_hitter = null
 	get_node("defensive_hitbox_area").set_monitorable(true)
+	get_node("offensive_unfriendly_hitbox_area").set_enable_monitoring(false)
 	current_pattern = patterns[2]
 	life = max_hp
-	state = STATE.IDLE
+	state = globals.STATE.IDLE
 	get_node("anim").play("stand")
 	update_current_left()
 	var r = (randi() % 200 + 55) / 255.0
@@ -178,7 +187,7 @@ func _ready():
 
 func recovered_hit():
 	get_node("anim").play("stand")
-	state = STATE.IDLE
+	state = globals.STATE.IDLE
 
 func dead():
 	emit_signal("signal_dead", self)
@@ -190,7 +199,7 @@ func _on_offensive_hitbox_area_area_enter( area ):
 	get_node("sound").play("punch_01")
 
 func end_hit():
-	state = STATE.IDLE
+	state = globals.STATE.IDLE
 	get_node("anim").play("stand")
 
 func get_up():
@@ -199,7 +208,7 @@ func get_up():
 		return
 	get_node("defensive_hitbox_area").set_monitorable(true)
 	velocity = Vector2(0, 0)
-	state = STATE.IDLE
+	state = globals.STATE.IDLE
 	get_node("anim").play("stand")
 
 func set_walk_speed(new_walk_speed):
@@ -212,28 +221,28 @@ func set_score(score):
 	_score = score
 
 func can_walk():
-	return [STATE.IDLE, STATE.WALK].has(state)
+	return [globals.STATE.IDLE, globals.STATE.WALK].has(state)
 
 func walk_towards(hero, delta):
 	var dir = 1 if get_pos().x < hero.get_pos().x else -1 
 	velocity.x = dir * walk_speed
-	if state != STATE.WALK:
-		state = STATE.WALK
+	if state != globals.STATE.WALK:
+		state = globals.STATE.WALK
 		get_node("anim").play("walk")
 
 func can_hit():
-	return [STATE.IDLE, STATE.WALK].has(state)
+	return [globals.STATE.IDLE, globals.STATE.WALK].has(state)
 
 func hit():
 	velocity.x = 0
-	state = STATE.HIT
+	state = globals.STATE.HIT
 	_power = 1
 	_knock_down = false
 	get_node("anim").play("hit")
 
 func stand():
-	if state != STATE.IDLE:
-		state = STATE.IDLE
+	if state != globals.STATE.IDLE:
+		state = globals.STATE.IDLE
 		get_node("anim").play("stand")
 
 func get_current_left():
@@ -242,6 +251,20 @@ func get_current_left():
 func walk_away_from(hero, delta):
 	var dir = -1 if get_pos().x < hero.get_pos().x else 1 
 	velocity.x = dir * walk_speed
-	if state != STATE.WALK:
-		state = STATE.WALK
+	if state != globals.STATE.WALK:
+		state = globals.STATE.WALK
 		get_node("anim").play("walk")
+
+func check_get_hit():
+	if [globals.STATE.KNOCKED_UP, globals.STATE.KNOCKED_UP_HIT_ALL].has(state) && _touch_floor:
+		get_node("offensive_unfriendly_hitbox_area").set_enable_monitoring(false)
+		if life <= 0:
+			state = globals.STATE.KO
+			get_node("anim").play("ko")
+		else:
+			state = globals.STATE.KNOCKED_DOWN
+			get_node("anim").play("knock_down")
+
+func _on_offensive_unfriendly_hitbox_area_area_enter( area ):
+	var enemy = area.get_node("../")
+	enemy.get_hit(_knock_up_hitter, 3, true)

@@ -91,7 +91,7 @@ class SlideState:
 
 	func start():
 		_parent._power = 2
-		_parent._knock_down = true
+		_parent._knock_down = 1
 		_parent._velocity.x += -100 * _parent._current_left
 		_parent._node_offensive_hitbox_area3.set_enable_monitoring(true)
 		_parent._node_anim.play("jump_hit")
@@ -366,14 +366,14 @@ class HitState:
 		if _parent._combo_count == 2:
 			_parent._node_anim.play("hit_02")
 			_parent._power = 2
-			_parent._knock_down = true
+			_parent._knock_down = 15
 		else:
 			_parent._node_timer_combo.stop()
 			_parent._combo_expired = false
 			_parent._node_timer_combo.start()
 			_parent._node_anim.play("hit_01")
 			_parent._power = 1
-			_parent._knock_down = false
+			_parent._knock_down = 0
 
 	func update(delta):
 		_parent.check_invincible(delta)
@@ -475,7 +475,7 @@ class JumpHitState:
 
 	func start():
 		_parent._power = 1
-		_parent._knock_down = false
+		_parent._knock_down = 0
 		_parent._velocity.x += -100 * _parent._current_left
 		_parent._node_offensive_hitbox_area3.set_enable_monitoring(true)
 		_parent._node_anim.play("jump_hit")
@@ -518,7 +518,7 @@ class SpecialSetupState:
 		if _parent._special_setup:
 			_parent._special_setup = false
 			_parent._power = 3
-			_parent._knock_down = true
+			_parent._knock_down = 9
 			_parent._special_finished = false
 			_parent._node_offensive_hitbox_area4.set_enable_monitoring(true)
 			_parent._node_anim.play("special")
@@ -577,7 +577,7 @@ func check_hits_received():
 	var hitter = next_hit[0]
 	var power = next_hit[1]
 	var knock_down = next_hit[2]
-	if power > _attributes.hp || knock_down:
+	if power > _attributes.hp || knock_down > 0:
 		return globals.STATE.KNOCKED_UP
 	else:
 		return globals.STATE.BEING_HIT
@@ -843,7 +843,7 @@ func hit_enemy(area):
 	var enemy = area.get_node("../")
 	enemy.get_hit(self, _power, _knock_down)
 	_last_hit_connect = true
-	if _knock_down:
+	if _knock_down > 0:
 		_node_sound.play("punch_02")
 	else:
 		_node_sound.play("punch_01")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=1]
+[gd_scene load_steps=17 format=1]
 
 [ext_resource path="res://scripts/char1.gd" type="Script" id=1]
 [ext_resource path="res://assets/sound/punch_01.wav" type="Sample" id=2]
@@ -102,7 +102,7 @@ tracks/2/keys = {
 
 [sub_resource type="Animation" id=6]
 
-length = 2.0
+length = 1.4
 loop = false
 step = 0.2
 tracks/0/type = "value"
@@ -110,17 +110,17 @@ tracks/0/path = NodePath("sprite:frame")
 tracks/0/interp = 1
 tracks/0/imported = false
 tracks/0/keys = {
-"times": FloatArray( 0, 0.3, 0.6, 1.8, 2 ),
-"transitions": FloatArray( 1, 1, 1, 1, 1 ),
+"times": FloatArray( 0, 1.2, 1.4 ),
+"transitions": FloatArray( 1, 1, 1 ),
 "update": 1,
-"values": [ 9, 10, 11, 10, 9 ]
+"values": [ 11, 10, 9 ]
 }
 tracks/1/type = "method"
 tracks/1/path = NodePath(".")
 tracks/1/interp = 1
 tracks/1/imported = false
 tracks/1/keys = {
-"times": FloatArray( 2 ),
+"times": FloatArray( 1.4 ),
 "transitions": FloatArray( 1 ),
 "values": [ {
 "args": [  ],
@@ -128,52 +128,59 @@ tracks/1/keys = {
 } ]
 }
 
+[sub_resource type="Animation" id=12]
+
+resource/name = "knock_up"
+length = 1.0
+loop = false
+step = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("sprite:frame")
+tracks/0/interp = 1
+tracks/0/imported = false
+tracks/0/keys = {
+"times": FloatArray( 0, 0.1 ),
+"transitions": FloatArray( 1, 1 ),
+"update": 1,
+"values": [ 9, 10 ]
+}
+
 [sub_resource type="Animation" id=7]
 
-length = 2.0
+length = 1.4
 loop = false
 step = 0.2
 tracks/0/type = "value"
-tracks/0/path = NodePath("defensive_hitbox_area:monitorable")
+tracks/0/path = NodePath("sprite:frame")
 tracks/0/interp = 1
 tracks/0/imported = false
 tracks/0/keys = {
 "times": FloatArray( 0 ),
 "transitions": FloatArray( 1 ),
 "update": 1,
-"values": [ false ]
+"values": [ 11 ]
 }
 tracks/1/type = "value"
-tracks/1/path = NodePath("sprite:frame")
+tracks/1/path = NodePath("sprite:visibility/visible")
 tracks/1/interp = 1
 tracks/1/imported = false
 tracks/1/keys = {
-"times": FloatArray( 0, 0.3, 0.6 ),
-"transitions": FloatArray( 1, 1, 1 ),
+"times": FloatArray( 0.4, 0.6, 0.8, 1, 1.2, 1.4 ),
+"transitions": FloatArray( 1, 1, 1, 1, 1, 1 ),
 "update": 1,
-"values": [ 9, 10, 11 ]
+"values": [ false, true, false, true, false, true ]
 }
 tracks/2/type = "method"
 tracks/2/path = NodePath(".")
 tracks/2/interp = 1
 tracks/2/imported = false
 tracks/2/keys = {
-"times": FloatArray( 2 ),
+"times": FloatArray( 1.4 ),
 "transitions": FloatArray( 1 ),
 "values": [ {
 "args": [  ],
 "method": "dead"
 } ]
-}
-tracks/3/type = "value"
-tracks/3/path = NodePath("sprite:visibility/visible")
-tracks/3/interp = 1
-tracks/3/imported = false
-tracks/3/keys = {
-"times": FloatArray( 1, 1.2, 1.4, 1.6, 1.8, 2 ),
-"transitions": FloatArray( 1, 1, 1, 1, 1, 1 ),
-"update": 1,
-"values": [ false, true, false, true, false, true ]
 }
 
 [sub_resource type="Animation" id=8]
@@ -218,6 +225,11 @@ extents = Vector2( 74.4054, 74.7319 )
 custom_solver_bias = 0.0
 extents = Vector2( 90.7518, 25.2982 )
 
+[sub_resource type="RectangleShape2D" id=13]
+
+custom_solver_bias = 0.0
+extents = Vector2( 85.463, 53.6288 )
+
 [node name="char1" type="KinematicBody2D" groups=[
 "simple_enemy",
 ]]
@@ -234,6 +246,7 @@ walk_speed = 100
 max_hp = 5
 _score = 50
 _ia = "basic"
+_knock_down_resist = 0
 
 [node name="sound" type="SamplePlayer" parent="."]
 
@@ -257,6 +270,7 @@ default/chorus_send = 0.0
 texture = ExtResource( 3 )
 vframes = 4
 hframes = 3
+frame = 10
 
 [node name="anim" type="AnimationPlayer" parent="."]
 
@@ -267,6 +281,7 @@ anims/being_hit = SubResource( 3 )
 anims/down = SubResource( 4 )
 anims/hit = SubResource( 5 )
 anims/knock_down = SubResource( 6 )
+anims/knock_up = SubResource( 12 )
 anims/ko = SubResource( 7 )
 anims/stand = SubResource( 8 )
 anims/walk = SubResource( 9 )
@@ -277,6 +292,8 @@ autoplay = ""
 
 [node name="defensive_hitbox_area" type="Area2D" parent="."]
 
+editor/display_folded = true
+visibility/visible = false
 input/pickable = true
 shapes/0/shape = SubResource( 10 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, -68.9983, 33.1202 )
@@ -299,6 +316,8 @@ _update_shape_index = 0
 
 [node name="offensive_hitbox_area" type="Area2D" parent="."]
 
+editor/display_folded = true
+visibility/visible = false
 transform/pos = Vector2( -55.0639, 53.737 )
 input/pickable = true
 shapes/0/shape = SubResource( 11 )
@@ -320,13 +339,36 @@ _update_shape_index = 0
 
 [node name="world_collision" type="CollisionShape2D" parent="."]
 
+visibility/visible = false
 transform/pos = Vector2( -24.8428, 30.379 )
 shape = SubResource( 1 )
+trigger = false
+_update_shape_index = 0
+
+[node name="offensive_unfriendly_hitbox_area" type="Area2D" parent="."]
+
+input/pickable = true
+shapes/0/shape = SubResource( 13 )
+shapes/0/transform = Matrix32( 1, 0, 0, 1, 43.2134, 1.10803 )
+shapes/0/trigger = false
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+collision/layers = 2048
+collision/mask = 4096
+
+[node name="collision" type="CollisionShape2D" parent="offensive_unfriendly_hitbox_area"]
+
+transform/pos = Vector2( 43.2134, 1.10803 )
+shape = SubResource( 13 )
 trigger = false
 _update_shape_index = 0
 
 [connection signal="area_enter" from="defensive_hitbox_area" to="." method="_on_defensive_hitbox_area_area_enter"]
 
 [connection signal="area_enter" from="offensive_hitbox_area" to="." method="_on_offensive_hitbox_area_area_enter"]
+
+[connection signal="area_enter" from="offensive_unfriendly_hitbox_area" to="." method="_on_offensive_unfriendly_hitbox_area_area_enter"]
 
 

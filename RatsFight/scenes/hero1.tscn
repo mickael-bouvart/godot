@@ -421,7 +421,7 @@ extents = Vector2( 89.0413, 46.5346 )
 [sub_resource type="RectangleShape2D" id=19]
 
 custom_solver_bias = 0.0
-extents = Vector2( 49.4786, 88.9947 )
+extents = Vector2( 89.0413, 88.9947 )
 
 [sub_resource type="RectangleShape2D" id=20]
 
@@ -458,7 +458,7 @@ texture = ExtResource( 2 )
 flip_h = true
 vframes = 6
 hframes = 5
-frame = 23
+frame = 18
 
 [node name="sprite_glow" type="Sprite" parent="sprite"]
 
@@ -605,7 +605,7 @@ _update_shape_index = 0
 visibility/visible = false
 input/pickable = true
 shapes/0/shape = SubResource( 19 )
-shapes/0/transform = Matrix32( 1, 0, 0, 1, -58.6888, 14.3778 )
+shapes/0/transform = Matrix32( 1, 0, 0, 1, -66.5384, 14.3778 )
 shapes/0/trigger = false
 gravity_vec = Vector2( 0, 1 )
 gravity = 98.0
@@ -618,7 +618,7 @@ collision/mask = 4096
 
 [node name="collision" type="CollisionShape2D" parent="offensive_hitbox_areas/2"]
 
-transform/pos = Vector2( -58.6888, 14.3778 )
+transform/pos = Vector2( -66.5384, 14.3778 )
 shape = SubResource( 19 )
 trigger = false
 _update_shape_index = 0

@@ -47,6 +47,7 @@ func hit_hero(delta):
 			_char.stand()
 
 func update(delta):
+	_char.check_get_hit()
 	update_hero_scan(delta)
 	if is_near_hero():
 		hit_hero(delta)
