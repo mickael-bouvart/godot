@@ -85,20 +85,23 @@ onready var _node_camera = get_node("camera")
 
 class SlideState:
 	var _parent
+	var _x_vel
 
 	func _init(parent):
 		_parent = parent
 
 	func start():
+		_x_vel = 1000
 		_parent._power = 2
 		_parent._knock_down = 1
-		_parent._velocity.x += -100 * _parent._current_left
+		_parent._velocity.x += -_x_vel * _parent._current_left
 		_parent._node_offensive_hitbox_area3.set_enable_monitoring(true)
 		_parent._node_anim.play("jump_hit")
 
 	func update(delta):
-		_parent._velocity.x += 10 * _parent._current_left
-		if abs(_parent._velocity.x) < 5:
+		_x_vel -= 30
+		_parent._velocity.x = -_x_vel * _parent._current_left
+		if _x_vel <= 0:
 			_parent._velocity.x = 0
 		_parent.check_invincible(delta)
 		_parent.move_body(delta)
@@ -108,7 +111,7 @@ class SlideState:
 		if get_hit_state != null:
 			_parent.change_state(get_hit_state)
 		# Switch to IDLE
-		elif _parent._velocity.x == 0:
+		elif _x_vel <= 0:
 			_parent.change_state(globals.STATE.IDLE)
 
 	func end():
