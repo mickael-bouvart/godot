@@ -141,13 +141,15 @@ func get_hit(hero, power, knock_down):
 		return
 	velocity = Vector2(0, 0)
 	life -= power
-	if (life <= 0):
+	if life <= 0:
 		if hero:
 			hero.add_score(_score)
-#		velocity = Vector2(current_left * walk_speed, -200)
-#		get_node("anim").play("ko")
-#		state = globals.STATE.KO
-	if knock_down - _knock_down_resist <= 0:
+		_touch_floor = false
+		get_node("defensive_hitbox_area").set_monitorable(false)
+		velocity = Vector2(current_left * walk_speed, -200)
+		get_node("anim").play("knock_up")
+		state = globals.STATE.KNOCKED_UP
+	elif knock_down - _knock_down_resist <= 0:
 		get_node("anim").play("being_hit")
 		state = globals.STATE.BEING_HIT
 	# TODO: Make them hit other enemies
@@ -159,7 +161,7 @@ func get_hit(hero, power, knock_down):
 		velocity = Vector2(current_left * walk_speed * 6, -150)
 		get_node("anim").play("knock_up")
 		state = globals.STATE.KNOCKED_UP_HIT_ALL
-	else:
+	else: #Last condition: knock_down - _knock_down_resist > 0 && life > 0:
 		_touch_floor = false
 		get_node("defensive_hitbox_area").set_monitorable(false)
 		velocity = Vector2(current_left * walk_speed, -200)
