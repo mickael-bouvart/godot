@@ -567,6 +567,7 @@ class SpecialStepOneState:
 
 class SpecialSetupState:
 	var _parent
+	var _target_y
 
 	func _init(parent):
 		_parent = parent
@@ -574,11 +575,12 @@ class SpecialSetupState:
 	func start():
 		_parent._touch_floor = false
 		_parent._node_anim.play("special_step_1")
+		_target_y = _parent.get_pos().y - 225
 
 	func update(delta):
 		_parent._velocity.y = -1500
 		_parent.move_body(delta)
-		if _parent.get_pos().y < 100:
+		if _parent.get_pos().y < _target_y:
 			_parent.change_state(globals.STATE.SPECIAL_STEP_ONE)
 
 	func end():
