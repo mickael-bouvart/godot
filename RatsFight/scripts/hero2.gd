@@ -617,6 +617,7 @@ class SpecialStepThreeState:
 		_parent._power = 6
 		_parent._knock_down = 9
 		_parent._hitting = true
+		_parent._node_sound.play("explosion")
 		_parent._node_anim.play("special_step_3")
 
 	func update(delta):

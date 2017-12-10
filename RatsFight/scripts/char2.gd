@@ -138,6 +138,7 @@ func get_hit(hero, power, knock_down):
 	velocity = Vector2(0, 0)
 	life -= power
 	if (life <= 0):
+		OS.set_time_scale(globals.TIME_SCALE_SLOW)
 		if hero:
 			hero.add_score(_score)
 		_touch_floor = false
@@ -170,6 +171,7 @@ func recovered_hit():
 	state = globals.STATE.IDLE
 
 func dead():
+	OS.set_time_scale(globals.TIME_SCALE_NORMAL)
 	emit_signal("signal_dead", self)
 	queue_free()
 

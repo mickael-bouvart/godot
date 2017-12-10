@@ -155,7 +155,7 @@ func apply_forces(delta):
 		var n = get_collision_normal()
 		# touch the floor
 		if (rad2deg(acos(n.dot(Vector2(0, -1)))) < globals.FLOOR_ANGLE_TOLERANCE):
-			_touch_floor = 1
+			_touch_floor = true
 			if [STATE.BEING_HIT, STATE.KO, STATE.IDLE, STATE.HIT].has(_state):
 				motion.x = 0
 		

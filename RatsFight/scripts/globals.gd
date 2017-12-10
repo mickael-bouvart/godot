@@ -1,5 +1,7 @@
 extends Node
 
+const TIME_SCALE_NORMAL = 1.0
+const TIME_SCALE_SLOW = 0.6
 const INIT_SPECIALS = 2
 const INIT_LIVES = 3
 const INPUT_HIT = "hit"

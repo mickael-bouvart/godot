@@ -1,14 +1,15 @@
-[gd_scene load_steps=35 format=1]
+[gd_scene load_steps=36 format=1]
 
 [ext_resource path="res://scripts/hero2.gd" type="Script" id=1]
 [ext_resource path="res://assets/sprites/sprites_hero2.png" type="Texture" id=2]
 [ext_resource path="res://assets/sprites/sprites_explosion.png" type="Texture" id=3]
 [ext_resource path="res://assets/sound/eat.wav" type="Sample" id=4]
-[ext_resource path="res://assets/sound/punch_01.wav" type="Sample" id=5]
-[ext_resource path="res://assets/sound/punch_02.wav" type="Sample" id=6]
-[ext_resource path="res://assets/sound/special_charge.wav" type="Sample" id=7]
-[ext_resource path="res://scripts/camera.gd" type="Script" id=8]
-[ext_resource path="res://assets/sprites/spark_particle2.png" type="Texture" id=9]
+[ext_resource path="res://assets/sound/explosion.wav" type="Sample" id=5]
+[ext_resource path="res://assets/sound/punch_01.wav" type="Sample" id=6]
+[ext_resource path="res://assets/sound/punch_02.wav" type="Sample" id=7]
+[ext_resource path="res://assets/sound/special_charge.wav" type="Sample" id=8]
+[ext_resource path="res://scripts/camera.gd" type="Script" id=9]
+[ext_resource path="res://assets/sprites/spark_particle2.png" type="Texture" id=10]
 
 [sub_resource type="RectangleShape2D" id=1]
 
@@ -489,28 +490,34 @@ tracks/0/keys = {
 [sub_resource type="SampleLibrary" id=20]
 
 samples/eat = {
-"db": 0.0,
-"pitch": 1.0,
+"db": 24.0,
+"pitch": 3.0,
 "priority": 0,
 "sample": ExtResource( 4 )
+}
+samples/explosion = {
+"db": 0.0,
+"pitch": 1.0,
+"priority": 1,
+"sample": ExtResource( 5 )
 }
 samples/punch_01 = {
 "db": 0.0,
 "pitch": 1.0,
 "priority": 0,
-"sample": ExtResource( 5 )
+"sample": ExtResource( 6 )
 }
 samples/punch_02 = {
 "db": 0.0,
 "pitch": 1.0,
 "priority": 0,
-"sample": ExtResource( 6 )
+"sample": ExtResource( 7 )
 }
 samples/special_charge = {
 "db": 0.0,
 "pitch": 1.0,
 "priority": 0,
-"sample": ExtResource( 7 )
+"sample": ExtResource( 8 )
 }
 
 [sub_resource type="RectangleShape2D" id=21]
@@ -635,7 +642,7 @@ autostart = false
 
 [node name="sound" type="SamplePlayer" parent="."]
 
-config/polyphony = 1
+config/polyphony = 3
 config/samples = SubResource( 20 )
 default/volume_db = 0.0
 default/pitch_scale = 1.0
@@ -668,7 +675,7 @@ drag_margin/left = 0.2
 drag_margin/top = 0.2
 drag_margin/right = 0.2
 drag_margin/bottom = 0.2
-script/script = ExtResource( 8 )
+script/script = ExtResource( 9 )
 
 [node name="world_collision" type="CollisionShape2D" parent="."]
 
@@ -816,7 +823,7 @@ config/emitting = false
 config/process_mode = 1
 config/half_extents = Vector2( 128, 128 )
 config/local_space = false
-config/texture = ExtResource( 9 )
+config/texture = ExtResource( 10 )
 params/direction = 0.0
 params/spread = 0.0
 params/linear_velocity = 30.0
