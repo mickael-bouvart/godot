@@ -174,7 +174,8 @@ func shoot():
 	_node_parent.add_child(bullet)
 	bullet.set_velocity(_current_left)
 
-func get_hit(hero, power, knock_down):
+func get_hit(hero, power, properties):
+	var knock_down = properties[globals.PROPERTY_KNOCKDOWN]
 	_velocity = Vector2(0, 0)
 	_hp -= power
 	if (_hp <= 0):
@@ -184,7 +185,7 @@ func get_hit(hero, power, knock_down):
 		_node_defensive_hitbox_area.set_monitorable(false)
 		_node_anim.play("ko")
 		_state = STATE.KO
-	elif !knock_down:
+	elif knock_down == 0:
 		_node_anim.play("being_hit")
 		_state = STATE.BEING_HIT
 	else:

@@ -134,7 +134,8 @@ func check_get_hit():
 			state = globals.STATE.KNOCKED_DOWN
 			get_node("anim").play("knock_down")
 
-func get_hit(hero, power, knock_down):
+func get_hit(hero, power, properties):
+	var knock_down = properties[globals.PROPERTY_KNOCKDOWN]
 	velocity = Vector2(0, 0)
 	life -= power
 	if (life <= 0):
@@ -177,7 +178,7 @@ func dead():
 
 func _on_offensive_hitbox_area_area_enter( area ):
 	var player = area.get_node("../../")
-	player.get_hit(self, _power, _knock_down)
+	player.get_hit(self, _power, { globals.PROPERTY_KNOCKDOWN: _knock_down })
 	if _knock_down:
 		get_node("sound").play("punch_04")
 	else:

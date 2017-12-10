@@ -8,6 +8,7 @@
 walk_speed = 150
 max_hp = 10
 _score = 150
+_knock_down_resist = 10
 
 [node name="sprite" parent="."]
 

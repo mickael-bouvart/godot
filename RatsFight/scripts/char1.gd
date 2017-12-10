@@ -134,7 +134,9 @@ func apply_forces(delta):
 			velocity = n.slide(velocity)
 		motion = move(motion)
 
-func get_hit(hero, power, knock_down):
+func get_hit(hero, power, properties):
+	var knock_down = properties[globals.PROPERTY_KNOCKDOWN]
+	var knockup_hitall = properties[globals.PROPERTY_KNOCKUP_HITALL] if properties.has(globals.PROPERTY_KNOCKUP_HITALL) else false
 	# Prevent get_hit to be called simultaneously
 	# when one of them triggers a knock_down 
 	if hero != null && !get_node("defensive_hitbox_area").is_monitorable():
@@ -144,16 +146,16 @@ func get_hit(hero, power, knock_down):
 	if life <= 0:
 		if hero:
 			hero.add_score(_score)
-		_touch_floor = false
-		get_node("defensive_hitbox_area").set_monitorable(false)
-		velocity = Vector2(current_left * walk_speed, -200)
-		get_node("anim").play("knock_up")
-		state = globals.STATE.KNOCKED_UP
-	elif knock_down - _knock_down_resist <= 0:
+		#_touch_floor = false
+		#get_node("defensive_hitbox_area").set_monitorable(false)
+		#velocity = Vector2(current_left * walk_speed, -200)
+		#get_node("anim").play("knock_up")
+		#state = globals.STATE.KNOCKED_UP
+	if knock_down - _knock_down_resist <= 0 && life > 0:
 		get_node("anim").play("being_hit")
 		state = globals.STATE.BEING_HIT
 	# TODO: Make them hit other enemies
-	elif knock_down > 10:
+	elif knockup_hitall:
 		_touch_floor = false
 		_knock_up_hitter = hero
 		get_node("defensive_hitbox_area").set_monitorable(false)
@@ -161,7 +163,7 @@ func get_hit(hero, power, knock_down):
 		velocity = Vector2(current_left * walk_speed * 6, -150)
 		get_node("anim").play("knock_up")
 		state = globals.STATE.KNOCKED_UP_HIT_ALL
-	else: #Last condition: knock_down - _knock_down_resist > 0 && life > 0:
+	else: #Last condition: knock_down - _knock_down_resist > 0 || life == 0:
 		_touch_floor = false
 		get_node("defensive_hitbox_area").set_monitorable(false)
 		velocity = Vector2(current_left * walk_speed, -200)
@@ -197,7 +199,7 @@ func dead():
 
 func _on_offensive_hitbox_area_area_enter( area ):
 	var player = area.get_node("../../")
-	player.get_hit(self, _power, _knock_down)
+	player.get_hit(self, _power, { globals.PROPERTY_KNOCKDOWN: _knock_down })
 	get_node("sound").play("punch_01")
 
 func end_hit():
@@ -269,4 +271,4 @@ func check_get_hit():
 
 func _on_offensive_unfriendly_hitbox_area_area_enter( area ):
 	var enemy = area.get_node("../")
-	enemy.get_hit(_knock_up_hitter, 3, true)
+	enemy.get_hit(_knock_up_hitter, 3, { globals.PROPERTY_KNOCKDOWN: 1 })

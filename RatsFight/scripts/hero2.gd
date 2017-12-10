@@ -97,8 +97,8 @@ func check_hits_received():
 	var next_hit = _hits_received.front()
 	var hitter = next_hit[0]
 	var power = next_hit[1]
-	var knock_down = next_hit[2]
-	if power > _attributes.hp || knock_down > 0:
+	var properties = next_hit[2]
+	if power > _attributes.hp || (properties.has(globals.PROPERTY_KNOCKDOWN) && properties[globals.PROPERTY_KNOCKDOWN] > 0):
 		return globals.STATE.KNOCKED_UP
 	else:
 		return globals.STATE.BEING_HIT
@@ -615,7 +615,7 @@ class SpecialStepThreeState:
 	func start():
 		_parent._node_particles.set_emitting(false)
 		_parent._power = 6
-		_parent._knock_down = 9
+		_parent._knock_down = 1000
 		_parent._hitting = true
 		_parent._node_sound.play("explosion")
 		_parent._node_anim.play("special_step_3")
@@ -768,8 +768,8 @@ func move_body(delta):
 func end_hit():
 	_hitting = false
 	
-func get_hit(hitter, power, knock_down):
-	_hits_received.push_back([hitter, power, knock_down])
+func get_hit(hitter, power, properties):
+	_hits_received.push_back([hitter, power, properties])
 
 func recovered_hit():
 	_recovered_hit = true
@@ -890,9 +890,9 @@ func add_spark(area):
 
 func hit_enemy(area):
 	var enemy = area.get_node("../")
-	enemy.get_hit(self, _power, _knock_down)
+	enemy.get_hit(self, _power, { globals.PROPERTY_KNOCKDOWN: _knock_down })
 	_last_hit_connect = true
-	if _knock_down:
+	if _knock_down > 0:
 		_node_sound.play("punch_02")
 	else:
 		_node_sound.play("punch_01")

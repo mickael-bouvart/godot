@@ -88,7 +88,7 @@ func update_current_left():
 		set_scale(Vector2(new_left, 1))
 		_current_left = new_left
 
-func get_hit(hero, power, knock_down):
+func get_hit(hero, power, properties):
 	if _detached:
 		get_node("offensive_hitbox_area").set_enable_monitoring(false)
 		return
@@ -105,14 +105,14 @@ func get_hit(hero, power, knock_down):
 		char3_2.add_to_group("spawned")
 	get_node("../").add_child(char3_2)
 	char3_2.get_node("sprite").set_modulate(get_node("sprite").get_modulate())
-	char3_2.get_hit(hero, power, true)
+	char3_2.get_hit(hero, power, { globals.PROPERTY_KNOCKDOWN: true })
 	get_node("sprite").set_texture(load("res://assets/sprites/sprites_char3_1.png"))
 	pass
 
 func _on_offensive_hitbox_area_area_enter( area ):
 	print("_on_offensive_hitbox_area_area_enter")
 	var player = area.get_node("../../")
-	player.get_hit(self, _power, _knock_down)
+	player.get_hit(self, _power, { globals.PROPERTY_KNOCKDOWN: _knock_down })
 	get_node("sound").play("punch_01")
 
 func set_spawner(spawner):

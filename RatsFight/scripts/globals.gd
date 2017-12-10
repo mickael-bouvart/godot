@@ -9,6 +9,8 @@ const INPUT_LEFT = "ui_left"
 const INPUT_RIGHT = "ui_right"
 const INPUT_JUMP = "jump"
 const INPUT_SPECIAL = "special"
+const PROPERTY_KNOCKDOWN = "knockdown"
+const PROPERTY_KNOCKUP_HITALL = "knockup_hitall"
 
 const DEFAULT_SHAKE_MAGNITUDE = 2
 const DEFAULT_SHAKE_DURATION = 0.2
@@ -89,7 +91,7 @@ var p1_control = "keyboard" setget set_p1_control, get_p1_control
 var p2_control = "joypad" setget set_p2_control, get_p2_control
 var hero1_preload = preload("res://scenes/hero1.tscn") setget , get_hero1_preload
 var hero2_preload = preload("res://scenes/hero2.tscn") setget , get_hero2_preload
-var p1_char = hero2_preload setget set_p1_char, get_p1_char
+var p1_char = hero1_preload setget set_p1_char, get_p1_char
 var p2_char = hero1_preload setget set_p2_char, get_p2_char
 
 func get_hero1_preload():

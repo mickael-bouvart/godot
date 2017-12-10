@@ -47,6 +47,7 @@ var _recovered_hit
 var _got_up
 var _power
 var _knock_down
+var _knockup_hitall
 var _combo_count
 var _last_hit_connect
 var _combo_expired
@@ -95,6 +96,7 @@ class SlideState:
 		_x_vel = 1000
 		_parent._power = 2
 		_parent._knock_down = 1
+		_parent._knockup_hitall = false
 		_parent._velocity.x += -_x_vel * _parent._current_left
 		_parent._node_offensive_hitbox_area3.set_enable_monitoring(true)
 		_parent._node_anim.play("jump_hit")
@@ -370,7 +372,8 @@ class HitState:
 		if _parent._combo_count == 2:
 			_parent._node_anim.play("hit_02")
 			_parent._power = 2
-			_parent._knock_down = 15
+			_parent._knock_down = 1
+			_parent._knockup_hitall = true
 		else:
 			_parent._node_timer_combo.stop()
 			_parent._combo_expired = false
@@ -378,6 +381,7 @@ class HitState:
 			_parent._node_anim.play("hit_01")
 			_parent._power = 1
 			_parent._knock_down = 0
+			_parent._knockup_hitall = false
 
 	func update(delta):
 		_parent.check_invincible(delta)
@@ -480,6 +484,7 @@ class JumpHitState:
 	func start():
 		_parent._power = 1
 		_parent._knock_down = 0
+		_parent._knockup_hitall = false
 		_parent._velocity.x += -100 * _parent._current_left
 		_parent._node_offensive_hitbox_area3.set_enable_monitoring(true)
 		_parent._node_anim.play("jump_hit")
@@ -522,8 +527,9 @@ class SpecialSetupState:
 	func update(delta):
 		if _parent._special_setup:
 			_parent._special_setup = false
-			_parent._power = 3
-			_parent._knock_down = 9
+			_parent._power = 4
+			_parent._knock_down = 1000
+			_parent._knockup_hitall = false
 			_parent._special_finished = false
 			_parent._node_offensive_hitbox_area4.set_enable_monitoring(true)
 			_parent._node_anim.play("special")
@@ -560,9 +566,9 @@ class SpecialStepOneState:
 		# Switch to FALL or IDLE
 		if _parent._special_finished:
 			if _parent._touch_floor:
-				_parent.change_state(globals.STATE.FALL)
-			else:
 				_parent.change_state(globals.STATE.IDLE)
+			else:
+				_parent.change_state(globals.STATE.FALL)
 
 	func end():
 		_parent._node_anim.stop()
@@ -582,8 +588,8 @@ func check_hits_received():
 	var next_hit = _hits_received.front()
 	var hitter = next_hit[0]
 	var power = next_hit[1]
-	var knock_down = next_hit[2]
-	if power > _attributes.hp || knock_down > 0:
+	var properties = next_hit[2]
+	if power > _attributes.hp || (properties.has(globals.PROPERTY_KNOCKDOWN) && properties[globals.PROPERTY_KNOCKDOWN] > 0):
 		return globals.STATE.KNOCKED_UP
 	else:
 		return globals.STATE.BEING_HIT
@@ -725,8 +731,8 @@ func move_body(delta):
 func end_hit():
 	_hitting = false
 	
-func get_hit(hitter, power, knock_down):
-	_hits_received.push_back([hitter, power, knock_down])
+func get_hit(hitter, power, properties):
+	_hits_received.push_back([hitter, power, properties])
 
 func recovered_hit():
 	_recovered_hit = true
@@ -847,7 +853,7 @@ func add_spark(area):
 
 func hit_enemy(area):
 	var enemy = area.get_node("../")
-	enemy.get_hit(self, _power, _knock_down)
+	enemy.get_hit(self, _power, { globals.PROPERTY_KNOCKDOWN: _knock_down, globals.PROPERTY_KNOCKUP_HITALL: _knockup_hitall })
 	_last_hit_connect = true
 	if _knock_down > 0:
 		_node_sound.play("punch_02")
