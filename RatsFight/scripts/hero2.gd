@@ -83,6 +83,7 @@ onready var _node_sound = get_node("sound")
 onready var _node_timer_combo = get_node("timers/timer_combo")
 onready var _node_timer_run = get_node("timers/timer_run")
 onready var _node_camera = get_node("camera")
+onready var _node_particles = get_node("particles")
 
 func change_state(new_state):
 	if _state != null:
@@ -573,6 +574,7 @@ class SpecialSetupState:
 		_parent = parent
 
 	func start():
+		_parent._node_particles.set_emitting(true)
 		_parent._touch_floor = false
 		_parent._node_anim.play("special_step_1")
 		_target_y = _parent.get_pos().y - 225
@@ -611,6 +613,7 @@ class SpecialStepThreeState:
 		_parent = parent
 
 	func start():
+		_parent._node_particles.set_emitting(false)
 		_parent._power = 6
 		_parent._knock_down = 9
 		_parent._hitting = true

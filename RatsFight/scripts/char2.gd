@@ -9,14 +9,6 @@ const HIT_02_JUMP_FORCE_Y = -600
 const HIT_02_FALL_FORCE_Y = 200
 const MIN_DISTANCE_FOLLOW = 200
 
-enum STATE {
-	HIT,
-	WALK,
-	BEING_HIT,
-	IDLE,
-	KO
-}
-
 var patterns = [
 	{ "key": "STAND", "func": funcref(self, "pattern_stand"), "duration": 50, "prob": 0 },
 	{ "key": "HIT_01", "func": funcref(self, "pattern_hit_01"), "duration": 100, "prob": 20 },
@@ -33,20 +25,22 @@ var current_pattern = null
 var pattern_duration_cnt = 0
 var _power
 var _knock_down
+var _touch_floor = false
+
 export var _score = 2000
 
 func pattern_hit_01(frame, duration):
-	if (state == STATE.IDLE):
+	if (state == globals.STATE.IDLE):
 		_power = 1
 		_knock_down = false
-		state = STATE.HIT
+		state = globals.STATE.HIT
 		get_node("anim").play("hit_01")
 
 func pattern_hit_02(frame, duration):
-	if (state == STATE.IDLE):
+	if (state == globals.STATE.IDLE):
 		_power = 5
 		_knock_down = true
-		state = STATE.HIT
+		state = globals.STATE.HIT
 		get_node("sound").play("special_charge")
 		get_node("defensive_hitbox_area").set_monitorable(false)
 		get_node("anim").play("hit_02")
@@ -61,32 +55,32 @@ func pattern_follow(frame, duration):
 	var dist = abs(hero1_pos - self_pos)
 	#print("Distance: " + str(dist))
 	if (dist > MIN_DISTANCE_FOLLOW):
-		if (state == STATE.IDLE || state == STATE.WALK):
+		if (state == globals.STATE.IDLE || state == globals.STATE.WALK):
 			velocity.x = -current_left * WALK_SPEED
-			if (state == STATE.IDLE):
+			if (state == globals.STATE.IDLE):
 				get_node("anim").play("walk")
-				state = STATE.WALK
+				state = globals.STATE.WALK
 	else:
-		if (state == STATE.WALK):
+		if (state == globals.STATE.WALK):
 			get_node("anim").play("stand")
-			state = STATE.IDLE
+			state = globals.STATE.IDLE
 			velocity.x = 0
 		pattern_duration_cnt = duration - 1
 		return
 		
 	#print(str(frame) + " / " + str(duration))
-	if (frame == duration - 1 && state == STATE.WALK):
+	if (frame == duration - 1 && state == globals.STATE.WALK):
 		#print("STOP " + str(state))
 		velocity.x = 0
 		get_node("anim").play("stand")
-		state = STATE.IDLE
+		state = globals.STATE.IDLE
 
 func _fixed_process(delta):
 	# disable offensive hitbox area in case attack animation got interrupted
-	if (state != STATE.HIT && get_node("offensive_hitbox_area").is_monitoring_enabled()):
+	if (state != globals.STATE.HIT && get_node("offensive_hitbox_area").is_monitoring_enabled()):
 		get_node("offensive_hitbox_area").set_enable_monitoring(false)
 	
-	if state == STATE.IDLE || state == STATE.WALK:
+	if state == globals.STATE.IDLE || state == globals.STATE.WALK:
 		var hero1 = utils.get_nearest_hero(get_pos())
 		var new_left = null
 		if (get_pos().x < hero1.get_pos().x):
@@ -109,9 +103,10 @@ func _fixed_process(delta):
 		var n = get_collision_normal()
 		# touch the floor
 		if (rad2deg(acos(n.dot(Vector2(0, -1)))) < globals.FLOOR_ANGLE_TOLERANCE):
-			if [STATE.BEING_HIT, STATE.KO, STATE.IDLE, STATE.HIT].has(state):
+			_touch_floor = true
+			if [globals.STATE.KNOCKED_DOWN, globals.STATE.BEING_HIT, globals.STATE.KO, globals.STATE.IDLE, globals.STATE.HIT].has(state):
 				motion.x = 0
-		if ![STATE.BEING_HIT, STATE.KO].has(state):
+		if ![globals.STATE.KNOCKED_DOWN, globals.STATE.BEING_HIT, globals.STATE.KO].has(state):
 			motion = n.slide(motion)
 			velocity = n.slide(velocity)
 		motion = move(motion)
@@ -127,31 +122,44 @@ func _fixed_process(delta):
 				break
 			cumul += p["prob"]
 		#print("Switching to pattern " + current_pattern["key"])
+	check_get_hit()
 	pass
 
+func check_get_hit():
+	if [globals.STATE.KNOCKED_UP, globals.STATE.KNOCKED_UP_HIT_ALL].has(state) && _touch_floor:
+		if life <= 0:
+			state = globals.STATE.KO
+			get_node("anim").play("ko")
+		else:
+			state = globals.STATE.KNOCKED_DOWN
+			get_node("anim").play("knock_down")
+
 func get_hit(hero, power, knock_down):
-	get_node("defensive_hitbox_area").set_monitorable(true)
 	velocity = Vector2(0, 0)
 	life -= power
 	if (life <= 0):
 		if hero:
 			hero.add_score(_score)
+		_touch_floor = false
 		velocity = Vector2(current_left * WALK_SPEED, -200)
-		get_node("anim").play("ko")
-		state = STATE.KO
+		get_node("defensive_hitbox_area").set_monitorable(false)
+		get_node("anim").play("knock_up")
+		state = globals.STATE.KNOCKED_UP
 	elif !knock_down:
 		get_node("anim").play("being_hit")
-		state = STATE.BEING_HIT
+		state = globals.STATE.BEING_HIT
 	else:
+		_touch_floor = false
 		velocity = Vector2(current_left * WALK_SPEED, -200)
-		get_node("anim").play("knock_down")
-		state = STATE.BEING_HIT
+		get_node("defensive_hitbox_area").set_monitorable(false)
+		get_node("anim").play("knock_up")
+		state = globals.STATE.KNOCKED_UP
 
 func _ready():
 	get_node("defensive_hitbox_area").set_monitorable(true)
 	current_pattern = patterns[3]
 	life = MAX_LIFE
-	state = STATE.IDLE
+	state = globals.STATE.IDLE
 	get_node("anim").play("stand")
 	current_left = null
 	set_fixed_process(true)
@@ -159,7 +167,7 @@ func _ready():
 
 func recovered_hit():
 	get_node("anim").play("stand")
-	state = STATE.IDLE
+	state = globals.STATE.IDLE
 
 func dead():
 	emit_signal("signal_dead", self)
@@ -174,12 +182,13 @@ func _on_offensive_hitbox_area_area_enter( area ):
 		get_node("sound").play("punch_01")
 
 func end_hit():
-	state = STATE.IDLE
+	state = globals.STATE.IDLE
 	get_node("anim").play("stand")
 
 func get_up():
 	velocity = Vector2(0, 0)
-	state = STATE.IDLE
+	state = globals.STATE.IDLE
+	get_node("defensive_hitbox_area").set_monitorable(true)
 	get_node("anim").play("stand")
 
 func hit_02_jump():
@@ -192,7 +201,7 @@ func hit_02_ground():
 	velocity.x = 0
 	get_node("defensive_hitbox_area").set_monitorable(true)
 	get_node("anim").play("stand")
-	state = STATE.IDLE
+	state = globals.STATE.IDLE
 
 func shake_camera():
 	utils.shake_camera(globals.BOSS_DIE_SHAKE_MAGNITUDE, globals.BOSS_DIE_SHAKE_DURATION)

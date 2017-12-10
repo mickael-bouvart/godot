@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=1]
+[gd_scene load_steps=35 format=1]
 
 [ext_resource path="res://scripts/hero2.gd" type="Script" id=1]
 [ext_resource path="res://assets/sprites/sprites_hero2.png" type="Texture" id=2]
@@ -8,6 +8,7 @@
 [ext_resource path="res://assets/sound/punch_02.wav" type="Sample" id=6]
 [ext_resource path="res://assets/sound/special_charge.wav" type="Sample" id=7]
 [ext_resource path="res://scripts/camera.gd" type="Script" id=8]
+[ext_resource path="res://assets/sprites/spark_particle2.png" type="Texture" id=9]
 
 [sub_resource type="RectangleShape2D" id=1]
 
@@ -806,6 +807,34 @@ transform/pos = Vector2( 7.05963, 20 )
 shape = SubResource( 25 )
 trigger = false
 _update_shape_index = 0
+
+[node name="particles" type="Particles2D" parent="."]
+
+config/amount = 32
+config/lifetime = 2.0
+config/emitting = false
+config/process_mode = 1
+config/half_extents = Vector2( 128, 128 )
+config/local_space = false
+config/texture = ExtResource( 9 )
+params/direction = 0.0
+params/spread = 0.0
+params/linear_velocity = 30.0
+params/spin_velocity = 0.0
+params/orbit_velocity = 0.0
+params/gravity_direction = 0.0
+params/gravity_strength = 300.0
+params/radial_accel = 0.0
+params/tangential_accel = 0.0
+params/damping = 0.0
+params/initial_angle = 0.0
+params/initial_size = 1.0
+params/final_size = 1.0
+params/hue_variation = 0.0
+params/anim_speed_scale = 1.0
+params/anim_initial_pos = 0.0
+randomness/spread = 1.0
+color/color = Color( 0.750671, 0.818892, 0.980469, 1 )
 
 [connection signal="timeout" from="timers/timer_combo" to="." method="_on_timer_combo_timeout"]
 

@@ -82,6 +82,7 @@ onready var _node_timer_combo = get_node("timers/timer_combo")
 onready var _node_timer_special = get_node("timers/timer_special")
 onready var _node_timer_run = get_node("timers/timer_run")
 onready var _node_camera = get_node("camera")
+onready var _node_particles = get_node("particles")
 
 class SlideState:
 	var _parent
@@ -516,6 +517,7 @@ class SpecialSetupState:
 		_parent.defensive_hitbox(false)
 		_parent._node_sound.play("special_charge")
 		_parent._node_anim.play("special_setup")
+		_parent._node_particles.set_emitting(true)
 
 	func update(delta):
 		if _parent._special_setup:
@@ -566,6 +568,7 @@ class SpecialStepOneState:
 		_parent._node_anim.stop()
 		_parent._node_offensive_hitbox_area4.set_enable_monitoring(false)
 		_parent._node_defensive_hitbox_area.set_monitorable(true)
+		_parent._node_particles.set_emitting(false)
 
 func change_state(new_state):
 	if _state != null:
