@@ -550,12 +550,7 @@ class SpecialStepOneState:
 		_parent = parent
 
 	func start():
-		# Disable invincibility to avoid conflict
-		_parent.check_invincible(9999)
-		_parent._attributes.specials -= 1
-		_parent.signal_state_changed()
 		_parent._special_setup = false
-		_parent.defensive_hitbox(false)
 		_parent._node_sound.play("special_charge")
 		_parent._node_anim.play("special_setup")
 
@@ -574,6 +569,11 @@ class SpecialSetupState:
 		_parent = parent
 
 	func start():
+		# Disable invincibility to avoid conflict
+		_parent.check_invincible(9999)
+		_parent.defensive_hitbox(false)
+		_parent._attributes.specials -= 1
+		_parent.signal_state_changed()
 		_parent._node_particles.set_emitting(true)
 		_parent._touch_floor = false
 		_parent._node_anim.play("special_step_1")

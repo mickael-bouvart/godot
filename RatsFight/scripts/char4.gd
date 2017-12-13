@@ -179,6 +179,7 @@ func get_hit(hero, power, properties):
 	_velocity = Vector2(0, 0)
 	_hp -= power
 	if (_hp <= 0):
+		OS.set_time_scale(globals.TIME_SCALE_SLOW)
 		if hero:
 			hero.add_score(_score)
 		_velocity = Vector2(_current_left * walk_speed() / 3, -knock_down_force())
@@ -212,6 +213,7 @@ func get_up():
 	_state = STATE.IDLE
 
 func dead():
+	OS.set_time_scale(globals.TIME_SCALE_NORMAL)
 	emit_signal("signal_dead", self)
 	queue_free()
 
