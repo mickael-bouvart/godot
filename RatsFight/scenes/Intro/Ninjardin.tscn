@@ -8,6 +8,7 @@ resource/name = "ninjardin"
 script/source = "extends Node2D
 
 func _ready():
+	get_tree().set_pause(false)
 	get_node(\"anim\").play(\"fade_in\")
 	pass
 

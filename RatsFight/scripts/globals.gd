@@ -3,7 +3,7 @@ extends Node
 const TIME_SCALE_NORMAL = 1.0
 const TIME_SCALE_SLOW = 0.6
 const INIT_SPECIALS = 2
-const INIT_LIVES = 3
+const INIT_LIVES = 1
 const INPUT_HIT = "hit"
 const INPUT_LEFT = "ui_left"
 const INPUT_RIGHT = "ui_right"
@@ -93,6 +93,12 @@ var hero1_preload = preload("res://scenes/hero1.tscn") setget , get_hero1_preloa
 var hero2_preload = preload("res://scenes/hero2.tscn") setget , get_hero2_preload
 var p1_char = hero2_preload setget set_p1_char, get_p1_char
 var p2_char = hero1_preload setget set_p2_char, get_p2_char
+
+func init_player_attributes():
+	player_attributes =  {
+	"p1": PlayerAttributes.new(),
+	"p2": PlayerAttributes.new()
+}
 
 func get_hero1_preload():
 	return hero1_preload

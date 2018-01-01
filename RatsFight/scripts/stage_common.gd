@@ -29,6 +29,7 @@ func init_stage():
 	hero1.set_control(globals.p1_control)
 	hero1.set_hp(hero1.get_max_hp())
 	hero1.set_specials(globals.INIT_SPECIALS)
+	hero1.connect("signal_game_over", self, "hero_game_over")
 	get_node("heroes").add_child(hero1)
 	hero1.set_freeze(true)
 	if globals.nb_players > 1:
@@ -38,6 +39,7 @@ func init_stage():
 		hero2.set_control(globals.p2_control)
 		hero2.set_hp(hero2.get_max_hp())
 		hero2.set_specials(globals.INIT_SPECIALS)
+		hero2.connect("signal_game_over", self, "hero_game_over")
 		get_node("heroes").add_child(hero2)
 		hero2.set_freeze(true)
 	get_node("hud").init_hud()
@@ -58,6 +60,25 @@ func action():
 	set_fixed_process(true)
 	next_step()
 
+func hero_game_over(hero):
+	# If last hero, then game over
+	var heroes = utils.get_heroes()
+	
+	if heroes.size() == 1:
+		get_node("pause").set_freeze(true)
+		bgms.play("game_over")
+		get_node("game_over").show_game_over()
+	# Else, check if we need to switch camera
+	elif hero.get_node("camera").is_current():
+		var other_hero = heroes[1] if hero == heroes[0] else heroes[0]
+		var other_hero_camera = other_hero.get_node("camera")
+		other_hero_camera.set_limit(MARGIN_BOTTOM, _node_camera.get_limit(MARGIN_BOTTOM))
+		other_hero_camera.set_limit(MARGIN_RIGHT, _node_camera.get_limit(MARGIN_RIGHT))
+		other_hero_camera.make_current()
+		_node_camera = other_hero_camera
+		hero.queue_free()
+	else:
+		hero.queue_free()
 
 func next_step():
 	print("NEXT STEP")

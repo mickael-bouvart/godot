@@ -86,6 +86,7 @@ func next_character(control):
 	get_node("anim_p%d_sprite" % p).play("hovered_h%d" % hero)
 
 func game_start():
+	globals.init_player_attributes()
 	bgms.stop()
 	scene_manager.change_scene("res://stages/stage_01/stage_01.tscn")
 
@@ -99,7 +100,7 @@ func add_player(control):
 	get_node("sprite_select_p%d" % nb_player).show()
 	get_node("sprite_p%d_h%d" % [nb_player, hero]).show()
 	get_node("anim_p%d_sprite" % nb_player).play("hovered_h%d" % hero)
-	get_node("vsplit_p%d_%s_instructions" % [nb_player, instructions_control]).show()
+	get_node("vsplit_instructions/vsplit_p%d_%s_instructions" % [nb_player, instructions_control]).show()
 	
 	_control_to_player[control] = nb_player
 

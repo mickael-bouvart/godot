@@ -3,8 +3,6 @@
 [ext_resource path="res://scripts/scene_manager.gd" type="Script" id=1]
 [ext_resource path="res://assets/sprites/black.png" type="Texture" id=2]
 
-
-
 [sub_resource type="Animation" id=1]
 
 resource/name = "fade_in"
@@ -41,6 +39,7 @@ tracks/0/keys = {
 
 [node name="Node" type="CanvasLayer"]
 
+process/pause_mode = 2
 layer = 10
 offset = Vector2( 0, 0 )
 rotation = 0.0

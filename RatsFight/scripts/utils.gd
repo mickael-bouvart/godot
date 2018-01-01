@@ -12,6 +12,9 @@ func get_hero2():
 		return null
 	return heroes[1]
 
+func get_heroes():
+	return get_tree().get_root().get_node("Main/heroes").get_children()
+
 func get_nearest_hero(pos):
 	var nearest_hero = null
 	var nearest_dist = null

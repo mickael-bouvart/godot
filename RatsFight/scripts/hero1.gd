@@ -18,6 +18,7 @@
 extends KinematicBody2D
 
 signal state_changed
+signal signal_game_over
 
 const MAX_HP = 30
 const GRAVITY = 1000.0
@@ -692,18 +693,21 @@ func check_items_to_consume():
 func signal_state_changed():
 	emit_signal("state_changed", self)
 
+func signal_game_over():
+	emit_signal("signal_game_over", self)
+
 func restore_hp(hp):
 	print("RESTORE %d HP" % hp)
 	_node_sound.play("eat")
 	_attributes.hp += hp
 	if (_attributes.hp > MAX_HP):
 		_attributes.hp = MAX_HP
-	emit_signal("state_changed", self)
+	signal_state_changed()
 
 func add_life(lives):
 	_attributes.lives += lives
 	_node_sound.play("eat")
-	emit_signal("state_changed", self)
+	signal_state_changed()
 
 func move_body(delta):
 	var force = Vector2(0, GRAVITY)
@@ -754,7 +758,7 @@ func dead():
 	if _attributes.lives == 0:
 		#TODO: Game Over
 		signal_state_changed()
-		bgms.play("game_over")
+		signal_game_over()
 	else:
 		respawn()
 
@@ -797,7 +801,7 @@ func get_score():
 
 func add_score(value):
 	_attributes.score += value
-	emit_signal("state_changed", self)
+	signal_state_changed()
 
 func set_player(player):
 	_player = player
@@ -822,7 +826,7 @@ func special_setup_finished():
 func add_special(nb_specials):
 	_attributes.specials += nb_specials
 	_node_sound.play("special_charge")
-	emit_signal("state_changed", self)
+	signal_state_changed()
 
 func set_hp(hp):
 	_attributes.hp = hp

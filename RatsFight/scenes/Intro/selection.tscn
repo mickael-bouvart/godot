@@ -403,7 +403,9 @@ margin/right = 1024.0
 margin/bottom = 600.0
 color = Color( 0.784314, 0.784314, 0.784314, 0.313726 )
 
-[node name="vsplit_p1_keyboard_instructions" type="VSplitContainer" parent="."]
+[node name="vsplit_instructions" type="Node" parent="."]
+
+[node name="vsplit_p1_keyboard_instructions" type="VSplitContainer" parent="vsplit_instructions"]
 
 editor/display_folded = true
 visibility/visible = false
@@ -422,7 +424,7 @@ __meta__ = {
 "_edit_group_": true
 }
 
-[node name="lbl_keyboard" type="Label" parent="vsplit_p1_keyboard_instructions"]
+[node name="lbl_keyboard" type="Label" parent="vsplit_instructions/vsplit_p1_keyboard_instructions"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -438,7 +440,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="GridContainer" type="GridContainer" parent="vsplit_p1_keyboard_instructions"]
+[node name="GridContainer" type="GridContainer" parent="vsplit_instructions/vsplit_p1_keyboard_instructions"]
 
 focus/ignore_mouse = false
 focus/stop_mouse = false
@@ -450,7 +452,7 @@ margin/right = 201.0
 margin/bottom = 76.0
 columns = 2
 
-[node name="lbl_button_left" type="Label" parent="vsplit_p1_keyboard_instructions/GridContainer"]
+[node name="lbl_button_left" type="Label" parent="vsplit_instructions/vsplit_p1_keyboard_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -466,7 +468,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_move_left" type="Label" parent="vsplit_p1_keyboard_instructions/GridContainer"]
+[node name="lbl_move_left" type="Label" parent="vsplit_instructions/vsplit_p1_keyboard_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -482,7 +484,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_button_right" type="Label" parent="vsplit_p1_keyboard_instructions/GridContainer"]
+[node name="lbl_button_right" type="Label" parent="vsplit_instructions/vsplit_p1_keyboard_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -498,7 +500,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_move_right" type="Label" parent="vsplit_p1_keyboard_instructions/GridContainer"]
+[node name="lbl_move_right" type="Label" parent="vsplit_instructions/vsplit_p1_keyboard_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -514,7 +516,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_button_hit" type="Label" parent="vsplit_p1_keyboard_instructions/GridContainer"]
+[node name="lbl_button_hit" type="Label" parent="vsplit_instructions/vsplit_p1_keyboard_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -530,7 +532,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_move_hit" type="Label" parent="vsplit_p1_keyboard_instructions/GridContainer"]
+[node name="lbl_move_hit" type="Label" parent="vsplit_instructions/vsplit_p1_keyboard_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -546,7 +548,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_button_jump" type="Label" parent="vsplit_p1_keyboard_instructions/GridContainer"]
+[node name="lbl_button_jump" type="Label" parent="vsplit_instructions/vsplit_p1_keyboard_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -562,7 +564,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_move_jump" type="Label" parent="vsplit_p1_keyboard_instructions/GridContainer"]
+[node name="lbl_move_jump" type="Label" parent="vsplit_instructions/vsplit_p1_keyboard_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -578,7 +580,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_button_special" type="Label" parent="vsplit_p1_keyboard_instructions/GridContainer"]
+[node name="lbl_button_special" type="Label" parent="vsplit_instructions/vsplit_p1_keyboard_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -594,7 +596,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_move_special" type="Label" parent="vsplit_p1_keyboard_instructions/GridContainer"]
+[node name="lbl_move_special" type="Label" parent="vsplit_instructions/vsplit_p1_keyboard_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -610,7 +612,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="vsplit_p1_joypad_instructions" type="VSplitContainer" parent="."]
+[node name="vsplit_p1_joypad_instructions" type="VSplitContainer" parent="vsplit_instructions"]
 
 editor/display_folded = true
 visibility/visible = false
@@ -629,7 +631,7 @@ __meta__ = {
 "_edit_group_": true
 }
 
-[node name="lbl_joypad" type="Label" parent="vsplit_p1_joypad_instructions"]
+[node name="lbl_joypad" type="Label" parent="vsplit_instructions/vsplit_p1_joypad_instructions"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -645,7 +647,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="GridContainer" type="GridContainer" parent="vsplit_p1_joypad_instructions"]
+[node name="GridContainer" type="GridContainer" parent="vsplit_instructions/vsplit_p1_joypad_instructions"]
 
 focus/ignore_mouse = false
 focus/stop_mouse = false
@@ -657,7 +659,7 @@ margin/right = 201.0
 margin/bottom = 76.0
 columns = 2
 
-[node name="lbl_button_left" type="Label" parent="vsplit_p1_joypad_instructions/GridContainer"]
+[node name="lbl_button_left" type="Label" parent="vsplit_instructions/vsplit_p1_joypad_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -673,7 +675,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_move_left" type="Label" parent="vsplit_p1_joypad_instructions/GridContainer"]
+[node name="lbl_move_left" type="Label" parent="vsplit_instructions/vsplit_p1_joypad_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -689,7 +691,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_button_right" type="Label" parent="vsplit_p1_joypad_instructions/GridContainer"]
+[node name="lbl_button_right" type="Label" parent="vsplit_instructions/vsplit_p1_joypad_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -705,7 +707,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_move_right" type="Label" parent="vsplit_p1_joypad_instructions/GridContainer"]
+[node name="lbl_move_right" type="Label" parent="vsplit_instructions/vsplit_p1_joypad_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -721,7 +723,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_button_hit" type="Label" parent="vsplit_p1_joypad_instructions/GridContainer"]
+[node name="lbl_button_hit" type="Label" parent="vsplit_instructions/vsplit_p1_joypad_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -737,7 +739,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_move_hit" type="Label" parent="vsplit_p1_joypad_instructions/GridContainer"]
+[node name="lbl_move_hit" type="Label" parent="vsplit_instructions/vsplit_p1_joypad_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -753,7 +755,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_button_jump" type="Label" parent="vsplit_p1_joypad_instructions/GridContainer"]
+[node name="lbl_button_jump" type="Label" parent="vsplit_instructions/vsplit_p1_joypad_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -769,7 +771,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_move_jump" type="Label" parent="vsplit_p1_joypad_instructions/GridContainer"]
+[node name="lbl_move_jump" type="Label" parent="vsplit_instructions/vsplit_p1_joypad_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -785,7 +787,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_button_special" type="Label" parent="vsplit_p1_joypad_instructions/GridContainer"]
+[node name="lbl_button_special" type="Label" parent="vsplit_instructions/vsplit_p1_joypad_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -801,7 +803,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_move_special" type="Label" parent="vsplit_p1_joypad_instructions/GridContainer"]
+[node name="lbl_move_special" type="Label" parent="vsplit_instructions/vsplit_p1_joypad_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -817,7 +819,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="vsplit_p2_keyboard_instructions" type="VSplitContainer" parent="."]
+[node name="vsplit_p2_keyboard_instructions" type="VSplitContainer" parent="vsplit_instructions"]
 
 editor/display_folded = true
 visibility/visible = false
@@ -836,7 +838,7 @@ __meta__ = {
 "_edit_group_": true
 }
 
-[node name="lbl_keyboard" type="Label" parent="vsplit_p2_keyboard_instructions"]
+[node name="lbl_keyboard" type="Label" parent="vsplit_instructions/vsplit_p2_keyboard_instructions"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -852,7 +854,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="GridContainer" type="GridContainer" parent="vsplit_p2_keyboard_instructions"]
+[node name="GridContainer" type="GridContainer" parent="vsplit_instructions/vsplit_p2_keyboard_instructions"]
 
 focus/ignore_mouse = false
 focus/stop_mouse = false
@@ -864,7 +866,7 @@ margin/right = 201.0
 margin/bottom = 76.0
 columns = 2
 
-[node name="lbl_button_left" type="Label" parent="vsplit_p2_keyboard_instructions/GridContainer"]
+[node name="lbl_button_left" type="Label" parent="vsplit_instructions/vsplit_p2_keyboard_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -880,7 +882,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_move_left" type="Label" parent="vsplit_p2_keyboard_instructions/GridContainer"]
+[node name="lbl_move_left" type="Label" parent="vsplit_instructions/vsplit_p2_keyboard_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -896,7 +898,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_button_right" type="Label" parent="vsplit_p2_keyboard_instructions/GridContainer"]
+[node name="lbl_button_right" type="Label" parent="vsplit_instructions/vsplit_p2_keyboard_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -912,7 +914,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_move_right" type="Label" parent="vsplit_p2_keyboard_instructions/GridContainer"]
+[node name="lbl_move_right" type="Label" parent="vsplit_instructions/vsplit_p2_keyboard_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -928,7 +930,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_button_hit" type="Label" parent="vsplit_p2_keyboard_instructions/GridContainer"]
+[node name="lbl_button_hit" type="Label" parent="vsplit_instructions/vsplit_p2_keyboard_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -944,7 +946,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_move_hit" type="Label" parent="vsplit_p2_keyboard_instructions/GridContainer"]
+[node name="lbl_move_hit" type="Label" parent="vsplit_instructions/vsplit_p2_keyboard_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -960,7 +962,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_button_jump" type="Label" parent="vsplit_p2_keyboard_instructions/GridContainer"]
+[node name="lbl_button_jump" type="Label" parent="vsplit_instructions/vsplit_p2_keyboard_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -976,7 +978,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_move_jump" type="Label" parent="vsplit_p2_keyboard_instructions/GridContainer"]
+[node name="lbl_move_jump" type="Label" parent="vsplit_instructions/vsplit_p2_keyboard_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -992,7 +994,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_button_special" type="Label" parent="vsplit_p2_keyboard_instructions/GridContainer"]
+[node name="lbl_button_special" type="Label" parent="vsplit_instructions/vsplit_p2_keyboard_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -1008,7 +1010,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_move_special" type="Label" parent="vsplit_p2_keyboard_instructions/GridContainer"]
+[node name="lbl_move_special" type="Label" parent="vsplit_instructions/vsplit_p2_keyboard_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -1024,7 +1026,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="vsplit_p2_joypad_instructions" type="VSplitContainer" parent="."]
+[node name="vsplit_p2_joypad_instructions" type="VSplitContainer" parent="vsplit_instructions"]
 
 editor/display_folded = true
 visibility/visible = false
@@ -1043,7 +1045,7 @@ __meta__ = {
 "_edit_group_": true
 }
 
-[node name="lbl_joypad" type="Label" parent="vsplit_p2_joypad_instructions"]
+[node name="lbl_joypad" type="Label" parent="vsplit_instructions/vsplit_p2_joypad_instructions"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -1059,7 +1061,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="GridContainer" type="GridContainer" parent="vsplit_p2_joypad_instructions"]
+[node name="GridContainer" type="GridContainer" parent="vsplit_instructions/vsplit_p2_joypad_instructions"]
 
 focus/ignore_mouse = false
 focus/stop_mouse = false
@@ -1071,7 +1073,7 @@ margin/right = 201.0
 margin/bottom = 76.0
 columns = 2
 
-[node name="lbl_button_left" type="Label" parent="vsplit_p2_joypad_instructions/GridContainer"]
+[node name="lbl_button_left" type="Label" parent="vsplit_instructions/vsplit_p2_joypad_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -1087,7 +1089,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_move_left" type="Label" parent="vsplit_p2_joypad_instructions/GridContainer"]
+[node name="lbl_move_left" type="Label" parent="vsplit_instructions/vsplit_p2_joypad_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -1103,7 +1105,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_button_right" type="Label" parent="vsplit_p2_joypad_instructions/GridContainer"]
+[node name="lbl_button_right" type="Label" parent="vsplit_instructions/vsplit_p2_joypad_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -1119,7 +1121,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_move_right" type="Label" parent="vsplit_p2_joypad_instructions/GridContainer"]
+[node name="lbl_move_right" type="Label" parent="vsplit_instructions/vsplit_p2_joypad_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -1135,7 +1137,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_button_hit" type="Label" parent="vsplit_p2_joypad_instructions/GridContainer"]
+[node name="lbl_button_hit" type="Label" parent="vsplit_instructions/vsplit_p2_joypad_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -1151,7 +1153,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_move_hit" type="Label" parent="vsplit_p2_joypad_instructions/GridContainer"]
+[node name="lbl_move_hit" type="Label" parent="vsplit_instructions/vsplit_p2_joypad_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -1167,7 +1169,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_button_jump" type="Label" parent="vsplit_p2_joypad_instructions/GridContainer"]
+[node name="lbl_button_jump" type="Label" parent="vsplit_instructions/vsplit_p2_joypad_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -1183,7 +1185,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_move_jump" type="Label" parent="vsplit_p2_joypad_instructions/GridContainer"]
+[node name="lbl_move_jump" type="Label" parent="vsplit_instructions/vsplit_p2_joypad_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -1199,7 +1201,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_button_special" type="Label" parent="vsplit_p2_joypad_instructions/GridContainer"]
+[node name="lbl_button_special" type="Label" parent="vsplit_instructions/vsplit_p2_joypad_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
@@ -1215,7 +1217,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="lbl_move_special" type="Label" parent="vsplit_p2_joypad_instructions/GridContainer"]
+[node name="lbl_move_special" type="Label" parent="vsplit_instructions/vsplit_p2_joypad_instructions/GridContainer"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
