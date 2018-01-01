@@ -1,4 +1,4 @@
-# Hero2: Squirrel
+# Hero1: Hamster
 # List of States:
 #	StandState
 #	WalkState
@@ -15,7 +15,7 @@
 #	KOState
 #	FreezeState
 
-extends KinematicBody2D
+extends Node
 
 signal state_changed
 
@@ -70,20 +70,22 @@ var _input_special
 
 var preload_spark = preload("res://scenes/spark_hit.tscn")
 
-onready var _node_sprite = get_node("sprite")
-onready var _node_anim = get_node("anim")
-onready var _node_anim_invincible = get_node("anim_invincible")
-onready var _node_defensive_hitbox_area = get_node("defensive_hitbox_areas/1")
-onready var _node_offensive_hitbox_area1 = get_node("offensive_hitbox_areas/1")
-onready var _node_offensive_hitbox_area2 = get_node("offensive_hitbox_areas/2")
-onready var _node_offensive_hitbox_area3 = get_node("offensive_hitbox_areas/3")
-onready var _node_offensive_hitbox_area4 = get_node("offensive_hitbox_areas/4")
-onready var _node_sound = get_node("sound")
-onready var _node_timer_combo = get_node("timers/timer_combo")
-onready var _node_timer_special = get_node("timers/timer_special")
-onready var _node_timer_run = get_node("timers/timer_run")
-onready var _node_camera = get_node("camera")
-onready var _node_particles = get_node("particles")
+onready var _node_character = get_node("character")
+onready var _node_sprite = get_node("character/sprite")
+onready var _node_anim = get_node("character/anim")
+onready var _node_anim_invincible = get_node("character/anim_invincible")
+onready var _node_defensive_hitbox_area = get_node("character/defensive_hitbox_areas/1")
+onready var _node_offensive_hitbox_area1 = get_node("character/offensive_hitbox_areas/1")
+onready var _node_offensive_hitbox_area2 = get_node("character/offensive_hitbox_areas/2")
+onready var _node_offensive_hitbox_area3 = get_node("character/offensive_hitbox_areas/3")
+onready var _node_offensive_hitbox_area4 = get_node("character/offensive_hitbox_areas/4")
+onready var _node_sound = get_node("character/sound")
+onready var _node_timer_combo = get_node("character/timers/timer_combo")
+onready var _node_timer_special = get_node("character/timers/timer_special")
+onready var _node_timer_run = get_node("character/timers/timer_run")
+onready var _node_camera = get_node("character/camera")
+onready var _node_particles = get_node("character/particles")
+onready var _node_offensive_hitbox_areas = get_node("character/offensive_hitbox_areas")
 
 class SlideState:
 	var _parent
@@ -674,7 +676,7 @@ func input_walk_right_just_pressed():
 	return _input_walk_right && !_input_walk_right_prev
 
 func reset_offensive_hitboxes():
-	for child in get_node("offensive_hitbox_areas").get_children():
+	for child in _node_offensive_hitbox_areas.get_children():
 		child.set_enable_monitoring(false)
 
 func can_special():
@@ -881,3 +883,21 @@ func _on_timer_special_timeout():
 
 func _on_timer_run_timeout():
 	_can_run = 0
+
+func set_pos(pos):
+	_node_character.set_pos(pos)
+
+func set_scale(scale):
+	_node_character.set_scale(scale)
+
+func move(dir):
+	return _node_character.move(dir)
+
+func is_colliding():
+	return _node_character.is_colliding()
+
+func get_pos():
+	return _node_character.get_pos()
+
+func get_collision_normal():
+	return _node_character.get_collision_normal()

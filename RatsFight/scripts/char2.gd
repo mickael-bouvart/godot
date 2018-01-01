@@ -177,7 +177,7 @@ func dead():
 	queue_free()
 
 func _on_offensive_hitbox_area_area_enter( area ):
-	var player = area.get_node("../../")
+	var player = area.get_node("../../../")
 	player.get_hit(self, _power, { globals.PROPERTY_KNOCKDOWN: _knock_down })
 	if _knock_down:
 		get_node("sound").play("punch_04")

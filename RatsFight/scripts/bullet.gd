@@ -20,6 +20,6 @@ func set_velocity(current_left):
 	_velocity = Vector2(-current_left * SPEED, 0)
 
 func _on_offensive_hitbox_area_area_enter( area ):
-	var hero = area.get_node("../../")
+	var hero = area.get_node("../../../")
 	hero.get_hit(self, POWER, { globals.PROPERTY_KNOCKDOWN: true })
 	get_node("sound").play("punch_01")

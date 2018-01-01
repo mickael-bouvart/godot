@@ -128,7 +128,7 @@ tracks/1/keys = {
 } ]
 }
 
-[sub_resource type="Animation" id=12]
+[sub_resource type="Animation" id=7]
 
 resource/name = "knock_up"
 length = 1.0
@@ -145,7 +145,7 @@ tracks/0/keys = {
 "values": [ 9, 10 ]
 }
 
-[sub_resource type="Animation" id=7]
+[sub_resource type="Animation" id=8]
 
 length = 1.4
 loop = false
@@ -183,7 +183,7 @@ tracks/2/keys = {
 } ]
 }
 
-[sub_resource type="Animation" id=8]
+[sub_resource type="Animation" id=9]
 
 length = 1.0
 loop = true
@@ -199,7 +199,7 @@ tracks/0/keys = {
 "values": [ 0, 1, 2, 1 ]
 }
 
-[sub_resource type="Animation" id=9]
+[sub_resource type="Animation" id=10]
 
 length = 1.0
 loop = true
@@ -215,12 +215,12 @@ tracks/0/keys = {
 "values": [ 3, 4, 5, 4 ]
 }
 
-[sub_resource type="RectangleShape2D" id=10]
+[sub_resource type="RectangleShape2D" id=11]
 
 custom_solver_bias = 0.0
 extents = Vector2( 74.4054, 74.7319 )
 
-[sub_resource type="RectangleShape2D" id=11]
+[sub_resource type="RectangleShape2D" id=12]
 
 custom_solver_bias = 0.0
 extents = Vector2( 90.7518, 25.2982 )
@@ -281,10 +281,10 @@ anims/being_hit = SubResource( 3 )
 anims/down = SubResource( 4 )
 anims/hit = SubResource( 5 )
 anims/knock_down = SubResource( 6 )
-anims/knock_up = SubResource( 12 )
-anims/ko = SubResource( 7 )
-anims/stand = SubResource( 8 )
-anims/walk = SubResource( 9 )
+anims/knock_up = SubResource( 7 )
+anims/ko = SubResource( 8 )
+anims/stand = SubResource( 9 )
+anims/walk = SubResource( 10 )
 playback/active = true
 playback/speed = 1.0
 blend_times = [  ]
@@ -295,7 +295,7 @@ autoplay = ""
 editor/display_folded = true
 visibility/visible = false
 input/pickable = true
-shapes/0/shape = SubResource( 10 )
+shapes/0/shape = SubResource( 11 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, -68.9983, 33.1202 )
 shapes/0/trigger = false
 gravity_vec = Vector2( 0, 1 )
@@ -310,7 +310,7 @@ collision/mask = 2048
 [node name="defensive_hitbox_collision" type="CollisionShape2D" parent="defensive_hitbox_area"]
 
 transform/pos = Vector2( -68.9983, 33.1202 )
-shape = SubResource( 10 )
+shape = SubResource( 11 )
 trigger = false
 _update_shape_index = 0
 
@@ -320,7 +320,7 @@ editor/display_folded = true
 visibility/visible = false
 transform/pos = Vector2( -55.0639, 53.737 )
 input/pickable = true
-shapes/0/shape = SubResource( 11 )
+shapes/0/shape = SubResource( 12 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, 0, 0 )
 shapes/0/trigger = false
 gravity_vec = Vector2( 0, 1 )
@@ -333,7 +333,7 @@ collision/mask = 1024
 
 [node name="offensive_hitbox_collision" type="CollisionShape2D" parent="offensive_hitbox_area"]
 
-shape = SubResource( 11 )
+shape = SubResource( 12 )
 trigger = false
 _update_shape_index = 0
 

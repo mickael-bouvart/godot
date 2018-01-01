@@ -111,7 +111,7 @@ func get_hit(hero, power, properties):
 
 func _on_offensive_hitbox_area_area_enter( area ):
 	print("_on_offensive_hitbox_area_area_enter")
-	var player = area.get_node("../../")
+	var player = area.get_node("../../../")
 	player.get_hit(self, _power, { globals.PROPERTY_KNOCKDOWN: _knock_down })
 	get_node("sound").play("punch_01")
 

@@ -163,7 +163,7 @@ func get_hit(hero, power, properties):
 		velocity = Vector2(current_left * walk_speed * 6, -150)
 		get_node("anim").play("knock_up")
 		state = globals.STATE.KNOCKED_UP_HIT_ALL
-	else: #Last condition: knock_down - _knock_down_resist > 0 || life == 0:
+	else: #Last condition: knock_down - _knock_down_resist > 0 || life <= 0:
 		_touch_floor = false
 		get_node("defensive_hitbox_area").set_monitorable(false)
 		velocity = Vector2(current_left * walk_speed, -200)
@@ -198,7 +198,7 @@ func dead():
 	queue_free()
 
 func _on_offensive_hitbox_area_area_enter( area ):
-	var player = area.get_node("../../")
+	var player = area.get_node("../../../")
 	player.get_hit(self, _power, { globals.PROPERTY_KNOCKDOWN: _knock_down })
 	get_node("sound").play("punch_01")
 
