@@ -90,6 +90,7 @@ func game_start():
 	scene_manager.change_scene("res://stages/stage_01/stage_01.tscn")
 
 func add_player(control):
+	var instructions_control = "keyboard" if control == "keyboard" else "joypad"
 	var nb_player = globals.get_nb_players() + 1
 	globals.set_nb_players(nb_player)
 	var hero = _player_hero[nb_player]
@@ -98,6 +99,7 @@ func add_player(control):
 	get_node("sprite_select_p%d" % nb_player).show()
 	get_node("sprite_p%d_h%d" % [nb_player, hero]).show()
 	get_node("anim_p%d_sprite" % nb_player).play("hovered_h%d" % hero)
+	get_node("vsplit_p%d_%s_instructions" % [nb_player, instructions_control]).show()
 	
 	_control_to_player[control] = nb_player
 

@@ -251,9 +251,9 @@ focus/ignore_mouse = true
 focus/stop_mouse = true
 size_flags/horizontal = 2
 size_flags/vertical = 0
-margin/left = 676.0
+margin/left = 748.0
 margin/top = 50.0
-margin/right = 786.0
+margin/right = 858.0
 margin/bottom = 69.0
 custom_fonts/font = ExtResource( 3 )
 text = "PRESS START"
@@ -402,5 +402,833 @@ margin/top = 0.0
 margin/right = 1024.0
 margin/bottom = 600.0
 color = Color( 0.784314, 0.784314, 0.784314, 0.313726 )
+
+[node name="vsplit_p1_keyboard_instructions" type="VSplitContainer" parent="."]
+
+editor/display_folded = true
+visibility/visible = false
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 42.0
+margin/top = 170.0
+margin/right = 243.0
+margin/bottom = 246.0
+split/offset = 0
+split/collapsed = false
+split/dragger_visibility = 1
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="lbl_keyboard" type="Label" parent="vsplit_p1_keyboard_instructions"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 0.0
+margin/top = 0.0
+margin/right = 201.0
+margin/bottom = 8.0
+custom_fonts/font = ExtResource( 3 )
+text = "Keyboard"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="GridContainer" type="GridContainer" parent="vsplit_p1_keyboard_instructions"]
+
+focus/ignore_mouse = false
+focus/stop_mouse = false
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 0.0
+margin/top = 20.0
+margin/right = 201.0
+margin/bottom = 76.0
+columns = 2
+
+[node name="lbl_button_left" type="Label" parent="vsplit_p1_keyboard_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 0.0
+margin/top = 0.0
+margin/right = 45.0
+margin/bottom = 8.0
+custom_fonts/font = ExtResource( 3 )
+text = "Left"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_move_left" type="Label" parent="vsplit_p1_keyboard_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 49.0
+margin/top = 0.0
+margin/right = 134.0
+margin/bottom = 8.0
+custom_fonts/font = ExtResource( 3 )
+text = "Move  left"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_button_right" type="Label" parent="vsplit_p1_keyboard_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 0.0
+margin/top = 12.0
+margin/right = 45.0
+margin/bottom = 20.0
+custom_fonts/font = ExtResource( 3 )
+text = "Right"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_move_right" type="Label" parent="vsplit_p1_keyboard_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 49.0
+margin/top = 12.0
+margin/right = 134.0
+margin/bottom = 20.0
+custom_fonts/font = ExtResource( 3 )
+text = "Move  right"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_button_hit" type="Label" parent="vsplit_p1_keyboard_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 0.0
+margin/top = 24.0
+margin/right = 45.0
+margin/bottom = 32.0
+custom_fonts/font = ExtResource( 3 )
+text = "C"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_move_hit" type="Label" parent="vsplit_p1_keyboard_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 49.0
+margin/top = 24.0
+margin/right = 134.0
+margin/bottom = 32.0
+custom_fonts/font = ExtResource( 3 )
+text = "Hit"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_button_jump" type="Label" parent="vsplit_p1_keyboard_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 0.0
+margin/top = 36.0
+margin/right = 45.0
+margin/bottom = 44.0
+custom_fonts/font = ExtResource( 3 )
+text = "X"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_move_jump" type="Label" parent="vsplit_p1_keyboard_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 49.0
+margin/top = 36.0
+margin/right = 134.0
+margin/bottom = 44.0
+custom_fonts/font = ExtResource( 3 )
+text = "Jump"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_button_special" type="Label" parent="vsplit_p1_keyboard_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 0.0
+margin/top = 48.0
+margin/right = 45.0
+margin/bottom = 56.0
+custom_fonts/font = ExtResource( 3 )
+text = "V"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_move_special" type="Label" parent="vsplit_p1_keyboard_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 49.0
+margin/top = 48.0
+margin/right = 134.0
+margin/bottom = 56.0
+custom_fonts/font = ExtResource( 3 )
+text = "Special"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="vsplit_p1_joypad_instructions" type="VSplitContainer" parent="."]
+
+editor/display_folded = true
+visibility/visible = false
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 42.0
+margin/top = 170.0
+margin/right = 243.0
+margin/bottom = 246.0
+split/offset = 0
+split/collapsed = false
+split/dragger_visibility = 1
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="lbl_joypad" type="Label" parent="vsplit_p1_joypad_instructions"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 0.0
+margin/top = 0.0
+margin/right = 201.0
+margin/bottom = 8.0
+custom_fonts/font = ExtResource( 3 )
+text = "Joypad"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="GridContainer" type="GridContainer" parent="vsplit_p1_joypad_instructions"]
+
+focus/ignore_mouse = false
+focus/stop_mouse = false
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 0.0
+margin/top = 20.0
+margin/right = 201.0
+margin/bottom = 76.0
+columns = 2
+
+[node name="lbl_button_left" type="Label" parent="vsplit_p1_joypad_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 0.0
+margin/top = 0.0
+margin/right = 71.0
+margin/bottom = 8.0
+custom_fonts/font = ExtResource( 3 )
+text = "Left"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_move_left" type="Label" parent="vsplit_p1_joypad_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 75.0
+margin/top = 0.0
+margin/right = 160.0
+margin/bottom = 8.0
+custom_fonts/font = ExtResource( 3 )
+text = "Move  left"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_button_right" type="Label" parent="vsplit_p1_joypad_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 0.0
+margin/top = 12.0
+margin/right = 71.0
+margin/bottom = 20.0
+custom_fonts/font = ExtResource( 3 )
+text = "Right"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_move_right" type="Label" parent="vsplit_p1_joypad_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 75.0
+margin/top = 12.0
+margin/right = 160.0
+margin/bottom = 20.0
+custom_fonts/font = ExtResource( 3 )
+text = "Move  right"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_button_hit" type="Label" parent="vsplit_p1_joypad_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 0.0
+margin/top = 24.0
+margin/right = 71.0
+margin/bottom = 32.0
+custom_fonts/font = ExtResource( 3 )
+text = "Button  2  "
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_move_hit" type="Label" parent="vsplit_p1_joypad_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 75.0
+margin/top = 24.0
+margin/right = 160.0
+margin/bottom = 32.0
+custom_fonts/font = ExtResource( 3 )
+text = "Hit"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_button_jump" type="Label" parent="vsplit_p1_joypad_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 0.0
+margin/top = 36.0
+margin/right = 71.0
+margin/bottom = 44.0
+custom_fonts/font = ExtResource( 3 )
+text = "Button  0"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_move_jump" type="Label" parent="vsplit_p1_joypad_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 75.0
+margin/top = 36.0
+margin/right = 160.0
+margin/bottom = 44.0
+custom_fonts/font = ExtResource( 3 )
+text = "Jump"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_button_special" type="Label" parent="vsplit_p1_joypad_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 0.0
+margin/top = 48.0
+margin/right = 71.0
+margin/bottom = 56.0
+custom_fonts/font = ExtResource( 3 )
+text = "Button  3"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_move_special" type="Label" parent="vsplit_p1_joypad_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 75.0
+margin/top = 48.0
+margin/right = 160.0
+margin/bottom = 56.0
+custom_fonts/font = ExtResource( 3 )
+text = "Special"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="vsplit_p2_keyboard_instructions" type="VSplitContainer" parent="."]
+
+editor/display_folded = true
+visibility/visible = false
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 770.0
+margin/top = 170.0
+margin/right = 971.0
+margin/bottom = 246.0
+split/offset = 0
+split/collapsed = false
+split/dragger_visibility = 1
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="lbl_keyboard" type="Label" parent="vsplit_p2_keyboard_instructions"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 0.0
+margin/top = 0.0
+margin/right = 201.0
+margin/bottom = 8.0
+custom_fonts/font = ExtResource( 3 )
+text = "Keyboard"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="GridContainer" type="GridContainer" parent="vsplit_p2_keyboard_instructions"]
+
+focus/ignore_mouse = false
+focus/stop_mouse = false
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 0.0
+margin/top = 20.0
+margin/right = 201.0
+margin/bottom = 76.0
+columns = 2
+
+[node name="lbl_button_left" type="Label" parent="vsplit_p2_keyboard_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 0.0
+margin/top = 0.0
+margin/right = 45.0
+margin/bottom = 8.0
+custom_fonts/font = ExtResource( 3 )
+text = "Left"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_move_left" type="Label" parent="vsplit_p2_keyboard_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 49.0
+margin/top = 0.0
+margin/right = 134.0
+margin/bottom = 8.0
+custom_fonts/font = ExtResource( 3 )
+text = "Move  left"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_button_right" type="Label" parent="vsplit_p2_keyboard_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 0.0
+margin/top = 12.0
+margin/right = 45.0
+margin/bottom = 20.0
+custom_fonts/font = ExtResource( 3 )
+text = "Right"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_move_right" type="Label" parent="vsplit_p2_keyboard_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 49.0
+margin/top = 12.0
+margin/right = 134.0
+margin/bottom = 20.0
+custom_fonts/font = ExtResource( 3 )
+text = "Move  right"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_button_hit" type="Label" parent="vsplit_p2_keyboard_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 0.0
+margin/top = 24.0
+margin/right = 45.0
+margin/bottom = 32.0
+custom_fonts/font = ExtResource( 3 )
+text = "C"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_move_hit" type="Label" parent="vsplit_p2_keyboard_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 49.0
+margin/top = 24.0
+margin/right = 134.0
+margin/bottom = 32.0
+custom_fonts/font = ExtResource( 3 )
+text = "Hit"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_button_jump" type="Label" parent="vsplit_p2_keyboard_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 0.0
+margin/top = 36.0
+margin/right = 45.0
+margin/bottom = 44.0
+custom_fonts/font = ExtResource( 3 )
+text = "X"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_move_jump" type="Label" parent="vsplit_p2_keyboard_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 49.0
+margin/top = 36.0
+margin/right = 134.0
+margin/bottom = 44.0
+custom_fonts/font = ExtResource( 3 )
+text = "Jump"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_button_special" type="Label" parent="vsplit_p2_keyboard_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 0.0
+margin/top = 48.0
+margin/right = 45.0
+margin/bottom = 56.0
+custom_fonts/font = ExtResource( 3 )
+text = "V"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_move_special" type="Label" parent="vsplit_p2_keyboard_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 49.0
+margin/top = 48.0
+margin/right = 134.0
+margin/bottom = 56.0
+custom_fonts/font = ExtResource( 3 )
+text = "Special"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="vsplit_p2_joypad_instructions" type="VSplitContainer" parent="."]
+
+editor/display_folded = true
+visibility/visible = false
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 770.0
+margin/top = 170.0
+margin/right = 971.0
+margin/bottom = 246.0
+split/offset = 0
+split/collapsed = false
+split/dragger_visibility = 1
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="lbl_joypad" type="Label" parent="vsplit_p2_joypad_instructions"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 0.0
+margin/top = 0.0
+margin/right = 201.0
+margin/bottom = 8.0
+custom_fonts/font = ExtResource( 3 )
+text = "Joypad"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="GridContainer" type="GridContainer" parent="vsplit_p2_joypad_instructions"]
+
+focus/ignore_mouse = false
+focus/stop_mouse = false
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 0.0
+margin/top = 20.0
+margin/right = 201.0
+margin/bottom = 76.0
+columns = 2
+
+[node name="lbl_button_left" type="Label" parent="vsplit_p2_joypad_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 0.0
+margin/top = 0.0
+margin/right = 71.0
+margin/bottom = 8.0
+custom_fonts/font = ExtResource( 3 )
+text = "Left"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_move_left" type="Label" parent="vsplit_p2_joypad_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 75.0
+margin/top = 0.0
+margin/right = 160.0
+margin/bottom = 8.0
+custom_fonts/font = ExtResource( 3 )
+text = "Move  left"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_button_right" type="Label" parent="vsplit_p2_joypad_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 0.0
+margin/top = 12.0
+margin/right = 71.0
+margin/bottom = 20.0
+custom_fonts/font = ExtResource( 3 )
+text = "Right"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_move_right" type="Label" parent="vsplit_p2_joypad_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 75.0
+margin/top = 12.0
+margin/right = 160.0
+margin/bottom = 20.0
+custom_fonts/font = ExtResource( 3 )
+text = "Move  right"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_button_hit" type="Label" parent="vsplit_p2_joypad_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 0.0
+margin/top = 24.0
+margin/right = 71.0
+margin/bottom = 32.0
+custom_fonts/font = ExtResource( 3 )
+text = "Button  2  "
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_move_hit" type="Label" parent="vsplit_p2_joypad_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 75.0
+margin/top = 24.0
+margin/right = 160.0
+margin/bottom = 32.0
+custom_fonts/font = ExtResource( 3 )
+text = "Hit"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_button_jump" type="Label" parent="vsplit_p2_joypad_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 0.0
+margin/top = 36.0
+margin/right = 71.0
+margin/bottom = 44.0
+custom_fonts/font = ExtResource( 3 )
+text = "Button  0"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_move_jump" type="Label" parent="vsplit_p2_joypad_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 75.0
+margin/top = 36.0
+margin/right = 160.0
+margin/bottom = 44.0
+custom_fonts/font = ExtResource( 3 )
+text = "Jump"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_button_special" type="Label" parent="vsplit_p2_joypad_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 0.0
+margin/top = 48.0
+margin/right = 71.0
+margin/bottom = 56.0
+custom_fonts/font = ExtResource( 3 )
+text = "Button  3"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="lbl_move_special" type="Label" parent="vsplit_p2_joypad_instructions/GridContainer"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 75.0
+margin/top = 48.0
+margin/right = 160.0
+margin/bottom = 56.0
+custom_fonts/font = ExtResource( 3 )
+text = "Special"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
 
 
